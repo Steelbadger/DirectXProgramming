@@ -111,7 +111,7 @@ Vector4 Camera::GetUp()
 /*-------------------------------------------------------------------------*\
 |	Purpose:	Find the up vector for the camera							|
 |																			|
-|	Returns:	Vector4 unit vector up vector								|
+|	Returns:	Vector4 unit up vector										|
 \*-------------------------------------------------------------------------*/
 {
 	Vector4 up = (GetForward().Cross(GameObject::GLOBALY)).Cross(GetForward());

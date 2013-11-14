@@ -9,23 +9,14 @@ Mesh::Mesh()
 {
 }
 
-Mesh::Mesh(const char* mPath, GameObject* p)
-{
-	meshPath = mPath;
-	parent = p;
-	LoadMesh(meshPath.c_str());
-}
-
 Mesh::Mesh(const char* mPath)
 {
 	meshPath = mPath;
-	parent = nullptr;
 	LoadMesh(meshPath.c_str());
 }
 
 Mesh::Mesh(std::vector<Vector3> v, std::vector<Vector3> n, std::vector<Vector2> u)
 {
-	parent = nullptr;
 	verts = v;
 	normals = n;
 	uvs = u;
@@ -37,7 +28,6 @@ Mesh::Mesh(std::vector<Vector3> v, std::vector<Vector3> n, std::vector<Vector2> 
 
 Mesh::Mesh(std::vector<Vector3> v, std::vector<Vector3> n, std::vector<Vector2> u, std::vector<unsigned int> i)
 {
-	parent = nullptr;
 	verts = v;
 	normals = n;
 	uvs = u;
@@ -136,7 +126,7 @@ bool Mesh::LoadObj(const char* path)
 		//  Don't create new data for duplicated verts, check previously saves verts for duplicates
 		duplicate = false;
 		for (int j = 0; j < verts.size(); j++) {
-			if (vertex == verts[j] && uv == uvs[j] && normal == normals[i]) {
+			if (vertex == verts[j] && uv == uvs[j] && normal == normals[j]) {
 				index.push_back(j);
 				duplicate = true;
 			}
@@ -174,7 +164,6 @@ void Mesh::ReverseNormals()
 Mesh& Mesh::operator = (const Mesh& m)
 {
 	meshPath = m.meshPath;
-	parent = m.parent;
 	verts = m.verts;
 	normals = m.normals;
 	uvs = m.uvs;

@@ -16,7 +16,6 @@ class GameObject;
 class Mesh
 {
 public:
-	Mesh(const char* meshPath, GameObject* parent);
 	Mesh(const char* meshPath);
 	Mesh(std::vector<Vector3> verts, std::vector<Vector3> normals, std::vector<Vector2> uvs);
 	Mesh(std::vector<Vector3> verts, std::vector<Vector3> normals, std::vector<Vector2> uvs, std::vector<unsigned int> index);
@@ -27,8 +26,6 @@ public:
 	Material GetMaterial(){return material;}
 
 	void GetNewUniqueID();
-	void SetParent(GameObject* p) {parent = p;}
-	GameObject* GetParentPointer(){return parent;}
 	Vector3* GetVertexArrayBase(){return &verts[0];}
 	Vector3* GetNormalArrayBase(){return &normals[0];}
 	Vector2* GetUVArrayBase(){return &uvs[0];}
@@ -60,11 +57,8 @@ private:
 	bool LoadMesh(const char* path);
 	bool LoadObj(const char* path);
 
-	unsigned int rendererLookup;
-
 	int numVerts;
 
-	GameObject* parent;
 	std::string meshPath;
 
 	Material material;

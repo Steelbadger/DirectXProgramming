@@ -79,6 +79,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Controller.cpp" />
     <ClCompile Include="D3DRenderer.cpp" />
     <ClCompile Include="DirectXContext.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -101,6 +103,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="Components.h" />
+    <ClInclude Include="Controller.h" />
     <ClInclude Include="D3DRenderer.h" />
     <ClInclude Include="DirectXContext.h" />
     <ClInclude Include="GameObject.h" />
