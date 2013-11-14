@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Maths">
+      <UniqueIdentifier>{47a3ba4c-33f3-4b47-8555-ae1a6ce17c28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Windows">
+      <UniqueIdentifier>{fb311710-ef54-458a-a1cf-785b9212db5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics">
+      <UniqueIdentifier>{be3da5b3-8e6b-4f97-af5f-71812a9af2d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utility">
+      <UniqueIdentifier>{487b0a7f-1914-46fe-8c50-e8ac8c503fc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Maths">
+      <UniqueIdentifier>{e8902b8e-af8f-4ee9-9129-e5981ce2d7c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics">
+      <UniqueIdentifier>{311dd893-f8b2-418a-8572-a9d220c00d14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Windows">
+      <UniqueIdentifier>{f29918c7-7a2b-46cf-bf78-f25a51cfb7d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utility">
+      <UniqueIdentifier>{6bf55979-2bc5-4ceb-bcc2-45860ce51d17}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Program.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2.cpp">
+      <Filter>Source Files\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectXContext.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Hardware.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Mouse.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsWindow.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix4x4.cpp">
+      <Filter>Source Files\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3.cpp">
+      <Filter>Source Files\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector4.cpp">
+      <Filter>Source Files\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="Quaternion.cpp">
+      <Filter>Source Files\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="simd.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D3DRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Program.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2.h">
+      <Filter>Header Files\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsContext.h">
+      <Filter>Header Files\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsWindow.h">
+      <Filter>Header Files\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Hardware.h">
+      <Filter>Header Files\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse.h">
+      <Filter>Header Files\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXContext.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="LookupTable.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix4x4.h">
+      <Filter>Header Files\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3.h">
+      <Filter>Header Files\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector4.h">
+      <Filter>Header Files\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="simd.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Quaternion.h">
+      <Filter>Header Files\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MathsClasses.h">
+      <Filter>Header Files\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="D3DRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
