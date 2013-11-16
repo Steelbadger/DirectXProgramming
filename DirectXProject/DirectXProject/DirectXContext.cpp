@@ -24,59 +24,6 @@ DirectXContext::~DirectXContext(void)
 
 void DirectXContext::Initialize(Window& window)
 {
-	//// create a struct to hold information about the swap chain
-	//DXGI_SWAP_CHAIN_DESC scd;
-
-	//// clear out the struct for use
-	//ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
-
-	//// fill the swap chain description struct
-	//scd.BufferCount = 1;									// one back buffer
-	//scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;		// use 32-bit color
-	//scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;		// how swap chain is to be used
-	//scd.OutputWindow = window.GetHandleToWindow();			// the window to be used
-	//scd.SampleDesc.Count = 1;								// how many multisamples
-	//scd.SampleDesc.Quality = 0;								// multisample quality level
-	//scd.Windowed = TRUE;									// windowed/full-screen mode
-
-	//// create a device, device context and swap chain using the information in the scd struct
-	//D3D11CreateDeviceAndSwapChain(	NULL,
-	//								D3D_DRIVER_TYPE_HARDWARE,
-	//								NULL,
-	//								NULL,
-	//								NULL,
-	//								NULL,
-	//								D3D11_SDK_VERSION,
-	//								&scd,
-	//								&swapChain,
-	//								&device,
-	//								NULL,
-	//								&deviceContext);
-
-
-	//// get the address of the back buffer
-	//ID3D11Texture2D *pBackBuffer;
-	//swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
-
-	//// use the back buffer address to create the render target
-	//device->CreateRenderTargetView(pBackBuffer, NULL, &renderTargetView);
-	//pBackBuffer->Release();
-
-	//// set the render target as the back buffer
-	//deviceContext->OMSetRenderTargets(1, &renderTargetView, NULL);
-
-
-	//// Set the viewport
-	//D3D11_VIEWPORT viewport;
-	//ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
-
-	//viewport.TopLeftX = 0;
-	//viewport.TopLeftY = 0;
-	//viewport.Width = window.GetWidth();
-	//viewport.Height = window.GetHeight();
-
-	//deviceContext->RSSetViewports(1, &viewport);
-
 	HRESULT result;
 	IDXGIFactory* factory;
 	IDXGIAdapter* adapter;
@@ -142,16 +89,25 @@ void DirectXContext::Initialize(Window& window)
 
 	// Now go through all the display modes and find the one that matches the screen width and height.
 	// When a match is found store the numerator and denominator of the refresh rate for that monitor.
+	bool foundMode = false;
+	//std::cerr << "Looking For Width: " << window.GetWidth() << "\tHeight: " << window.GetHeight() << std::endl;
 	for(i=0; i<numModes; i++)
 	{
+		//std::cerr << "Mode: " << i << "\tWidth: " << displayModeList[i].Width << "\tHeight: " << displayModeList[i].Height << std::endl;
+
 		if(displayModeList[i].Width == (unsigned int)window.GetWidth())
 		{
 			if(displayModeList[i].Height == (unsigned int)window.GetHeight())
 			{
 				numerator = displayModeList[i].RefreshRate.Numerator;
 				denominator = displayModeList[i].RefreshRate.Denominator;
+				foundMode = true;
 			}
 		}
+	}
+
+	if (!foundMode) {
+		std::cerr << "Failed to find a valid display mode" << std::endl;
 	}
 
 	// Get the adapter (video card) description.
@@ -223,7 +179,7 @@ void DirectXContext::Initialize(Window& window)
 	swapChainDesc.SampleDesc.Quality = 0;
 
 	// Set to full screen or windowed mode.
-	if(true)
+	if(window.IsFullscreen())
 	{
 		swapChainDesc.Windowed = false;
 	}
@@ -380,17 +336,8 @@ void DirectXContext::Initialize(Window& window)
 	deviceContext->RSSetViewports(1, &viewport);
 }
 
-void DirectXContext::FlipBuffers()
+void DirectXContext::BeginScene()
 {
-	// Present the back buffer to the screen since rendering is complete.
-	if(vsync_enabled) {
-		// Lock to screen refresh rate.
-		swapChain->Present(1, 0);
-	} else {
-		// Present as fast as possible.
-		swapChain->Present(0, 0);
-	}
-
 	float color[4];
 
 	// Setup the color to clear the buffer to.
@@ -404,4 +351,16 @@ void DirectXContext::FlipBuffers()
     
 	// Clear the depth buffer.
 	deviceContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+}
+
+void DirectXContext::EndScene()
+{
+	// Present the back buffer to the screen since rendering is complete.
+	if(vsync_enabled) {
+		// Lock to screen refresh rate.
+		swapChain->Present(1, 0);
+	} else {
+		// Present as fast as possible.
+		swapChain->Present(0, 0);
+	}
 }

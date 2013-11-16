@@ -1,5 +1,4 @@
 #pragma once
-#include "GraphicsContext.h"
 
 // LINKING //
 #pragma comment(lib, "dxgi.lib")
@@ -13,14 +12,16 @@
 #include <d3d11.h>
 #include <d3dx10math.h>
 
+class Window;
 
-class DirectXContext : public GraphicsContext
+class DirectXContext
 {
 public:
 	DirectXContext(void);
 	virtual ~DirectXContext(void);
 	virtual void Initialize(Window& window);
-	virtual void FlipBuffers();
+	virtual void BeginScene();
+	virtual void EndScene();
 	ID3D11Device* GetDevice(){return device;}
 
 private:

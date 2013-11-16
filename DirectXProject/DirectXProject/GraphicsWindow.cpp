@@ -22,6 +22,17 @@ Window::Window(LPSTR WindowName, int width, int height, HINSTANCE hInstance, boo
 	Create(WindowName, width, height, Style, FullScreen, hInstance);
 }
 
+Window::Window(LPSTR WindowName, HINSTANCE hInstance, bool FullScreen = true, DWORD Style = (WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN))
+{
+	int height;
+	int width;
+
+	GetDesktopResolution();
+
+	Create(WindowName, width, height, Style, FullScreen, hInstance);
+}
+
+
 
 Window::~Window(void)
 {
@@ -46,9 +57,9 @@ void Window::OnResize()
 {
 	GetClientRect(handleToWindow, &graphicsRect);
 	GetWindowRect(handleToWindow, &windowRect);
-
 	gHeight = graphicsRect.bottom;
 	gWidth = graphicsRect.right;
+
 }
 
 void Window::OnMove()
@@ -56,9 +67,21 @@ void Window::OnMove()
 	GetWindowRect(handleToWindow, &windowRect);
 }
 
+void Window::CreateFullscreen(LPSTR windowName, HINSTANCE hInstance)
+{
+
+	int height;
+	int width;
+
+	GetDesktopResolution();
+
+	Create(windowName, desktop.right, desktop.bottom, (WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN), true, hInstance);
+}
+
 void Window::Create(LPSTR strWindowName, int width, int height, DWORD dwStyle, bool bFullScreen, HINSTANCE hInstance)
 {
 
+	fullscreen = bFullScreen;
 
 	memset(&wcex, 0, sizeof(WNDCLASS));
 	wcex.style			= CS_HREDRAW | CS_VREDRAW;		
@@ -113,6 +136,15 @@ void Window::Create(LPSTR strWindowName, int width, int height, DWORD dwStyle, b
 	borderWidth = GetSystemMetrics(SM_CXFRAME);
 }
 
+void Window::GetDesktopResolution()
+{
+	// Get a handle to the desktop window
+	const HWND desktopHandle = GetDesktopWindow();
+
+	//  Get the rectangle descriptor
+	GetWindowRect(desktopHandle, &desktop);
+}
+
 Window* Window::GetWindowReference(HWND hwnd)
 {
 	return WindowMap[hwnd];
@@ -158,4 +190,22 @@ LRESULT CALLBACK Window::WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM
         }
     }
     return DefWindowProc (hwnd, message, wParam, lParam) ;
+}
+
+int Window::GetWidth()
+{
+	if (fullscreen) {
+		return desktop.right;
+	} else {
+		return graphicsRect.right;
+	}
+}
+
+int Window::GetHeight()
+{
+	if (fullscreen) {
+		return desktop.bottom;
+	} else {
+		return graphicsRect.bottom;
+	}
 }

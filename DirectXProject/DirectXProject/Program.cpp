@@ -26,12 +26,14 @@ void Program::Initialize(HINSTANCE hInstance)
 {
 
 	//  Create a new window, 640 pix long and 512 pix tall
-	window.Create("Basic Program", 640, 512, (WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN), false, hInstance);
+	window.Create("Basic Program", 640, 480, (WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN), false, hInstance);
+	//window.CreateFullscreen("Basic Program", hInstance);
 	context = new DirectXContext();
 
 	//  Move the cursor to the middle of the window
 	window.SetCursorToCentre();
 	context->Initialize(window);
+	
 
 }
 
@@ -50,7 +52,12 @@ void Program::MainLoop()
 	if (hardware->GetTimeSinceLastFrame() >= 10) {
 		//  Update the input state
 		hardware->Update();
-		context->FlipBuffers();
+		context->BeginScene();
+
+		//  Renderer.DrawScene;
+		//  UI.Draw();
+
+		context->EndScene();
 	}
 
 	//  Exit the program

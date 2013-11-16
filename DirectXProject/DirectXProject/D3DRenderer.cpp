@@ -1,5 +1,5 @@
 #include "D3DRenderer.h"
-#include "World.h"
+//#include "World.h"
 
 
 D3DRenderer::D3DRenderer(void)
@@ -16,10 +16,10 @@ void D3DRenderer::Initialize(Window& window)
 	context.Initialize(window);
 }
 
-void D3DRenderer::Load(World& w)
-{
-	world = &w;
-}
+//void D3DRenderer::Load(World& w)
+//{
+//	world = &w;
+//}
 
 void D3DRenderer::Render()
 {
@@ -37,7 +37,7 @@ void D3DRenderer::Render()
 
 void D3DRenderer::UpdateFromWorld()
 {
-	if (world->HasChanged()) {
-		world->LoadChanges();
-	}
+	//if (world->HasChanged()) {
+	//	world->LoadChanges();
+	//}
 }

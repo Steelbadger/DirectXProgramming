@@ -43,6 +43,12 @@
     <Filter Include="Header Files\World">
       <UniqueIdentifier>{1515b912-6516-4c9d-a413-efc27252e3df}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Factories">
+      <UniqueIdentifier>{358943d1-7c0e-47d2-a923-cf757b0c388f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Factories">
+      <UniqueIdentifier>{0a9e8d18-5ca5-42e5-90a2-413a778f59bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -81,35 +87,11 @@
     <ClCompile Include="simd.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="mesh.cpp">
-      <Filter>Source Files\World</Filter>
-    </ClCompile>
-    <ClCompile Include="material.cpp">
-      <Filter>Source Files\World</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Source Files\World</Filter>
-    </ClCompile>
-    <ClCompile Include="texture.cpp">
-      <Filter>Source Files\World</Filter>
-    </ClCompile>
-    <ClCompile Include="World.cpp">
-      <Filter>Source Files\World</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>Source Files\World</Filter>
-    </ClCompile>
     <ClCompile Include="D3DRenderer.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Component.cpp">
+    <ClCompile Include="Shader.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source Files\World</Filter>
-    </ClCompile>
-    <ClCompile Include="Controller.cpp">
-      <Filter>Source Files\World</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -118,9 +100,6 @@
     </ClInclude>
     <ClInclude Include="Vector2.h">
       <Filter>Header Files\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphicsContext.h">
-      <Filter>Header Files\Windows</Filter>
     </ClInclude>
     <ClInclude Include="GraphicsWindow.h">
       <Filter>Header Files\Windows</Filter>
@@ -158,41 +137,11 @@
     <ClInclude Include="Renderer.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="TestComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="mesh.h">
-      <Filter>Header Files\World</Filter>
-    </ClInclude>
-    <ClInclude Include="material.h">
-      <Filter>Header Files\World</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>Header Files\World</Filter>
-    </ClInclude>
-    <ClInclude Include="texture.h">
-      <Filter>Header Files\World</Filter>
-    </ClInclude>
-    <ClInclude Include="World.h">
-      <Filter>Header Files\World</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>Header Files\World</Filter>
-    </ClInclude>
     <ClInclude Include="D3DRenderer.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Component.h">
+    <ClInclude Include="Shader.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components.h">
-      <Filter>Header Files\World</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header Files\World</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller.h">
-      <Filter>Header Files\World</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -5,7 +5,7 @@
 
 
 class HardwareState;
-class GraphicsContext;
+class DirectXContext;
 
 class Program
 {
@@ -18,5 +18,5 @@ public:
 private:
 	Window window;
 	HardwareState* hardware;
-	GraphicsContext* context;
+	DirectXContext* context;
 };

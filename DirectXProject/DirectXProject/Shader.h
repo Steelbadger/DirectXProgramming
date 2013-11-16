@@ -1,24 +1,20 @@
 #pragma once
-#include <string>
-
+#include <D3D11.h>
+#include <D3DX10math.h>
 
 class Shader
 {
+	private:
+	//The vertex Structure
+	struct Vertex
+	{
+		D3DXVECTOR3 pos;
+		D3DXCOLOR   color;
+	};
+
+
 public:
-	enum ShaderType {VERTEX, PIXEL};
-
-	Shader();
-	Shader(std::string filePath, ShaderType type);
-
-	void SetShader(std::string filePath, ShaderType type);
-	std::string GetPath();
-	ShaderType GetShaderType();
-	void SetLoaded(bool isLoaded);
-	bool IsLoaded();
-
-private:
-	ShaderType shaderType;
-	std::string filePath;
-	unsigned int rendererLookup;
-	bool loaded;
+	Shader(void);
+	~Shader(void);
 };
+

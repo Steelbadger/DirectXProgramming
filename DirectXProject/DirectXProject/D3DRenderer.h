@@ -12,7 +12,7 @@ public:
 	D3DRenderer(void);
 	virtual ~D3DRenderer(void);
 	virtual void Initialize(Window& window);
-	virtual void Load(World& w);
+//	virtual void Load(World& w);
 	virtual void Render();
 
 private:
