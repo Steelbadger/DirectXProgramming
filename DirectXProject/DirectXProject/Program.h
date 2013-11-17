@@ -3,6 +3,8 @@
 
 #include <Windows.h>
 
+#include "World.h"
+#include "ObjectFactory.h"
 
 class HardwareState;
 class DirectXContext;
@@ -19,4 +21,6 @@ private:
 	Window window;
 	HardwareState* hardware;
 	DirectXContext* context;
+	World world;
+	ObjectFactory factory;
 };

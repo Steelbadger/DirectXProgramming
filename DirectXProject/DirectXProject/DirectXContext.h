@@ -24,6 +24,7 @@ public:
 	virtual void BeginScene();
 	virtual void EndScene();
 	ID3D11Device* GetDevice(){return device;}
+	ID3D11DeviceContext* GetDeviceContext(){return deviceContext;}
 
 private:
 	bool vsync_enabled;

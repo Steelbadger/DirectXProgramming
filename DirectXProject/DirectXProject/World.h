@@ -11,6 +11,7 @@ struct GameObject
 
 class World
 {
+public:
 	World();
 	~World();
 

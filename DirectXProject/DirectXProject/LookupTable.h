@@ -75,16 +75,22 @@ public:
 		storage.reserve(InitialSize);
 		spacesStack.reserve(InitialSize);
         for (int i = 0; i < InitialSize; i++) {
-			spacesStack.push_back(InitialSize-i);
-			storage[i] = Storage();
+			spacesStack.push_back((InitialSize-1)-i);
+			storage.push_back(Storage());
         }
     }
     
     ObjectID Add(T& object){
-        ObjectID outID = spacesStack.back();
-        storage[outID] = Storage(object);
-		spacesStack.pop_back();
-        return outID;
+		ObjectID outID;
+		if (spacesStack.size() > 0) {
+			outID = spacesStack.back();
+			storage[outID] = Storage(object);
+			spacesStack.pop_back();
+		} else {
+			outID = storage.size();
+			storage.push_back(Storage(object));
+		}
+			return outID;
     }
     
     void Remove(ObjectID object) {

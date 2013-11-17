@@ -33,6 +33,9 @@ void Program::Initialize(HINSTANCE hInstance)
 	//  Move the cursor to the middle of the window
 	window.SetCursorToCentre();
 	context->Initialize(window);
+
+	factory.SetGraphicsContext(*context);
+	factory.SetWorld(world);
 	
 
 }
