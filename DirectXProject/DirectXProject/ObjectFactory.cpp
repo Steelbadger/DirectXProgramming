@@ -43,17 +43,21 @@ ObjectID ObjectFactory::CreateNewObject(World& world, std::string modelFileStrin
 	HRESULT check;
 	ID3D10Blob* VS_Buffer;
 	ID3D10Blob* PS_Buffer;
+	std::cout << "Creating New Object" << std::endl;
+
+	std::cout << "Compiling Shaders from File: " << shaderFile << std::endl;
 
 	//Compile Shaders from shader file
-	check = D3DX11CompileFromFile("Effects.fx", 0, 0, "VertexShader", "vs_5_0", 0, 0, 0, &VS_Buffer, 0, 0);
+	check = D3DX11CompileFromFile(shaderFile.c_str(), 0, 0, "VS", "vs_5_0", 0, 0, 0, &VS_Buffer, 0, 0);
 	if(FAILED(check)) {
 		Error("Failed to Compile Vertex Shader From File");
 	}
-	check = D3DX11CompileFromFile("Effects.fx", 0, 0, "PixelShader", "ps_5_0", 0, 0, 0, &PS_Buffer, 0, 0);
+	check = D3DX11CompileFromFile(shaderFile.c_str(), 0, 0, "PS", "ps_5_0", 0, 0, 0, &PS_Buffer, 0, 0);
 	if(FAILED(check)) {
 		Error("Failed to Compile Pixel Shader From File");
 	}
 
+	std::cout << "Building Shader Objects" << std::endl;
 	//Create the Shader Objects
 	check = graphicsContext->GetDevice()->CreateVertexShader(VS_Buffer->GetBufferPointer(), VS_Buffer->GetBufferSize(), NULL, &objectData.vertexShader);
 	if(FAILED(check)) {
@@ -67,6 +71,7 @@ ObjectID ObjectFactory::CreateNewObject(World& world, std::string modelFileStrin
 
 	objectData.numTextures = 1;
 
+	std::cout << "Loading Texture from file:  " << ambientTexture << std::endl;
 
 	check = D3DX11CreateShaderResourceViewFromFile(graphicsContext->GetDevice(), ambientTexture.c_str(), NULL, NULL, &objectData.textures[0], NULL);
 	if(FAILED(check)) {
@@ -74,6 +79,7 @@ ObjectID ObjectFactory::CreateNewObject(World& world, std::string modelFileStrin
 	}
 
 	if (!normalMap.empty()) {
+		std::cout << "Loading Texture from file:  " << normalMap << std::endl;
 		check = D3DX11CreateShaderResourceViewFromFile(graphicsContext->GetDevice(), normalMap.c_str(), NULL, NULL, &objectData.textures[1], NULL);
 		if(FAILED(check)) {
 			Error("Failed to Create Shader Resource for Normal Map");
@@ -82,6 +88,7 @@ ObjectID ObjectFactory::CreateNewObject(World& world, std::string modelFileStrin
 	}
 
 	if (!specularMap.empty()) {
+		std::cout << "Loading Texture from file:  " << specularMap << std::endl;
 		check = D3DX11CreateShaderResourceViewFromFile(graphicsContext->GetDevice(), specularMap.c_str(), NULL, NULL, &objectData.textures[2], NULL);
 		if(FAILED(check)) {
 			Error("Failed to Create Shader Resource for Specular Map");
@@ -89,6 +96,7 @@ ObjectID ObjectFactory::CreateNewObject(World& world, std::string modelFileStrin
 		objectData.numTextures++;
 	}
 
+	std::cout << "Loading Model from file: " << modelFileString << std::endl;
 	LoadModel(objectData, modelFileString);
 	
 	

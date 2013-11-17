@@ -156,4 +156,12 @@
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="basic.fx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Effects.fx">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

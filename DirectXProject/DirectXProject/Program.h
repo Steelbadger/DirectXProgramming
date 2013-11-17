@@ -5,6 +5,7 @@
 
 #include "World.h"
 #include "ObjectFactory.h"
+#include "D3DRenderer.h"
 
 class HardwareState;
 class DirectXContext;
@@ -23,4 +24,5 @@ private:
 	DirectXContext* context;
 	World world;
 	ObjectFactory factory;
+	D3DRenderer renderer;
 };

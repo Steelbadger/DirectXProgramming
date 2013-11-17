@@ -119,6 +119,10 @@
     <ClInclude Include="Vector4.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="basic.fx" />
+    <None Include="Effects.fx" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
