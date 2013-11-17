@@ -7,6 +7,14 @@ typedef unsigned int ObjectID;
  
 template<class T, int MaxElements = 128>
 class LookupTable {
+private:
+	struct Storage {
+        Storage():used(false){}
+        Storage(T& data):element(data), used(true){}
+        T element;
+        bool used;        
+    };
+
 public:
     LookupTable() {
         for (int i = 0; i < MaxElements; i++) {
@@ -37,22 +45,15 @@ public:
 		}
     }
 
-	T& GetObject(ObjectID object) {
+	T& Get(ObjectID object) {
 		if (Exists(object)) {
-			return storage[object];
+			return storage[object].element;
 		} else {
-			return NULL;
+			return T();
 		}
 	}
 
 private:
-    struct Storage {
-        Storage():used(false){}
-        Storage(T& data):element(data), used(true){}
-        T element;
-        bool used;        
-    };
- 
     Storage storage[MaxElements];
     ObjectID spacesStack[MaxElements]; 
     unsigned int stackpointer;
@@ -60,6 +61,15 @@ private:
 
 template<class T, int InitialSize = 128>
 class DynamicLookupTable {
+private:
+	struct Storage {
+        Storage():used(false){}
+        Storage(T& data):element(data), used(true){}
+        T element;
+        bool used;        
+    };
+
+
 public:
     DynamicLookupTable() {
 		storage.reserve(InitialSize);
@@ -85,29 +95,23 @@ public:
     }
     
     bool Exists(ObjectID object){
-		if (object >= 0 && object < MaxElements) {
+		if (object >= 0 && object < storage.size()) {
 			return storage[object].used;
 		} else {
 			return false;
 		}
     }
 
-	T& GetObject(ObjectID object) {
+	T& Get(ObjectID object) {
 		if (Exists(object)) {
-			return storage[object];
+			return storage[object].element;
 		} else {
-			return NULL;
+			return T();
 		}
 	}
 
 private:
-    struct Storage {
-        Storage():used(false){}
-        Storage(T& data):element(data), used(true){}
-        T element;
-        bool used;        
-    };
- 
+
     std::vector<Storage> storage;
     std::vector<ObjectID> spacesStack; 
 };

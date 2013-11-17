@@ -16,10 +16,10 @@ void D3DRenderer::Initialize(Window& window)
 	context.Initialize(window);
 }
 
-//void D3DRenderer::Load(World& w)
-//{
-//	world = &w;
-//}
+void D3DRenderer::Load(World& w)
+{
+	world = &w;
+}
 
 void D3DRenderer::Render()
 {
@@ -31,13 +31,9 @@ void D3DRenderer::Render()
 	//  draw it
 
 	//  directx end draw
-
-
 }
 
-void D3DRenderer::UpdateFromWorld()
+void D3DRenderer::RenderObject(RenderData objectToRender)
 {
-	//if (world->HasChanged()) {
-	//	world->LoadChanges();
-	//}
+	
 }

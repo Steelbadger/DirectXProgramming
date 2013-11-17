@@ -90,8 +90,11 @@
     <ClCompile Include="D3DRenderer.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="World.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectFactory.cpp">
+      <Filter>Source Files\World</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -140,8 +143,17 @@
     <ClInclude Include="D3DRenderer.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="RenderData.h">
+      <Filter>Header Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>Header Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectFactory.h">
+      <Filter>Header Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="UtilityFunctions.h">
+      <Filter>Header Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
