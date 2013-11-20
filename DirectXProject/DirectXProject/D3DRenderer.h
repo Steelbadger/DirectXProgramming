@@ -23,6 +23,8 @@ private:
 	DynamicLookupTable<RenderData> data;
 	DirectXContext context;
 
+	World* world;
+
 	void RenderObject(RenderData objectToRender);
 };
 

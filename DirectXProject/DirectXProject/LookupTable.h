@@ -116,6 +116,10 @@ public:
 		}
 	}
 
+	int Size() {
+		return storage.size();
+	}
+
 private:
 
     std::vector<Storage> storage;

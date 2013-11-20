@@ -1,11 +1,11 @@
 #include "ObjectFactory.h"
 #include "World.h"
+#include "UtilityFunctions.h"
 #include "RenderData.h"
 #include "D3DRenderer.h"
 #include <D3DX11.h>
 #include <iostream>
 
-#include "UtilityFunctions.h"
 
 
 
@@ -43,6 +43,7 @@ ObjectID ObjectFactory::CreateNewObject(World& world, std::string modelFileStrin
 	HRESULT check;
 	ID3D10Blob* VS_Buffer;
 	ID3D10Blob* PS_Buffer;
+	D3D11_BUFFER_DESC matrixBufferDesc;
 	std::cout << "Creating New Object" << std::endl;
 
 	std::cout << "Compiling Shaders from File: " << shaderFile << std::endl;
@@ -98,6 +99,13 @@ ObjectID ObjectFactory::CreateNewObject(World& world, std::string modelFileStrin
 
 	std::cout << "Loading Model from file: " << modelFileString << std::endl;
 	LoadModel(objectData, modelFileString);
+
+	check = graphicsContext->GetDevice()->CreateBuffer(&matrixBufferDesc, NULL, &objectData.matrixBuffer);
+	if(FAILED(check))
+	{
+		Error("Failed to Create Matrix Buffer");
+	}
+
 	
 	
 	//Create the Input Layout
@@ -214,6 +222,9 @@ void ObjectFactory::LoadModel(RenderData& output, std::string filename)
 		Indexify(verts, uvs, normals, index);
 	}
 
+	output.indexCount = index.size();
+	output.vertexCount = verts.size();
+
 	ConstructBuffers(output, verts, uvs, normals, index);
 
 	return;
@@ -252,6 +263,7 @@ void ObjectFactory::ConstructBuffers(RenderData& output, std::vector<Vector3>& v
 										std::vector<Vector3>& normals, std::vector<unsigned int>& index)
 {
 	D3D11_BUFFER_DESC indexBufferDesc;
+    D3D11_SAMPLER_DESC samplerDesc;
 	ZeroMemory( &indexBufferDesc, sizeof(indexBufferDesc) );
 
 	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -298,4 +310,24 @@ void ObjectFactory::ConstructBuffers(RenderData& output, std::vector<Vector3>& v
 	ZeroMemory( &vertexBufferData, sizeof(vertexBufferData) );
 	vertexBufferData.pSysMem = (void*)&vertices[0];
 	graphicsContext->GetDevice()->CreateBuffer( &vertexBufferDesc, &vertexBufferData, &output.vertBuffer);
+
+	// Create a texture sampler state description.
+    samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+    samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+    samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+    samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    samplerDesc.MipLODBias = 0.0f;
+    samplerDesc.MaxAnisotropy = 1;
+    samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+    samplerDesc.BorderColor[0] = 0;
+	samplerDesc.BorderColor[1] = 0;
+	samplerDesc.BorderColor[2] = 0;
+	samplerDesc.BorderColor[3] = 0;
+    samplerDesc.MinLOD = 0;
+    samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	// Create the texture sampler state.
+    graphicsContext->GetDevice()->CreateSamplerState(&samplerDesc, &output.sampleState);
+
+
 }
