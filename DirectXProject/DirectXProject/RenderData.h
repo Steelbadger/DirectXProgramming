@@ -36,7 +36,7 @@ struct RenderData
 	int stride;
 	int indexCount, vertexCount;
 
-	ID3D11ShaderResourceView** textures;
+	ID3D11ShaderResourceView* textures;
 	int numTextures;
 
 	ID3D11InputLayout* vertLayout;

@@ -1,6 +1,7 @@
 #include "D3DRenderer.h"
 #include "World.h"
 //#include "UtilityFunctions.h"
+#include <iostream>
 
 
 D3DRenderer::D3DRenderer(void)
@@ -26,7 +27,6 @@ void D3DRenderer::Render()
 {
 
 	//  directx begin draw
-	context.BeginScene();
 
 	for (int i = 0; i < data.Size(); i++) {
 		if (data.Exists(i)) {
@@ -53,13 +53,13 @@ void D3DRenderer::RenderObject(RenderData objectToRender)
 
 
 	// Set shader texture resource in the pixel shader.
-	context.GetDeviceContext()->PSSetShaderResources(0, objectToRender.numTextures, &objectToRender.textures[0]);
+	context.GetDeviceContext()->PSSetShaderResources(0, objectToRender.numTextures, &objectToRender.textures);
 
 	// Lock the matrix constant buffer so it can be written to.
 	result = context.GetDeviceContext()->Map(objectToRender.matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if(FAILED(result))
 	{
-		//Error("Failed to Map Matrix Buffer");
+		std::cerr << "Failed to Map Matrix Buffer" << std::endl;
 	}
 
 	// Get a pointer to the data in the constant buffer.

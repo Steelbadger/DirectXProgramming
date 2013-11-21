@@ -74,14 +74,14 @@ ObjectID ObjectFactory::CreateNewObject(World& world, std::string modelFileStrin
 
 	std::cout << "Loading Texture from file:  " << ambientTexture << std::endl;
 
-	check = D3DX11CreateShaderResourceViewFromFile(graphicsContext->GetDevice(), ambientTexture.c_str(), NULL, NULL, &objectData.textures[0], NULL);
+	check = D3DX11CreateShaderResourceViewFromFile(graphicsContext->GetDevice(), ambientTexture.c_str(), NULL, NULL, &objectData.textures, NULL);
 	if(FAILED(check)) {
 		Error("Failed to Create Shader Resource for Ambient Texture");
 	}
 
 	if (!normalMap.empty()) {
 		std::cout << "Loading Texture from file:  " << normalMap << std::endl;
-		check = D3DX11CreateShaderResourceViewFromFile(graphicsContext->GetDevice(), normalMap.c_str(), NULL, NULL, &objectData.textures[1], NULL);
+	//	check = D3DX11CreateShaderResourceViewFromFile(graphicsContext->GetDevice(), normalMap.c_str(), NULL, NULL, &objectData.textures[1], NULL);
 		if(FAILED(check)) {
 			Error("Failed to Create Shader Resource for Normal Map");
 		}
@@ -90,7 +90,7 @@ ObjectID ObjectFactory::CreateNewObject(World& world, std::string modelFileStrin
 
 	if (!specularMap.empty()) {
 		std::cout << "Loading Texture from file:  " << specularMap << std::endl;
-		check = D3DX11CreateShaderResourceViewFromFile(graphicsContext->GetDevice(), specularMap.c_str(), NULL, NULL, &objectData.textures[2], NULL);
+	//	check = D3DX11CreateShaderResourceViewFromFile(graphicsContext->GetDevice(), specularMap.c_str(), NULL, NULL, &objectData.textures[2], NULL);
 		if(FAILED(check)) {
 			Error("Failed to Create Shader Resource for Specular Map");
 		}
@@ -99,6 +99,15 @@ ObjectID ObjectFactory::CreateNewObject(World& world, std::string modelFileStrin
 
 	std::cout << "Loading Model from file: " << modelFileString << std::endl;
 	LoadModel(objectData, modelFileString);
+
+	ZeroMemory(&matrixBufferDesc, sizeof(D3D11_BUFFER_DESC));
+
+	matrixBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	matrixBufferDesc.ByteWidth = sizeof(MatrixBufferType);
+	matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	matrixBufferDesc.CPUAccessFlags = 0;
+	matrixBufferDesc.MiscFlags = 0;
+
 
 	check = graphicsContext->GetDevice()->CreateBuffer(&matrixBufferDesc, NULL, &objectData.matrixBuffer);
 	if(FAILED(check))
