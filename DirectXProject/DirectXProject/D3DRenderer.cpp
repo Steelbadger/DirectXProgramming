@@ -29,7 +29,7 @@ void D3DRenderer::Render()
 	//  directx begin draw
 
 	for (int i = 0; i < data.Size(); i++) {
-		std::cout << "Draw " << i << std::endl;
+//		std::cout << "Draw " << i << std::endl;
 		if (data.Exists(i)) {
 			RenderObject(data.Get(i));
 		}
@@ -45,7 +45,7 @@ void D3DRenderer::RenderObject(RenderData objectToRender)
 {
 	HRESULT result;
     D3D11_MAPPED_SUBRESOURCE mappedResource;
-	MatrixBufferType* dataPtr;
+	MatrixBufferType matrices;
 	unsigned int bufferNumber;
 
 	D3DXMATRIX worl;
@@ -54,30 +54,35 @@ void D3DRenderer::RenderObject(RenderData objectToRender)
 
 
 	// Set shader texture resource in the pixel shader.
-	context.GetDeviceContext()->PSSetShaderResources(0, objectToRender.numTextures, &objectToRender.textures);
 
-	// Lock the matrix constant buffer so it can be written to.
-	result = context.GetDeviceContext()->Map(objectToRender.matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	if(FAILED(result))
-	{
-		std::cerr << "Failed to Map Matrix Buffer" << std::endl;
-	}
 
-	// Get a pointer to the data in the constant buffer.
-	dataPtr = (MatrixBufferType*)mappedResource.pData;
+	//// Lock the matrix constant buffer so it can be written to.
+	//result = context.GetDeviceContext()->Map(objectToRender.matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	//if(FAILED(result))
+	//{
+	//	std::cerr << "Failed to Map Matrix Buffer" << std::endl;
+	//}
+
+	//// Get a pointer to the data in the constant buffer.
+	//dataPtr = (MatrixBufferType*)mappedResource.pData;
 
 	// Transpose the matrices to prepare them for the shader.
 	D3DXMatrixTranspose(&worl, &world->worldMatrix);
 	D3DXMatrixTranspose(&view, &world->viewMatrix);
 	D3DXMatrixTranspose(&proj, &world->projectionMatrix);
 
-	// Copy the matrices into the constant buffer.
-	dataPtr->world = worl;
-	dataPtr->view = view;
-	dataPtr->projection = proj;
+	// Copy the matrices into the constant buffer
+	matrices.world = worl;
+	matrices.view = view;
+	matrices.projection = proj;
+
+	context.GetDeviceContext()->UpdateSubresource( objectToRender.matrixBuffer, 0, NULL, &matrices, 0, 0 );
+	context.GetDeviceContext()->VSSetConstantBuffers( 0, 1, &objectToRender.matrixBuffer );
+	context.GetDeviceContext()->PSSetShaderResources(0, objectToRender.numTextures, &objectToRender.textures);
+	context.GetDeviceContext()->PSSetSamplers( 0, 1, &objectToRender.sampleState );
 
 	// Unlock the matrix constant buffer.
-    context.GetDeviceContext()->Unmap(objectToRender.matrixBuffer, 0);
+    //context.GetDeviceContext()->Unmap(objectToRender.matrixBuffer, 0);
 
 	// Set the position of the matrix constant buffer in the vertex shader.
 	bufferNumber = 0;

@@ -350,7 +350,7 @@ void DirectXContext::BeginScene()
 	deviceContext->ClearRenderTargetView(renderTargetView, color);
     
 	// Clear the depth buffer.
-	deviceContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	deviceContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
 void DirectXContext::EndScene()
