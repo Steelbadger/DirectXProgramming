@@ -29,6 +29,7 @@ void D3DRenderer::Render()
 	//  directx begin draw
 
 	for (int i = 0; i < data.Size(); i++) {
+		std::cout << "Draw " << i << std::endl;
 		if (data.Exists(i)) {
 			RenderObject(data.Get(i));
 		}
