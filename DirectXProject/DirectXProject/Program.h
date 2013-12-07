@@ -3,8 +3,6 @@
 
 #include <Windows.h>
 
-#include "World.h"
-#include "ObjectFactory.h"
 #include "D3DRenderer.h"
 
 class HardwareState;
@@ -22,7 +20,5 @@ private:
 	Window window;
 	HardwareState* hardware;
 	DirectXContext* context;
-	World world;
-	ObjectFactory factory;
 	D3DRenderer renderer;
 };

@@ -30,6 +30,8 @@ private:
 	bool vsync_enabled;
 	int videoCardMemory;
 	char videoCardDescription[128];
+	D3D_DRIVER_TYPE g_driverType;
+	D3D_FEATURE_LEVEL g_featureLevel;
 	IDXGISwapChain* swapChain;
 	ID3D11Device* device;
 	ID3D11DeviceContext* deviceContext;

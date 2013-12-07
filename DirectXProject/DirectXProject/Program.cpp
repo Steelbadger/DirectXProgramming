@@ -34,17 +34,6 @@ void Program::Initialize(HINSTANCE hInstance)
 	window.SetCursorToCentre();
 	context->Initialize(window);
 	renderer.Initialize(window);
-	world.Initialise();
-
-	factory.SetGraphicsContext(*context);
-	factory.SetWorld(world);
-	factory.SetRenderer(renderer);
-
-
-	//  Now try adding assets!
-
-	factory.CreateNewObject(world, "outwardCube.obj", "Effects.fx", "seafloor.dds");
-	renderer.Load(world);
 }
 
 void Program::MainLoop()

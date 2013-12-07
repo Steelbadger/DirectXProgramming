@@ -90,12 +90,6 @@
     <ClCompile Include="D3DRenderer.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="World.cpp">
-      <Filter>Source Files\World</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectFactory.cpp">
-      <Filter>Source Files\World</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Program.h">
@@ -143,24 +137,18 @@
     <ClInclude Include="D3DRenderer.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="RenderData.h">
-      <Filter>Header Files\World</Filter>
-    </ClInclude>
-    <ClInclude Include="World.h">
-      <Filter>Header Files\World</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectFactory.h">
-      <Filter>Header Files\World</Filter>
-    </ClInclude>
     <ClInclude Include="UtilityFunctions.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="basic.fx">
+    <None Include="seafloor.dds">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Effects.fx">
+    <None Include="Tutorial07.fx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Tutorial07.jpg">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

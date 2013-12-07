@@ -41,6 +41,25 @@ void DirectXContext::Initialize(Window& window)
 	D3D11_RASTERIZER_DESC rasterDesc;
 	D3D11_VIEWPORT viewport;
 
+	g_driverType = D3D_DRIVER_TYPE_NULL;
+	g_featureLevel = D3D_FEATURE_LEVEL_11_0;	
+
+    D3D_DRIVER_TYPE driverTypes[] =
+    {
+        D3D_DRIVER_TYPE_HARDWARE,
+        D3D_DRIVER_TYPE_WARP,
+        D3D_DRIVER_TYPE_REFERENCE,
+    };
+    UINT numDriverTypes = ARRAYSIZE( driverTypes );
+
+    D3D_FEATURE_LEVEL featureLevels[] =
+    {
+        D3D_FEATURE_LEVEL_11_0,
+        D3D_FEATURE_LEVEL_10_1,
+        D3D_FEATURE_LEVEL_10_0,
+    };
+    UINT numFeatureLevels = ARRAYSIZE( featureLevels );
+
 
 	// Store the vsync setting.
 	vsync_enabled = true;
@@ -143,6 +162,8 @@ void DirectXContext::Initialize(Window& window)
 	factory->Release();
 	factory = 0;
 
+	//////////////////////////////////////////////////SWAPCHAIN DESCRIPTION BEGIN/////////////////////////////////////////////////////////////////
+
 	// Initialize the swap chain description.
 	ZeroMemory(&swapChainDesc, sizeof(swapChainDesc));
 
@@ -198,16 +219,22 @@ void DirectXContext::Initialize(Window& window)
 	// Don't set the advanced flags.
 	swapChainDesc.Flags = 0;
 
+	//////////////////////////////////////////////////SWAPCHAIN DESCRIPTION END/////////////////////////////////////////////////////////////////
+
 		// Set the feature level to DirectX 11.
 	featureLevel = D3D_FEATURE_LEVEL_11_0;
 
-	// Create the swap chain, Direct3D device, and Direct3D device context.
-	result = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0, &featureLevel, 1, 
-					       D3D11_SDK_VERSION, &swapChainDesc, &swapChain, &device, NULL, &deviceContext);
-	if(FAILED(result))
-	{
-		std::cerr << "Failed to create the swap chain, Direct3D device, and Direct3D device context." << std::endl;
-	}
+    for( UINT driverTypeIndex = 0; driverTypeIndex < numDriverTypes; driverTypeIndex++ )
+    {
+        g_driverType = driverTypes[driverTypeIndex];
+        result = D3D11CreateDeviceAndSwapChain( NULL, g_driverType, NULL, 0, featureLevels, numFeatureLevels,
+                                            D3D11_SDK_VERSION, &swapChainDesc, &swapChain, &device, &g_featureLevel, &deviceContext );
+        if( SUCCEEDED( result ) )
+            break;
+    }
+    if( FAILED( result ) )
+        return;
+
 
 	// Get the pointer to the back buffer.
 	result = swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBufferPtr);

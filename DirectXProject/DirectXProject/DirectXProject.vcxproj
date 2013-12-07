@@ -89,14 +89,12 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix4x4.cpp" />
     <ClCompile Include="Mouse.cpp" />
-    <ClCompile Include="ObjectFactory.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="simd.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Vector3.cpp" />
     <ClCompile Include="Vector4.cpp" />
-    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D3DRenderer.h" />
@@ -106,10 +104,8 @@
     <ClInclude Include="MathsClasses.h" />
     <ClInclude Include="Matrix4x4.h" />
     <ClInclude Include="Mouse.h" />
-    <ClInclude Include="ObjectFactory.h" />
     <ClInclude Include="Program.h" />
     <ClInclude Include="Quaternion.h" />
-    <ClInclude Include="RenderData.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="simd.h" />
     <ClInclude Include="UtilityFunctions.h" />
@@ -117,11 +113,11 @@
     <ClInclude Include="GraphicsWindow.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Vector4.h" />
-    <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="basic.fx" />
-    <None Include="Effects.fx" />
+    <None Include="seafloor.dds" />
+    <None Include="Tutorial07.fx" />
+    <None Include="Tutorial07.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

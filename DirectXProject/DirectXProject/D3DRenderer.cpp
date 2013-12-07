@@ -1,8 +1,22 @@
 #include "D3DRenderer.h"
-#include "World.h"
-//#include "UtilityFunctions.h"
 #include <iostream>
+#include <D3DX11tex.h>
+#include <D3Dcompiler.h>
+#include "GraphicsWindow.h"
 
+struct SimpleVertex
+{
+	D3DXVECTOR3 Pos;
+    D3DXVECTOR2 Tex;
+};
+
+struct CBChangesEveryFrame
+{
+	D3DXMATRIX mWorld;
+	D3DXMATRIX mView;
+	D3DXMATRIX mProjection;
+    D3DXVECTOR4 vMeshColor;
+};
 
 D3DRenderer::D3DRenderer(void)
 {
@@ -13,9 +27,176 @@ D3DRenderer::~D3DRenderer(void)
 {
 }
 
-void D3DRenderer::Initialize(Window& window)
+void D3DRenderer::Initialize(Window& win)
 {
-	context.Initialize(window);
+	context.Initialize(win);
+	window = &win;
+
+	HRESULT hr;
+    // Compile the vertex shader
+    ID3DBlob* pVSBlob = NULL;
+    hr = CompileShaderFromFile( "Tutorial07.fx", "VS", "vs_4_0", &pVSBlob );
+    if( FAILED( hr ) )
+    {
+        MessageBox( NULL, "The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", "Error", MB_OK );
+    }
+
+    // Create the vertex shader
+	hr = context.GetDevice()->CreateVertexShader( pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), NULL, &g_pVertexShader );
+    if( FAILED( hr ) )
+    {    
+        pVSBlob->Release();
+    }
+
+    // Define the input layout
+    D3D11_INPUT_ELEMENT_DESC layout[] =
+    {
+        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+    };
+    UINT numElements = ARRAYSIZE( layout );
+
+    // Create the input layout
+    hr = context.GetDevice()->CreateInputLayout( layout, numElements, pVSBlob->GetBufferPointer(),
+                                          pVSBlob->GetBufferSize(), &g_pVertexLayout );
+    pVSBlob->Release();
+
+    // Set the input layout
+    context.GetDeviceContext()->IASetInputLayout( g_pVertexLayout );
+
+    // Compile the pixel shader
+    ID3DBlob* pPSBlob = NULL;
+    hr = CompileShaderFromFile( "Tutorial07.fx", "PS", "ps_4_0", &pPSBlob );
+    if( FAILED( hr ) )
+    {
+        MessageBox( NULL,
+                    "The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", "Error", MB_OK );
+    }
+
+    // Create the pixel shader
+    hr = context.GetDevice()->CreatePixelShader( pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), NULL, &g_pPixelShader );
+    pPSBlob->Release();
+
+    // Create vertex buffer
+    SimpleVertex vertices[] =
+    {
+        { D3DXVECTOR3( -1.0f, 1.0f, -1.0f ), D3DXVECTOR2( 0.0f, 0.0f ) },
+        { D3DXVECTOR3( 1.0f, 1.0f, -1.0f ), D3DXVECTOR2( 1.0f, 0.0f ) },
+        { D3DXVECTOR3( 1.0f, 1.0f, 1.0f ), D3DXVECTOR2( 1.0f, 1.0f ) },
+        { D3DXVECTOR3( -1.0f, 1.0f, 1.0f ), D3DXVECTOR2( 0.0f, 1.0f ) },
+
+        { D3DXVECTOR3( -1.0f, -1.0f, -1.0f ), D3DXVECTOR2( 0.0f, 0.0f ) },
+        { D3DXVECTOR3( 1.0f, -1.0f, -1.0f ), D3DXVECTOR2( 1.0f, 0.0f ) },
+        { D3DXVECTOR3( 1.0f, -1.0f, 1.0f ), D3DXVECTOR2( 1.0f, 1.0f ) },
+        { D3DXVECTOR3( -1.0f, -1.0f, 1.0f ), D3DXVECTOR2( 0.0f, 1.0f ) },
+
+        { D3DXVECTOR3( -1.0f, -1.0f, 1.0f ), D3DXVECTOR2( 0.0f, 0.0f ) },
+        { D3DXVECTOR3( -1.0f, -1.0f, -1.0f ), D3DXVECTOR2( 1.0f, 0.0f ) },
+        { D3DXVECTOR3( -1.0f, 1.0f, -1.0f ), D3DXVECTOR2( 1.0f, 1.0f ) },
+        { D3DXVECTOR3( -1.0f, 1.0f, 1.0f ), D3DXVECTOR2( 0.0f, 1.0f ) },
+
+        { D3DXVECTOR3( 1.0f, -1.0f, 1.0f ), D3DXVECTOR2( 0.0f, 0.0f ) },
+        { D3DXVECTOR3( 1.0f, -1.0f, -1.0f ), D3DXVECTOR2( 1.0f, 0.0f ) },
+        { D3DXVECTOR3( 1.0f, 1.0f, -1.0f ), D3DXVECTOR2( 1.0f, 1.0f ) },
+        { D3DXVECTOR3( 1.0f, 1.0f, 1.0f ), D3DXVECTOR2( 0.0f, 1.0f ) },
+
+        { D3DXVECTOR3( -1.0f, -1.0f, -1.0f ), D3DXVECTOR2( 0.0f, 0.0f ) },
+        { D3DXVECTOR3( 1.0f, -1.0f, -1.0f ), D3DXVECTOR2( 1.0f, 0.0f ) },
+        { D3DXVECTOR3( 1.0f, 1.0f, -1.0f ), D3DXVECTOR2( 1.0f, 1.0f ) },
+        { D3DXVECTOR3( -1.0f, 1.0f, -1.0f ), D3DXVECTOR2( 0.0f, 1.0f ) },
+
+        { D3DXVECTOR3( -1.0f, -1.0f, 1.0f ), D3DXVECTOR2( 0.0f, 0.0f ) },
+        { D3DXVECTOR3( 1.0f, -1.0f, 1.0f ), D3DXVECTOR2( 1.0f, 0.0f ) },
+        { D3DXVECTOR3( 1.0f, 1.0f, 1.0f ), D3DXVECTOR2( 1.0f, 1.0f ) },
+        { D3DXVECTOR3( -1.0f, 1.0f, 1.0f ), D3DXVECTOR2( 0.0f, 1.0f ) },
+    };
+
+    D3D11_BUFFER_DESC bd;
+    ZeroMemory( &bd, sizeof(bd) );
+    bd.Usage = D3D11_USAGE_DEFAULT;
+    bd.ByteWidth = sizeof( SimpleVertex ) * 24;
+    bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    bd.CPUAccessFlags = 0;
+    D3D11_SUBRESOURCE_DATA InitData;
+    ZeroMemory( &InitData, sizeof(InitData) );
+    InitData.pSysMem = vertices;
+    hr = context.GetDevice()->CreateBuffer( &bd, &InitData, &g_pVertexBuffer );
+
+
+    // Set vertex buffer
+    UINT stride = sizeof( SimpleVertex );
+    UINT offset = 0;
+    context.GetDeviceContext()->IASetVertexBuffers( 0, 1, &g_pVertexBuffer, &stride, &offset );
+
+    // Create index buffer
+    // Create vertex buffer
+    WORD indices[] =
+    {
+        3,1,0,
+        2,1,3,
+
+        6,4,5,
+        7,4,6,
+
+        11,9,8,
+        10,9,11,
+
+        14,12,13,
+        15,12,14,
+
+        19,17,16,
+        18,17,19,
+
+        22,20,21,
+        23,20,22
+    };
+
+    bd.Usage = D3D11_USAGE_DEFAULT;
+    bd.ByteWidth = sizeof( WORD ) * 36;
+    bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    bd.CPUAccessFlags = 0;
+    InitData.pSysMem = indices;
+    hr = context.GetDevice()->CreateBuffer( &bd, &InitData, &g_pIndexBuffer );
+
+
+    // Set index buffer
+    context.GetDeviceContext()->IASetIndexBuffer( g_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0 );
+
+    // Set primitive topology
+    context.GetDeviceContext()->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+
+    // Create the constant buffers
+    bd.Usage = D3D11_USAGE_DEFAULT;
+    bd.ByteWidth = sizeof(CBChangesEveryFrame);
+    bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    bd.CPUAccessFlags = 0;
+    hr =  context.GetDevice()->CreateBuffer( &bd, NULL, &g_pCBChangesEveryFrame );
+
+
+    // Load the Texture
+    hr = D3DX11CreateShaderResourceViewFromFile( context.GetDevice(), "seafloor.dds", NULL, NULL, &g_pTextureRV, NULL );
+
+
+    // Create the sample state
+    D3D11_SAMPLER_DESC sampDesc;
+    ZeroMemory( &sampDesc, sizeof(sampDesc) );
+    sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+    sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+    sampDesc.MinLOD = 0;
+    sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+    hr = context.GetDevice()->CreateSamplerState( &sampDesc, &g_pSamplerLinear );
+ 
+    // Initialize the world matrices
+    D3DXMatrixIdentity(&g_World);
+
+    // Initialize the view matrix
+    D3DXVECTOR3 Eye = D3DXVECTOR3( 0.0f, 3.0f, -6.0f);
+    D3DXVECTOR3 At = D3DXVECTOR3( 0.0f, 1.0f, 0.0f);
+    D3DXVECTOR3 Up = D3DXVECTOR3( 0.0f, 1.0f, 0.0f);
+    D3DXMatrixLookAtLH(&g_View, &Eye, &At, &Up );
 }
 
 void D3DRenderer::Load(World& w)
@@ -25,105 +206,70 @@ void D3DRenderer::Load(World& w)
 
 void D3DRenderer::Render()
 {
+    // Update our time
+    static float t = 0.0f;
 
-	//  directx begin draw
+    static DWORD dwTimeStart = 0;
+    DWORD dwTimeCur = GetTickCount();
+    if( dwTimeStart == 0 )
+        dwTimeStart = dwTimeCur;
+    t = ( dwTimeCur - dwTimeStart ) / 1000.0f;
 
-	for (int i = 0; i < data.Size(); i++) {
-//		std::cout << "Draw " << i << std::endl;
-		if (data.Exists(i)) {
-			RenderObject(data.Get(i));
-		}
-	}
-	//  for each object in the world
 
-	//  draw it
+    // Rotate cube around the origin
+	D3DXMatrixRotationY(&g_World, t );
 
-	//  directx end draw
+
+    //
+    // Update variables that change once per frame
+    //
+    CBChangesEveryFrame cb;
+    D3DXMatrixTranspose(&cb.mWorld, &g_World);
+    cb.vMeshColor.x = ( sinf( t * 1.0f ) + 1.0f ) * 0.5f;
+    cb.vMeshColor.y = ( cosf( t * 3.0f ) + 1.0f ) * 0.5f;
+    cb.vMeshColor.z = ( sinf( t * 5.0f ) + 1.0f ) * 0.5f;
+
+
+    D3DXMatrixTranspose(&cb.mView, &g_View);
+    // Initialize the projection matrix
+	D3DXMatrixPerspectiveFovLH(&g_Projection, 1.6, window->GetWidth() / window->GetHeight(), 0.01f, 100.0f );
+    
+    D3DXMatrixTranspose(&cb.mProjection, &g_Projection);
+
+	context.GetDeviceContext()->UpdateSubresource( g_pCBChangesEveryFrame, 0, NULL, &cb, 0, 0 );
+
+    //
+    // Render the cube
+    //
+    context.GetDeviceContext()->VSSetShader( g_pVertexShader, NULL, 0 );
+    context.GetDeviceContext()->VSSetConstantBuffers( 0, 1, &g_pCBChangesEveryFrame );
+    context.GetDeviceContext()->PSSetShader( g_pPixelShader, NULL, 0 );
+    context.GetDeviceContext()->PSSetConstantBuffers( 0, 1, &g_pCBChangesEveryFrame );
+    context.GetDeviceContext()->PSSetShaderResources( 0, 1, &g_pTextureRV );
+    context.GetDeviceContext()->PSSetSamplers( 0, 1, &g_pSamplerLinear );
+    context.GetDeviceContext()->DrawIndexed( 36, 0, 0 );
+
 }
 
-void D3DRenderer::RenderObject(RenderData objectToRender)
+//--------------------------------------------------------------------------------------
+// Helper for compiling shaders with D3DX11
+//--------------------------------------------------------------------------------------
+HRESULT D3DRenderer::CompileShaderFromFile( CHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut )		//  Helper function for compiling any type of shader?
 {
-	HRESULT result;
-    D3D11_MAPPED_SUBRESOURCE mappedResource;
-	MatrixBufferType matrices;
-	unsigned int bufferNumber;
+    HRESULT hr = S_OK;
+	LPCSTR thingy = szFileName;
+    ID3DBlob* pErrorBlob;
+    hr = D3DX11CompileFromFile( thingy, NULL, NULL, szEntryPoint, szShaderModel, 
+        D3DCOMPILE_ENABLE_STRICTNESS, 0, NULL, ppBlobOut, &pErrorBlob, NULL );
+    if( FAILED(hr) )
+    {
+        if( pErrorBlob != NULL )
+            OutputDebugStringA( (char*)pErrorBlob->GetBufferPointer() );
+        if( pErrorBlob ) pErrorBlob->Release();
+        return hr;
+    }
+    if( pErrorBlob ) pErrorBlob->Release();
 
-	D3DXMATRIX worl;
-	D3DXMATRIX view;
-	D3DXMATRIX proj;
-
-
-	// Set shader texture resource in the pixel shader.
-
-
-	//// Lock the matrix constant buffer so it can be written to.
-	//result = context.GetDeviceContext()->Map(objectToRender.matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	//if(FAILED(result))
-	//{
-	//	std::cerr << "Failed to Map Matrix Buffer" << std::endl;
-	//}
-
-	//// Get a pointer to the data in the constant buffer.
-	//dataPtr = (MatrixBufferType*)mappedResource.pData;
-
-	// Transpose the matrices to prepare them for the shader.
-	D3DXMatrixTranspose(&worl, &world->worldMatrix);
-	D3DXMatrixTranspose(&view, &world->viewMatrix);
-	D3DXMatrixTranspose(&proj, &world->projectionMatrix);
-
-	// Copy the matrices into the constant buffer
-	matrices.world = worl;
-	matrices.view = view;
-	matrices.projection = proj;
-
-	context.GetDeviceContext()->UpdateSubresource( objectToRender.matrixBuffer, 0, NULL, &matrices, 0, 0 );
-	context.GetDeviceContext()->VSSetConstantBuffers( 0, 1, &objectToRender.matrixBuffer );
-	context.GetDeviceContext()->PSSetShaderResources(0, objectToRender.numTextures, &objectToRender.textures);
-	context.GetDeviceContext()->PSSetSamplers( 0, 1, &objectToRender.sampleState );
-
-	// Unlock the matrix constant buffer.
-    //context.GetDeviceContext()->Unmap(objectToRender.matrixBuffer, 0);
-
-	// Set the position of the matrix constant buffer in the vertex shader.
-	bufferNumber = 0;
-
-	// Now set the matrix constant buffer in the vertex shader with the updated values.
-    context.GetDeviceContext()->VSSetConstantBuffers(bufferNumber, 1, &objectToRender.matrixBuffer);
-
-	// Lock the light constant buffer so it can be written to.
-	//result = context.GetDeviceContext()->Map(m_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	//if(FAILED(result))
-	//{
-	//	return false;
-	//}
-
-	//// Get a pointer to the data in the constant buffer.
-	//dataPtr2 = (LightBufferType*)mappedResource.pData;
-
-	//// Copy the lighting variables into the constant buffer.
-	//dataPtr2->ambientColor = ambientColor;
-	//dataPtr2->diffuseColor = diffuseColor;
-	//dataPtr2->lightDirection = lightDirection;
-
-	//// Unlock the constant buffer.
-	//deviceContext->Unmap(m_lightBuffer, 0);
-
-	//// Set the position of the light constant buffer in the pixel shader.
-	//bufferNumber = 0;
-
-	//// Finally set the light constant buffer in the pixel shader with the updated values.
-	//deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_lightBuffer);
-	// Set the vertex input layout.
-
-	context.GetDeviceContext()->IASetInputLayout(objectToRender.vertLayout);
-
-    // Set the vertex and pixel shaders that will be used to render this triangle.
-	context.GetDeviceContext()->VSSetShader(objectToRender.vertexShader, NULL, 0);
-    context.GetDeviceContext()->PSSetShader(objectToRender.pixelShader, NULL, 0);
-
-	// Set the sampler state in the pixel shader.
-	context.GetDeviceContext()->PSSetSamplers(0, 1, &objectToRender.sampleState);
-
-	// Render the triangle.
-	context.GetDeviceContext()->DrawIndexed(objectToRender.indexCount, 0, 0);	
+    return S_OK;
 }
+
