@@ -1,11 +1,13 @@
 #include "Application.h"
 
+#include "Orientation.h"
+
 
 Application::Application(): window(this)
 {
 	m_Input = 0;
 	m_Graphics = 0;
-	fullscreen = true;
+	fullscreen = false;
 	vSyncEnabled = true;
 }
 
@@ -18,14 +20,23 @@ bool Application::Initialize()
 	bool result;
 	running = true;
 	Position position;
+	Orientation orient;
 
 	positionComp = position.CopyToStorage();
 	ObjectID otherComp = position.CopyToStorage();
+	ObjectID orientID = orient.CopyToStorage();
+
 
 	Position::Get(positionComp).SetPosition(10.0f, 10.0f, 10.0f);
 	Position::Get(positionComp).Move(2.0f, 0.0f, -3.0f);
+	Component<Position>::Get(positionComp).Move(3.0f, 2.0f, -5.0f);
+
+	Orientation::Get(orientID).Rotate(34.0f, D3DXVECTOR3(1, 0, 0));
 
 	D3DXVECTOR3 vec = Position::Get(positionComp).GetPosition();
+	char poscompid = Position::GetComponentTypeID();
+	char orientCompID = Orientation::GetComponentTypeID();
+	char totNumComps = ComponentBase::GetNumberOfComponents();
 
 	// Create the input object.  This object will be used to handle reading the keyboard input from the user.
 	m_Input = &HardwareState::GetInstance();
