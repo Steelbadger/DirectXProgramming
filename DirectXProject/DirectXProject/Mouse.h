@@ -1,4 +1,5 @@
 #pragma once
+#include <D3D11.h>
 #include <D3DX10math.h>
 
 #include <windows.h>

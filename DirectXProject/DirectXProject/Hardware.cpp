@@ -83,9 +83,7 @@ void HardwareState::Update()
 			pressed[i-1] = true;
 		else
 			pressed[i-1] = false;
-	}
-	for (int i = 256; i > 0; i--)
-	{
+
 		if (keys[i-1] == false && oldkey[i-1] == true)
 			released[i-1] = true;
 		else

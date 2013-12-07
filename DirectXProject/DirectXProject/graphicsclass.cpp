@@ -10,17 +10,11 @@ GraphicsClass::GraphicsClass()
 	m_TextureShader = 0;
 }
 
-
-GraphicsClass::GraphicsClass(const GraphicsClass& other)
-{
-}
-
-
 GraphicsClass::~GraphicsClass()
 {
 }
 
-bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
+bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, bool vSync, bool fullscreen, float screenDepth, float screenNear)
 {
 	bool result;
 
@@ -33,7 +27,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the Direct3D object.
-	result = m_D3D->Initialize(screenWidth, screenHeight, VSYNC_ENABLED, hwnd, FULL_SCREEN, SCREEN_DEPTH, SCREEN_NEAR);
+	result = m_D3D->Initialize(screenWidth, screenHeight, vSync, hwnd, fullscreen, screenDepth, screenNear);
 	if(!result)
 	{
 		MessageBox(hwnd, "Could not initialize Direct3D", "Error", MB_OK);

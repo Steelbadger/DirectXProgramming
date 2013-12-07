@@ -2,12 +2,12 @@
 #include <Windows.h>
 #include <map>
 
+class Application;
+
 class Window
 {
 public:
-	Window(void);
-	Window(LPSTR WindowName, int width, int height, HINSTANCE hInstance);
-	Window(LPSTR WindowName, int width, int height, HINSTANCE hInstance, bool FullScreen, DWORD Style);
+	Window(Application* parent);
 	void Create(LPSTR strWindowName, int width, int height, DWORD dwStyle, bool bFullScreen, HINSTANCE hInstance);
 	void CreateFullScreen(LPSTR strWindowName, HINSTANCE hInstance);
 	void CreateWindowed(LPSTR strWindowName, int width, int height, HINSTANCE hInstance);
@@ -37,6 +37,8 @@ private:
 	WNDCLASS wcex;
 	RECT graphicsRect;
 	RECT windowRect;
+
+	Application* parent;
 
 	int gWidth, gHeight;
 	int borderWidth;

@@ -6,7 +6,6 @@
 
 // INCLUDES //
 #include <windows.h>
-#include <d3d10_1.h>
 // MY CLASS INCLUDES //
 #include "Hardware.h"
 #include "GraphicsWindow.h"
@@ -23,7 +22,7 @@ public:
 	void Shutdown();
 	void Run();
 
-	LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
+	void MessageHandler(Window* window, UINT message, WPARAM wParam, LPARAM lParam);
 
 private:
 	bool Frame();
@@ -37,4 +36,8 @@ private:
 	HardwareState* m_Input;
 	GraphicsClass* m_Graphics;
 	Window window;
+
+	bool fullscreen, vSyncEnabled;
+
+	bool running;
 };

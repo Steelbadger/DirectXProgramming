@@ -1,27 +1,15 @@
 #include "GraphicsWindow.h"
 #include "Hardware.h"
+#include "Application.h"
 
 #include <mmsystem.h>
 #include <stdio.h>
 
 std::map<HWND, Window*> Window::WindowMap;
 
-Window::Window(void)
+Window::Window(Application* p): parent(p)
 {
 }
-
-
-Window::Window(LPSTR WindowName, int width, int height, HINSTANCE hInstance)
-{
-	Create(WindowName, width, height, (WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN), 0, hInstance);
-}
-
-
-Window::Window(LPSTR WindowName, int width, int height, HINSTANCE hInstance, bool FullScreen, DWORD Style)
-{
-	Create(WindowName, width, height, Style, FullScreen, hInstance);
-}
-
 
 Window::~Window(void)
 {
@@ -75,8 +63,6 @@ void Window::Create(LPSTR strWindowName, int width, int height, DWORD dwStyle, b
 
 	
 	RegisterClass(&wcex);// Register the class
-
-	dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP;
 
 	//Set the Client area of the window to be our resolution.
 	RECT glwindow;
@@ -154,7 +140,7 @@ void Window::Create(LPSTR strWindowName, int width, int height, DWORD dwStyle, b
 
 void Window::CreateFullScreen(LPSTR strWindowName, HINSTANCE hInstance)
 {
-	Create(strWindowName, 200, 200, (WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP), true, hInstance);
+	Create(strWindowName, 200, 200, (WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP), true, hInstance);
 }
 
 void Window::CreateWindowed(LPSTR strWindowName, int width, int height, HINSTANCE hInstance)
@@ -185,9 +171,7 @@ LRESULT CALLBACK Window::WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM
             case WM_COMMAND:
 				break;
 			case WM_SIZE:
-				pWindow->OnResize();
 			case WM_MOVE:
-				pWindow->OnMove();
             case WM_LBUTTONUP:
             case WM_LBUTTONDOWN:
 			case WM_RBUTTONDOWN:
@@ -198,12 +182,11 @@ LRESULT CALLBACK Window::WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM
             case WM_MOUSEMOVE:
 			case WM_KEYDOWN:
 			case WM_KEYUP:
-				HardwareState::GetInstance().Message(message, wParam, lParam);
-				break;
             case WM_DESTROY:
-                PostQuitMessage(0);
+				pWindow->parent->MessageHandler(pWindow, message, wParam, lParam);
                 return 0;
         }
     }
+
     return DefWindowProc (hwnd, message, wParam, lParam) ;
 }

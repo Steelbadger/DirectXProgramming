@@ -1,10 +1,12 @@
 #include "Application.h"
 
 
-Application::Application()
+Application::Application(): window(this)
 {
 	m_Input = 0;
 	m_Graphics = 0;
+	fullscreen = true;
+	vSyncEnabled = true;
 }
 
 Application::~Application()
@@ -14,12 +16,16 @@ Application::~Application()
 bool Application::Initialize()
 {
 	bool result;
-
+	running = true;
 
 	// Create the input object.  This object will be used to handle reading the keyboard input from the user.
 	m_Input = &HardwareState::GetInstance();
 
-	window.CreateWindowed("Engine", 800, 800, m_hinstance);
+
+	if (fullscreen)
+		window.CreateFullScreen("Engine", m_hinstance);
+	else
+		window.CreateWindowed("Engine", 800, 800, m_hinstance);
 
 	// Create the graphics object.  This object will handle rendering all the graphics for this application.
 	m_Graphics = new GraphicsClass;
@@ -29,7 +35,7 @@ bool Application::Initialize()
 	}
 
 	// Initialize the graphics object.
-	result = m_Graphics->Initialize(window.GetWidth(), window.GetHeight(), window.GetHandleToWindow());
+	result = m_Graphics->Initialize(window.GetWidth(), window.GetHeight(), window.GetHandleToWindow(), vSyncEnabled, fullscreen, 1000.0f, 0.1f);
 	if(!result)
 	{
 		return false;
@@ -61,15 +67,13 @@ void Application::Shutdown()
 void Application::Run()
 {
 	MSG msg;
-	bool done, result;
+	bool result;
 
 
 	// Initialize the message structure.
 	ZeroMemory(&msg, sizeof(MSG));
 	
-	// Loop until there is a quit message from the window or the user.
-	done = false;
-	while(!done)
+	while(running)
 	{
 		// Handle the windows messages.
 		if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -80,13 +84,13 @@ void Application::Run()
 
 		// Otherwise do the frame processing.
 		if (m_Input->Pressed(VK_ESCAPE)) {
-			done = true;
+			running = false;
 		} else {
-
+			m_Input->Update();
 			result = Frame();
 			if(!result)
 			{
-				done = true;
+				running = false;
 			}
 		}
 		
@@ -116,4 +120,31 @@ bool Application::Frame()
 	}
 
 	return true;
+}
+
+void Application::MessageHandler(Window* window, UINT message, WPARAM wParam, LPARAM lParam)
+{
+        switch (message)
+        {
+			case WM_SIZE:
+				window->OnResize();
+			case WM_MOVE:
+				window->OnMove();
+            case WM_LBUTTONUP:
+            case WM_LBUTTONDOWN:
+			case WM_RBUTTONDOWN:
+            case WM_RBUTTONUP:
+			case WM_MBUTTONDOWN:
+			case WM_MBUTTONUP:
+			case WM_MOUSEWHEEL:
+            case WM_MOUSEMOVE:
+			case WM_KEYDOWN:
+			case WM_KEYUP:
+				HardwareState::GetInstance().Message(message, wParam, lParam);
+				break;
+            case WM_DESTROY:
+				running = false;
+                PostQuitMessage(0);
+				break;
+        }
 }
