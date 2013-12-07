@@ -1,5 +1,5 @@
 #include "Hardware.h"
-#include "Mouse.h"
+#include "mouse.h"
 #include <windows.h>
 
 

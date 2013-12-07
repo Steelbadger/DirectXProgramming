@@ -1,24 +1,37 @@
-#include "Program.h"
+#include "Application.h"
 
-#include <Windows.h>
 
-int main (HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    PSTR szCmdLine, int nCmdShow)			
-{	
-    MSG msg;
-	Program application;
+int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline, int iCmdshow)
+{
+//	SystemClass* System;
+	Application* program;
+	bool result;
+	
+	
+	// Create the system object.
+	//System = new SystemClass;
+	//if(!System)
+	//{
+	//	return 0;
+	//}
 
-	application.Initialize(hInstance);
+	program = new Application;
+	if(!program)
+	{
+		return 0;
+	}
 
-	while (true) {							
-		if (PeekMessage(&msg,NULL,0,0,PM_REMOVE)) {
-		    if (msg.message==WM_QUIT)
-				break;
-			TranslateMessage (&msg);		
-			DispatchMessage (&msg);
-		} else {	
-			application.MainLoop();
-		}
-    }
-	return msg.wParam ;										
+	// Initialize and run the system object.
+	result = program->Initialize();
+	if(result)
+	{
+		program->Run();
+	}
+
+	// Shutdown and release the system object.
+	program->Shutdown();
+	delete program;
+	program = 0;
+
+	return 0;
 }

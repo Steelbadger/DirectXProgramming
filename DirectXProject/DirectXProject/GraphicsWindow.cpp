@@ -22,20 +22,10 @@ Window::Window(LPSTR WindowName, int width, int height, HINSTANCE hInstance, boo
 	Create(WindowName, width, height, Style, FullScreen, hInstance);
 }
 
-Window::Window(LPSTR WindowName, HINSTANCE hInstance, bool FullScreen = true, DWORD Style = (WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN))
-{
-	int height;
-	int width;
-
-	GetDesktopResolution();
-
-	Create(WindowName, width, height, Style, FullScreen, hInstance);
-}
-
-
 
 Window::~Window(void)
 {
+	ChangeDisplaySettings(NULL, 0);
 	UnregisterClass(wcex.lpszClassName, wcex.hInstance);// Free the window class
 
 	WindowMap.erase(handleToWindow);
@@ -57,9 +47,9 @@ void Window::OnResize()
 {
 	GetClientRect(handleToWindow, &graphicsRect);
 	GetWindowRect(handleToWindow, &windowRect);
+
 	gHeight = graphicsRect.bottom;
 	gWidth = graphicsRect.right;
-
 }
 
 void Window::OnMove()
@@ -67,21 +57,11 @@ void Window::OnMove()
 	GetWindowRect(handleToWindow, &windowRect);
 }
 
-void Window::CreateFullscreen(LPSTR windowName, HINSTANCE hInstance)
-{
-
-	int height;
-	int width;
-
-	GetDesktopResolution();
-
-	Create(windowName, desktop.right, desktop.bottom, (WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN), true, hInstance);
-}
 
 void Window::Create(LPSTR strWindowName, int width, int height, DWORD dwStyle, bool bFullScreen, HINSTANCE hInstance)
 {
 
-	fullscreen = bFullScreen;
+	DEVMODE dmScreenSettings;
 
 	memset(&wcex, 0, sizeof(WNDCLASS));
 	wcex.style			= CS_HREDRAW | CS_VREDRAW;		
@@ -96,7 +76,7 @@ void Window::Create(LPSTR strWindowName, int width, int height, DWORD dwStyle, b
 	
 	RegisterClass(&wcex);// Register the class
 
-	//dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+	dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP;
 
 	//Set the Client area of the window to be our resolution.
 	RECT glwindow;
@@ -105,21 +85,57 @@ void Window::Create(LPSTR strWindowName, int width, int height, DWORD dwStyle, b
 	glwindow.top		= 0;		
 	glwindow.bottom		= height;	
 
-	AdjustWindowRect( &glwindow, dwStyle, false);
+//	AdjustWindowRect( &glwindow, dwStyle, false);
+	// Setup the screen settings depending on whether it is running in full screen or in windowed mode.
+	if(bFullScreen)
+	{
+		glwindow.left		= 0;		
+		glwindow.right		= HardwareState::GetInstance().GetScreenWidth();
+		glwindow.top		= 0;		
+		glwindow.bottom		= HardwareState::GetInstance().GetScreenHeight();
 
-	//Create the window
-	handleToWindow = CreateWindow(	strWindowName, 
-							strWindowName, 
-							dwStyle, 
-							0, 
-							0,
-							glwindow.right  - glwindow.left,
-							glwindow.bottom - glwindow.top, 
-							NULL,
-							NULL,
-							hInstance,
-							NULL
-							);
+		// If full screen set the screen to maximum size of the users desktop and 32bit.
+		memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));
+		dmScreenSettings.dmSize       = sizeof(dmScreenSettings);
+		dmScreenSettings.dmPelsWidth  = (unsigned long)glwindow.right;
+		dmScreenSettings.dmPelsHeight = (unsigned long)glwindow.bottom;
+		dmScreenSettings.dmBitsPerPel = 32;			
+		dmScreenSettings.dmFields     = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
+
+		// Change the display settings to full screen.
+		ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN);
+
+		// Create the window with the screen settings and get the handle to it.
+		handleToWindow = CreateWindowEx(WS_EX_APPWINDOW,
+										strWindowName,
+										strWindowName, 
+										dwStyle,
+										glwindow.left, glwindow.top,
+										glwindow.right  - glwindow.left,
+										glwindow.bottom - glwindow.top,
+										NULL,
+										NULL,
+										hInstance,
+										NULL								);
+	}
+	else
+	{
+		AdjustWindowRect( &glwindow, dwStyle, false);
+
+		//Create the window
+		handleToWindow = CreateWindow(	strWindowName, 
+								strWindowName, 
+								dwStyle, 
+								0, 
+								0,
+								glwindow.right  - glwindow.left,
+								glwindow.bottom - glwindow.top, 
+								NULL,
+								NULL,
+								hInstance,
+								NULL
+								);
+	}
 
 	if(!handleToWindow) {
 		MessageBox(NULL, "Could Not Get Handle To Window", "Error", MB_OK); // If we couldn't get a handle, return NULL
@@ -136,13 +152,14 @@ void Window::Create(LPSTR strWindowName, int width, int height, DWORD dwStyle, b
 	borderWidth = GetSystemMetrics(SM_CXFRAME);
 }
 
-void Window::GetDesktopResolution()
+void Window::CreateFullScreen(LPSTR strWindowName, HINSTANCE hInstance)
 {
-	// Get a handle to the desktop window
-	const HWND desktopHandle = GetDesktopWindow();
+	Create(strWindowName, 200, 200, (WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP), true, hInstance);
+}
 
-	//  Get the rectangle descriptor
-	GetWindowRect(desktopHandle, &desktop);
+void Window::CreateWindowed(LPSTR strWindowName, int width, int height, HINSTANCE hInstance)
+{
+	Create(strWindowName, width, height, (WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP), false, hInstance);
 }
 
 Window* Window::GetWindowReference(HWND hwnd)
@@ -155,8 +172,7 @@ LRESULT CALLBACK Window::WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 {
     if(message == WM_CREATE)
     {
-		//cxSource = GetSystemMetrics (SM_CXSIZEFRAME) + GetSystemMetrics (SM_CXSIZE);
-		//cySource = GetSystemMetrics (SM_CYSIZEFRAME) + GetSystemMetrics (SM_CYCAPTION);
+//		HardwareState::GetInstance().SetScreenSize(GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
     }
     else
     {
@@ -190,22 +206,4 @@ LRESULT CALLBACK Window::WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM
         }
     }
     return DefWindowProc (hwnd, message, wParam, lParam) ;
-}
-
-int Window::GetWidth()
-{
-	if (fullscreen) {
-		return desktop.right;
-	} else {
-		return graphicsRect.right;
-	}
-}
-
-int Window::GetHeight()
-{
-	if (fullscreen) {
-		return desktop.bottom;
-	} else {
-		return graphicsRect.bottom;
-	}
 }

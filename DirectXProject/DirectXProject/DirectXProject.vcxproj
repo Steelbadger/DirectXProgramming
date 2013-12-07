@@ -82,40 +82,63 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="D3DRenderer.cpp" />
-    <ClCompile Include="DirectXContext.cpp" />
+    <ClCompile Include="Application.cpp" />
+    <ClCompile Include="cameraclass.cpp" />
+    <ClCompile Include="colorshaderclass.cpp" />
+    <ClCompile Include="d3dclass.cpp" />
+    <ClCompile Include="graphicsclass.cpp" />
     <ClCompile Include="GraphicsWindow.cpp" />
     <ClCompile Include="Hardware.cpp" />
+    <ClCompile Include="lightclass.cpp" />
+    <ClCompile Include="lightshaderclass.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix4x4.cpp" />
+    <ClCompile Include="ModelClass.cpp" />
     <ClCompile Include="Mouse.cpp" />
-    <ClCompile Include="Program.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="simd.cpp" />
+    <ClCompile Include="textureclass.cpp" />
+    <ClCompile Include="textureshaderclass.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Vector3.cpp" />
     <ClCompile Include="Vector4.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="D3DRenderer.h" />
-    <ClInclude Include="DirectXContext.h" />
+    <ClInclude Include="Application.h" />
+    <ClInclude Include="cameraclass.h" />
+    <ClInclude Include="colorshaderclass.h" />
+    <ClInclude Include="d3dclass.h" />
+    <ClInclude Include="graphicsclass.h" />
+    <ClInclude Include="GraphicsWindow.h" />
     <ClInclude Include="Hardware.h" />
+    <ClInclude Include="lightclass.h" />
+    <ClInclude Include="lightshaderclass.h" />
     <ClInclude Include="LookupTable.h" />
     <ClInclude Include="MathsClasses.h" />
     <ClInclude Include="Matrix4x4.h" />
+    <ClInclude Include="ModelClass.h" />
     <ClInclude Include="Mouse.h" />
-    <ClInclude Include="Program.h" />
     <ClInclude Include="Quaternion.h" />
-    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="ShaderInterface.h" />
     <ClInclude Include="simd.h" />
+    <ClInclude Include="textureclass.h" />
+    <ClInclude Include="textureshaderclass.h" />
     <ClInclude Include="UtilityFunctions.h" />
     <ClInclude Include="Vector2.h" />
-    <ClInclude Include="GraphicsWindow.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Vector4.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="brick1.dds" />
+    <None Include="color.ps" />
+    <None Include="color.vs" />
+    <None Include="dirt1.JPG" />
+    <None Include="light.ps" />
+    <None Include="light.vs" />
+    <None Include="plastic1.JPG" />
     <None Include="seafloor.dds" />
+    <None Include="texture.ps" />
+    <None Include="texture.vs" />
     <None Include="Tutorial07.fx" />
     <None Include="Tutorial07.jpg" />
   </ItemGroup>

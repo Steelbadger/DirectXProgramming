@@ -1,7 +1,6 @@
 #pragma once
-#include "Mouse.h"
-#include "Vector2.h"
-
+#include "mouse.h"
+#include <D3DX10math.h>
 #include <windows.h>
 #include <time.h>
 
@@ -16,8 +15,8 @@ public:
 
 	void Update();
 
-	Vector2 GetMousePosition() {return mouse.Position();}
-	Vector2 GetMouseDeltaMovement() {return mouse.FrameDeltaMovement();}
+	D3DXVECTOR2 GetMousePosition() {return mouse.Position();}
+	D3DXVECTOR2 GetMouseDeltaMovement() {return mouse.FrameDeltaMovement();}
 
 	bool MouseButton(Mouse::Buttons b) {return mouse.Button(b);}
 	bool MousePressed(Mouse::Buttons b) {return mouse.Pressed(b);}
@@ -36,6 +35,9 @@ public:
 
 	double GetTimeForLastFrame() {return timeForLastFrame/CLOCKS_PER_SEC;}
 	double GetTimeSinceLastFrame();
+
+	int GetScreenWidth(){return screenWidth;}
+	int GetScreenHeight(){return screenHeight;}
 
 private:
 

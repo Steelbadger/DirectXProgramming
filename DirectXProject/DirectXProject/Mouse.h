@@ -1,5 +1,5 @@
 #pragma once
-#include "Vector2.h"
+#include <D3DX10math.h>
 
 #include <windows.h>
 
@@ -18,8 +18,8 @@ public:
 	void Message(UINT, WPARAM, LPARAM);
 	void Update();
 
-	Vector2 FrameDeltaMovement(){return Vector2(x-oldx, y-oldy);}
-	Vector2 Position(){return Vector2(x,y);}
+	D3DXVECTOR2 FrameDeltaMovement(){return D3DXVECTOR2(x-oldx, y-oldy);}
+	D3DXVECTOR2 Position(){return D3DXVECTOR2(x,y);}
 
 	void SetLocked(int xl, int yl){Lockedx = xl;Lockedy=yl;x=xl;y=yl;}
 	int GetWheelDelta(){return wheelDelta;}
