@@ -17,6 +17,15 @@ bool Application::Initialize()
 {
 	bool result;
 	running = true;
+	Position position;
+
+	positionComp = position.CopyToStorage();
+	ObjectID otherComp = position.CopyToStorage();
+
+	Position::Get(positionComp).SetPosition(10.0f, 10.0f, 10.0f);
+	Position::Get(positionComp).Move(2.0f, 0.0f, -3.0f);
+
+	D3DXVECTOR3 vec = Position::Get(positionComp).GetPosition();
 
 	// Create the input object.  This object will be used to handle reading the keyboard input from the user.
 	m_Input = &HardwareState::GetInstance();
@@ -110,6 +119,14 @@ bool Application::Frame()
 
 	if (m_Input->Button(VK_DOWN)) {
 		m_Graphics->Camera()->SetPosition(m_Graphics->Camera()->GetPosition().x, m_Graphics->Camera()->GetPosition().y, m_Graphics->Camera()->GetPosition().z-0.025f);
+	}
+
+	if (m_Input->Button(VK_LEFT)) {
+		m_Graphics->Camera()->SetPosition(m_Graphics->Camera()->GetPosition().x+0.025f, m_Graphics->Camera()->GetPosition().y, m_Graphics->Camera()->GetPosition().z);
+	}
+
+	if (m_Input->Button(VK_RIGHT)) {
+		m_Graphics->Camera()->SetPosition(m_Graphics->Camera()->GetPosition().x-0.025f, m_Graphics->Camera()->GetPosition().y, m_Graphics->Camera()->GetPosition().z);
 	}
 
 	// Do the frame processing for the graphics object.

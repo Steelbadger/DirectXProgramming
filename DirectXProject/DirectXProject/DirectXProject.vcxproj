@@ -107,6 +107,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="cameraclass.h" />
     <ClInclude Include="colorshaderclass.h" />
+    <ClInclude Include="Component.h" />
     <ClInclude Include="d3dclass.h" />
     <ClInclude Include="graphicsclass.h" />
     <ClInclude Include="GraphicsWindow.h" />
@@ -118,6 +119,7 @@
     <ClInclude Include="Matrix4x4.h" />
     <ClInclude Include="ModelClass.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="Position.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="ShaderInterface.h" />
     <ClInclude Include="simd.h" />

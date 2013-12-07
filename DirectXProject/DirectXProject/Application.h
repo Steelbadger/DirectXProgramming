@@ -10,6 +10,7 @@
 #include "Hardware.h"
 #include "GraphicsWindow.h"
 #include "graphicsclass.h"
+#include "Position.h"
 
 // Class name: Application
 class Application
@@ -38,6 +39,8 @@ private:
 	Window window;
 
 	bool fullscreen, vSyncEnabled;
+
+	ObjectID positionComp;
 
 	bool running;
 };

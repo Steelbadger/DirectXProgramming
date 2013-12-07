@@ -6,7 +6,6 @@ GraphicsClass::GraphicsClass()
 	m_D3D = 0;
 	m_Camera = 0;
 	m_Model = 0;
-	//m_ColorShader = 0;
 	m_TextureShader = 0;
 }
 
