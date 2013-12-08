@@ -2,7 +2,7 @@
 #include "LookupTable.h"
 //  This describes the basis for the component system
 
-
+typedef unsigned char ComponentType;
 
 //////////////////////////////////////////////////////////
 //    This is the base class for all components, it's	//
@@ -16,9 +16,9 @@ class ComponentBase
 public:
 	ComponentBase(){;}
 	~ComponentBase(){;}
-	static char GetNumberOfComponents(){return componentCount;}
+	static ComponentType GetNumberOfComponents(){return componentCount;}
 protected:
-	static char componentCount;
+	static ComponentType componentCount;
 };
 
 
@@ -37,29 +37,49 @@ template<class T>
 class Component : protected ComponentBase
 {
 public:
-	Component(){
+	~Component(){;}
+
+	ObjectID CopyToStorage(){
+		lookup = componentStorage.Add(*(static_cast<T*>(this)));
+		componentStorage.Get(lookup).SetLookup(lookup);
+		return lookup;
+	}
+
+	void DeleteFromStorage(){componentStorage.Remove(lookup);}
+	ObjectID GetID(){return lookup;}
+	bool HasParent(){return ((parent > -1) ? true : false);}
+	ObjectID GetParentID(){return parent;}
+	void SetParentID(ObjectID id){parent = id;}
+
+	void SetLookup(ObjectID id) {
+		lookup = id;
+	}
+
+	static char GetComponentTypeID(){return componentTypeID;}
+	static T& Get(ObjectID id){return componentStorage.Get(id);}
+	static void DeleteFromStorage(ObjectID id){componentStorage.Remove(id);}
+	static ObjectID New(){return T().CopyToStorage();}
+	static ObjectID New(ObjectID p) {
+		ObjectID newItem = T().CopyToStorage();
+		Get(newItem).SetParentID(p);
+		return newItem;
+	}
+protected:
+	Component(): lookup(-1), parent(-1){
 		if (componentClassCreated == false) {
 			componentTypeID = componentCount++;	
 			componentClassCreated = true;
 		}
 	}
-	~Component(){;}
-
-	ObjectID CopyToStorage(){lookup = componentStorage.Add(*(static_cast<T*>(this)));  return lookup;}
-	void DeleteFromStorage(){componentStorage.Remove(lookup);}
-	ObjectID GetID(){return lookup;}
-
-	static char GetComponentTypeID(){return componentTypeID;}
-	static T& Get(ObjectID id){return componentStorage.Get(id);}
-	static void DeleteFromStorage(ObjectID id){componentStorage.Remove(id);}
 private:
 	ObjectID lookup;
+	ObjectID parent;
 private:
 	static DynamicLookupTable<T, 10> componentStorage;
 	static bool componentClassCreated;
-	static char componentTypeID;
+	static ComponentType componentTypeID;
 };
 
 template<class T> DynamicLookupTable<T, 10> Component<T>::componentStorage;
 template<class T> bool Component<T>::componentClassCreated = false;
-template<class T> char Component<T>::componentTypeID;
+template<class T> ComponentType Component<T>::componentTypeID;

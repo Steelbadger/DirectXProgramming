@@ -1,4 +1,4 @@
 #include "Component.h"
 
 
-char ComponentBase::componentCount = 0;
+ComponentType ComponentBase::componentCount = 0;

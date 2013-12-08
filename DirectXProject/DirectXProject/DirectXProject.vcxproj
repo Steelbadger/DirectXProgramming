@@ -87,6 +87,7 @@
     <ClCompile Include="colorshaderclass.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="d3dclass.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="graphicsclass.cpp" />
     <ClCompile Include="GraphicsWindow.cpp" />
     <ClCompile Include="Hardware.cpp" />

@@ -1,6 +1,7 @@
 #include "Application.h"
 
 #include "Orientation.h"
+#include "GameObject.h"
 
 
 Application::Application(): window(this)
@@ -19,21 +20,40 @@ bool Application::Initialize()
 {
 	bool result;
 	running = true;
-	Position position;
-	Orientation orient;
 
-	positionComp = position.CopyToStorage();
-	ObjectID otherComp = position.CopyToStorage();
-	ObjectID orientID = orient.CopyToStorage();
+	positionComp = Position::New();
+//	ObjectID otherComp = position.CopyToStorage();
+	ObjectID orientID = Orientation::New();
+	ObjectID mainObj = GameObject::New();
 
+
+	GameObject::Get(mainObj).AddComponent(orientID, Component<Orientation>::GetComponentTypeID());
+	GameObject::Get(mainObj).AddComponent<Position>(positionComp);
+//	ObjectID mainObj = object.CopyToStorage();
 
 	Position::Get(positionComp).SetPosition(10.0f, 10.0f, 10.0f);
 	Position::Get(positionComp).Move(2.0f, 0.0f, -3.0f);
 	Component<Position>::Get(positionComp).Move(3.0f, 2.0f, -5.0f);
 
+
 	Orientation::Get(orientID).Rotate(34.0f, D3DXVECTOR3(1, 0, 0));
 
 	D3DXVECTOR3 vec = Position::Get(positionComp).GetPosition();
+	D3DXVECTOR3 vec2 = Position::Get(GameObject::Get(mainObj).GetComponentOfType(Position::GetComponentTypeID())).GetPosition();
+
+
+	ObjectID secondaryObject = GameObject::New();
+	GameObject::Get(secondaryObject).AddComponent<Position>();
+	GameObject::Get(secondaryObject).AddComponent<Orientation>();
+
+	GameObject::Get(secondaryObject).GetComponent<Position>().SetPosition(5.0f, 12.0f, 17.0f);
+	GameObject::Get(secondaryObject).GetComponent<Orientation>().SetOrientation(D3DXQUATERNION(34, 0, 1, 0));
+
+	GameObject* pointy = &GameObject::Get(secondaryObject);
+	Position* posPointy = &pointy->GetComponent<Position>();
+	Orientation* orientPointy = &pointy->GetComponent<Orientation>();
+
+
 	char poscompid = Position::GetComponentTypeID();
 	char orientCompID = Orientation::GetComponentTypeID();
 	char totNumComps = ComponentBase::GetNumberOfComponents();

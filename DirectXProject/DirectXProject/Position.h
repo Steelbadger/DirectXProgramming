@@ -8,7 +8,7 @@
 class Position : public Component<Position>
 {
 public:
-	Position(){;}
+	Position(){;}	
 	~Position(){;}
 	void SetPosition(float x, float y, float z){position = D3DXVECTOR3(x, y, z);}
 	void Move(float x, float y, float z){position += D3DXVECTOR3(x, y, z);}

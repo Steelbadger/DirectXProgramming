@@ -2,7 +2,7 @@
 
 #include <vector>
 
-typedef unsigned int ObjectID;
+typedef int ObjectID;
 
  
 template<class T, int MaxElements = 128>
@@ -90,7 +90,7 @@ public:
 			outID = storage.size();
 			storage.push_back(Storage(object));
 		}
-			return outID;
+		return outID;
     }
     
     void Remove(ObjectID object) {
