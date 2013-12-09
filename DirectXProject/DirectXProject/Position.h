@@ -11,7 +11,8 @@ public:
 	Position(){position = D3DXVECTOR3(0,0,0);}	
 	~Position(){;}
 	void SetPosition(float x, float y, float z){position = D3DXVECTOR3(x, y, z);}
-	void Move(float x, float y, float z){position += D3DXVECTOR3(x, y, z);}
+	void Translate(float x, float y, float z){position += D3DXVECTOR3(x, y, z);}
+	void Translate(D3DXVECTOR3 t){position += t;}
 	D3DXVECTOR3 GetPosition(){return position;}
 private:
 	D3DXVECTOR3 position;

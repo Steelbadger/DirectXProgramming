@@ -3,13 +3,14 @@
 #include "Orientation.h"
 #include "GameObject.h"
 #include "Camera.h"
+#include "FirstPersonController.h"
 
 
 Application::Application(): window(this)
 {
 	m_Input = 0;
 	m_Graphics = 0;
-	fullscreen = true;
+	fullscreen = false;
 	vSyncEnabled = true;
 }
 
@@ -66,10 +67,10 @@ void Application::TestFunction()
 	//  Retrieve the object held in static storage using the ID of the object, this can be used to access the
 	//  methods of the component
 	Position::Get(positionComp).SetPosition(10.0f, 10.0f, 10.0f);
-	Position::Get(positionComp).Move(2.0f, 0.0f, -3.0f);
+	Position::Get(positionComp).Translate(2.0f, 0.0f, -3.0f);
 
 	//  This can be done using either the derived class, or the templated base class
-	Component<Position>::Get(positionComp).Move(3.0f, 2.0f, -5.0f);
+	Component<Position>::Get(positionComp).Translate(3.0f, 2.0f, -5.0f);
 
 
 	Orientation::Get(orientID).Rotate(34.0f, D3DXVECTOR3(1, 0, 0));
@@ -117,13 +118,20 @@ void Application::TestFunction()
 	GameObject::Get(cam).AddComponent<Position>();
 	GameObject::Get(cam).AddComponent<Orientation>();
 	GameObject::Get(cam).AddComponent<Camera>();
+	GameObject::Get(cam).AddComponent<FirstPersonController>();
 
-	//  Set to the default position
+	//  Set to the default position, initialise camera and set control sensitivity
 	GameObject::GetComponent<Position>(cam).SetPosition(0,0,-5.0);
 	GameObject::GetComponent<Camera>(cam).Initialise(true, 45, window.GetWidth(), window.GetHeight(), 0.1f, 1000.0f);
+	GameObject::GetComponent<FirstPersonController>(cam).SetSensitivity(20.0f);
+
+	Camera* camSecond = &GameObject::GetComponent<Camera>(cam);
 
 	//  Add to the GraphicsClass
 	m_Graphics->SetTESTCamera(GameObject::GetComponentReference<Camera>(cam));
+
+
+
 }
 
 void Application::Shutdown()
@@ -150,6 +158,7 @@ void Application::Run()
 {
 	MSG msg;
 	bool result;
+	m_Input->Update();
 
 
 	// Initialize the message structure.
@@ -169,6 +178,7 @@ void Application::Run()
 			running = false;
 		} else {
 			m_Input->Update();
+			TestUpdate();
 			result = Frame();
 			if(!result)
 			{
@@ -182,25 +192,40 @@ void Application::Run()
 
 }
 
+void Application::TestUpdate()
+{
+	if (m_Input->MousePressed(Mouse::RIGHT)) {
+	}
+	for (int i = 0; i < FirstPersonController::GetList().Size(); i++) {
+		if (FirstPersonController::GetList().Exists(i)) {
+			FirstPersonController::GetList().Get(i).Update();
+		}
+	}
+	if (m_Input->MouseButton(Mouse::RIGHT)) {
+		window.SetCursorToCentre();
+		window.SetMouseLockedCentre();
+	}
+}
+
 bool Application::Frame()
 {
 	bool result;
 
-	if (m_Input->Button(VK_UP)) {
-		m_Graphics->Camera()->SetPosition(m_Graphics->Camera()->GetPosition().x, m_Graphics->Camera()->GetPosition().y, m_Graphics->Camera()->GetPosition().z+0.025f);
-	}
+	//if (m_Input->Button(VK_UP)) {
+	//	m_Graphics->Camera()->SetPosition(m_Graphics->Camera()->GetPosition().x, m_Graphics->Camera()->GetPosition().y, m_Graphics->Camera()->GetPosition().z+0.025f);
+	//}
 
-	if (m_Input->Button(VK_DOWN)) {
-		m_Graphics->Camera()->SetPosition(m_Graphics->Camera()->GetPosition().x, m_Graphics->Camera()->GetPosition().y, m_Graphics->Camera()->GetPosition().z-0.025f);
-	}
+	//if (m_Input->Button(VK_DOWN)) {
+	//	m_Graphics->Camera()->SetPosition(m_Graphics->Camera()->GetPosition().x, m_Graphics->Camera()->GetPosition().y, m_Graphics->Camera()->GetPosition().z-0.025f);
+	//}
 
-	if (m_Input->Button(VK_LEFT)) {
-		m_Graphics->Camera()->SetPosition(m_Graphics->Camera()->GetPosition().x+0.025f, m_Graphics->Camera()->GetPosition().y, m_Graphics->Camera()->GetPosition().z);
-	}
+	//if (m_Input->Button(VK_LEFT)) {
+	//	m_Graphics->Camera()->SetPosition(m_Graphics->Camera()->GetPosition().x+0.025f, m_Graphics->Camera()->GetPosition().y, m_Graphics->Camera()->GetPosition().z);
+	//}
 
-	if (m_Input->Button(VK_RIGHT)) {
-		m_Graphics->Camera()->SetPosition(m_Graphics->Camera()->GetPosition().x-0.025f, m_Graphics->Camera()->GetPosition().y, m_Graphics->Camera()->GetPosition().z);
-	}
+	//if (m_Input->Button(VK_RIGHT)) {
+	//	m_Graphics->Camera()->SetPosition(m_Graphics->Camera()->GetPosition().x-0.025f, m_Graphics->Camera()->GetPosition().y, m_Graphics->Camera()->GetPosition().z);
+	//}
 
 	// Do the frame processing for the graphics object.
 //	result = m_Graphics->Frame();

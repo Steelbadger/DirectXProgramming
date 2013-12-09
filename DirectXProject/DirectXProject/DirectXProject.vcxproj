@@ -57,7 +57,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\Program Files\Microsoft DirectX SDK %28June 2010%29;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <ShowIncludes>true</ShowIncludes>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -88,6 +88,7 @@
     <ClCompile Include="colorshaderclass.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="d3dclass.cpp" />
+    <ClCompile Include="FirstPersonController.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="graphicsclass.cpp" />
     <ClCompile Include="GraphicsWindow.cpp" />
@@ -98,6 +99,7 @@
     <ClCompile Include="Matrix4x4.cpp" />
     <ClCompile Include="ModelClass.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="Orientation.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Scale.cpp" />
     <ClCompile Include="simd.cpp" />
@@ -114,6 +116,7 @@
     <ClInclude Include="colorshaderclass.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="d3dclass.h" />
+    <ClInclude Include="FirstPersonController.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="graphicsclass.h" />
     <ClInclude Include="GraphicsWindow.h" />

@@ -30,6 +30,7 @@ private:
 	void InitializeWindows(int&, int&);
 	void ShutdownWindows();
 	void TestFunction();
+	void TestUpdate();
 
 private:
 	LPSTR m_applicationName;

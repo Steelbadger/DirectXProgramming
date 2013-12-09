@@ -12,8 +12,11 @@ public:
 	void Initialise(bool perspective, float fovDegrees, float viewportWidth, float viewportHeight, float nearPlane, float farPlane);
 	void SetPerspective(bool p);
 	void SetViewportDimensions(float width, float height);
-	void SetCullPlanes(float nearPlane, float farPlane);
+	void SetClipPlanes(float nearPlane, float farPlane);
 	void SetFieldOfView(float degrees);
+	float GetNearClipPlane();
+	float GetFarClipPlane();
+	void Zoom(float zoom);
 	D3DXMATRIX GetViewMatrix();
 	D3DXMATRIX GetProjectionMatrix();
 

@@ -59,7 +59,7 @@ private:
     unsigned int stackpointer;
 };
 
-template<class T, int InitialSize = 128>
+template<class T, int InitialSize = 10>
 class DynamicLookupTable {
 private:
 	struct Storage {

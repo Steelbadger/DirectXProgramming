@@ -129,6 +129,12 @@
     <ClCompile Include="Scale.cpp">
       <Filter>Source Files\World\Objects and Components</Filter>
     </ClCompile>
+    <ClCompile Include="FirstPersonController.cpp">
+      <Filter>Source Files\World\Objects and Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Orientation.cpp">
+      <Filter>Source Files\World\Objects and Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vector2.h">
@@ -217,6 +223,9 @@
     </ClInclude>
     <ClInclude Include="Scale.h">
       <Filter>Header Files\World\Objects and Components</Filter>
+    </ClInclude>
+    <ClInclude Include="FirstPersonController.h">
+      <Filter>Header Files\World</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

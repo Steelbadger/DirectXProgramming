@@ -18,7 +18,7 @@ void Camera::Initialise(bool perspective, float fovDegrees, float viewportWidth,
 {
 	SetPerspective(perspective);
 	SetViewportDimensions(viewportWidth, viewportHeight);
-	SetCullPlanes(nearPlane, farPlane);
+	SetClipPlanes(nearPlane, farPlane);
 	SetFieldOfView(fovDegrees);
 }
 
@@ -35,7 +35,7 @@ void Camera::SetViewportDimensions(float width, float height)
 	projectionChange = true;
 }
 
-void Camera::SetCullPlanes(float nearPlane, float farPlane)
+void Camera::SetClipPlanes(float nearPlane, float farPlane)
 {
 	nearCull = nearPlane;
 	farCull = farPlane;
@@ -81,4 +81,26 @@ D3DXMATRIX Camera::GetProjectionMatrix()
 	} 
 
 	return projectionMatrix;
+}
+
+float Camera::GetNearClipPlane()
+{
+	return nearCull;
+}
+
+float Camera::GetFarClipPlane()
+{
+	return farCull;
+}
+
+void Camera::Zoom(float zoom)
+{
+	float mod = ((zoom/120) * (float)D3DX_PI)/180.0f;
+	fieldOfView -= mod;
+	if (fieldOfView > (float)D3DX_PI/4.0f) {
+		fieldOfView = (float)D3DX_PI/4.0f;
+	} else if (fieldOfView < (float)D3DX_PI/90.0f) {
+		fieldOfView = (float)D3DX_PI/90.0f;
+	}
+	projectionChange = true;
 }

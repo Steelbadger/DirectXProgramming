@@ -64,6 +64,9 @@ public:
 		Get(newItem).SetParentID(p);
 		return newItem;
 	}
+	static DynamicLookupTable<T, 10>& GetList(){
+		return componentStorage;
+	}
 protected:
 	Component(): lookup(-1), parent(-1){
 		if (componentClassCreated == false) {

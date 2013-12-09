@@ -163,29 +163,30 @@ LRESULT CALLBACK Window::WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     else
     {
 		Window* pWindow = WindowMap[hwnd];
-		
-        switch (message)
-        {
-            case WM_PAINT:
-                break;
-            case WM_COMMAND:
-				break;
-			case WM_SIZE:
-			case WM_MOVE:
-            case WM_LBUTTONUP:
-            case WM_LBUTTONDOWN:
-			case WM_RBUTTONDOWN:
-            case WM_RBUTTONUP:
-			case WM_MBUTTONDOWN:
-			case WM_MBUTTONUP:
-			case WM_MOUSEWHEEL:
-            case WM_MOUSEMOVE:
-			case WM_KEYDOWN:
-			case WM_KEYUP:
-            case WM_DESTROY:
-				pWindow->parent->MessageHandler(pWindow, message, wParam, lParam);
-                return 0;
-        }
+		if (pWindow != nullptr){		
+			switch (message)
+			{
+				case WM_PAINT:
+					break;
+				case WM_COMMAND:
+					break;
+				case WM_SIZE:
+				case WM_MOVE:
+				case WM_LBUTTONUP:
+				case WM_LBUTTONDOWN:
+				case WM_RBUTTONDOWN:
+				case WM_RBUTTONUP:
+				case WM_MBUTTONDOWN:
+				case WM_MBUTTONUP:
+				case WM_MOUSEWHEEL:
+				case WM_MOUSEMOVE:
+				case WM_KEYDOWN:
+				case WM_KEYUP:
+				case WM_DESTROY:
+					pWindow->parent->MessageHandler(pWindow, message, wParam, lParam);
+					return 0;
+			}
+		}
     }
 
     return DefWindowProc (hwnd, message, wParam, lParam) ;
