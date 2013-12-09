@@ -64,7 +64,7 @@ public:
 		Get(newItem).SetParentID(p);
 		return newItem;
 	}
-	static DynamicLookupTable<T, 10>& GetList(){
+	static DynamicLookupTable<T>& GetList(){
 		return componentStorage;
 	}
 protected:
@@ -78,7 +78,7 @@ private:
 	ObjectID lookup;
 	ObjectID parent;
 private:
-	static DynamicLookupTable<T, 10> componentStorage;
+	static DynamicLookupTable<T> componentStorage;
 	static bool componentClassCreated;
 	static ComponentType componentTypeID;
 };

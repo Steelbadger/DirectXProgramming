@@ -227,6 +227,9 @@
     <ClInclude Include="FirstPersonController.h">
       <Filter>Header Files\World</Filter>
     </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Header Files\World\Objects and Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="seafloor.dds">
