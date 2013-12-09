@@ -29,6 +29,7 @@ private:
 	bool Frame();
 	void InitializeWindows(int&, int&);
 	void ShutdownWindows();
+	void TestFunction();
 
 private:
 	LPSTR m_applicationName;

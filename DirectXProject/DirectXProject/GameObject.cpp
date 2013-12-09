@@ -23,6 +23,7 @@ void GameObject::AddChild(ObjectID id)
 		}
 	}
 	childGameObjects.push_back(id);
+	GameObject::Get(id).SetParentID(GetID());
 }
 
 void GameObject::AddComponent(ObjectID id, ComponentType type)

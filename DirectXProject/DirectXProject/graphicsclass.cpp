@@ -1,5 +1,7 @@
 
 #include "graphicsclass.h"
+#include "Camera.h"
+#include "Component.h"
 
 GraphicsClass::GraphicsClass()
 {
@@ -158,6 +160,25 @@ bool GraphicsClass::Frame()
 	return true;
 }
 
+bool GraphicsClass::TESTFrame()
+{
+	bool result;
+
+	// Render the graphics scene.
+	result = TESTRender();
+	if(!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+void GraphicsClass::SetTESTCamera(ObjectID camera)
+{
+	TESTCamera = camera;
+}
+
 
 bool GraphicsClass::Render()
 {
@@ -204,3 +225,47 @@ bool GraphicsClass::Render()
 
 	return true;
 }
+
+bool GraphicsClass::TESTRender()
+{
+	D3DXMATRIX viewMatrix, projectionMatrix, worldMatrix;
+	static float rotation = 0;
+
+	// Update the rotation variable each frame.
+	rotation += (float)D3DX_PI * 0.001f;
+	if(rotation > 360.0f)
+	{
+		rotation -= 360.0f;
+	}
+	
+	bool result;
+
+
+	// Clear the buffers to begin the scene.
+	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
+
+	// Get the world, view, and projection matrices from the camera and d3d objects.
+	viewMatrix = Camera::Get(TESTCamera).GetViewMatrix();
+	D3DXMatrixIdentity(&worldMatrix);
+	projectionMatrix = Camera::Get(TESTCamera).GetProjectionMatrix();
+
+	// Rotate the world matrix by the rotation value so that the triangle will spin.
+	D3DXMatrixRotationY(&worldMatrix, rotation);
+
+	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	m_Model->Render(m_D3D->GetDeviceContext());
+
+	// Render the model using the light shader.
+	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, 
+		m_Model->GetTexture(), m_Light->GetDirection(), m_Light->GetDiffuseColor(), m_Camera->GetPosition(), m_Light->GetSpecularPower());
+	if(!result)
+	{
+		return false;
+	}
+
+	// Present the rendered scene to the screen.
+	m_D3D->EndScene();
+
+	return true;
+}
+

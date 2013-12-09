@@ -49,6 +49,12 @@
     <Filter Include="Source Files\Factories">
       <UniqueIdentifier>{0a9e8d18-5ca5-42e5-90a2-413a778f59bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\World\Objects and Components">
+      <UniqueIdentifier>{d9e644f3-7548-45e1-8f90-a80b51945e34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\World\Objects and Components">
+      <UniqueIdentifier>{08b8bfd6-baf3-412e-a243-f40a07f07227}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Vector2.cpp">
@@ -112,10 +118,16 @@
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Component.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\World\Objects and Components</Filter>
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\World\Objects and Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\World\Objects and Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Scale.cpp">
+      <Filter>Source Files\World\Objects and Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -189,16 +201,22 @@
       <Filter>Header Files\Windows</Filter>
     </ClInclude>
     <ClInclude Include="Component.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Position.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\World\Objects and Components</Filter>
     </ClInclude>
     <ClInclude Include="GameObject.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\World\Objects and Components</Filter>
     </ClInclude>
     <ClInclude Include="Orientation.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\World\Objects and Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Position.h">
+      <Filter>Header Files\World\Objects and Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files\World\Objects and Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Scale.h">
+      <Filter>Header Files\World\Objects and Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -58,6 +58,26 @@ public:
 			return T::Get(compID);
 		}
 	}
+
+	template<class T> static T& GetComponent(ObjectID id) {
+		return GameObject::Get(id).GetComponent<T>();
+	}
+
+	template<class T> ObjectID GetComponentReference() {
+		ComponentType type = T::GetComponentTypeID();
+		ObjectID compID;
+		if(components.count(type) != 0) {
+			compID = components[type];
+		} else {
+			compID = AddComponent<T>();
+		}
+		return compID;
+	}
+
+	template<class T> static ObjectID GetComponentReference(ObjectID id) {
+		return GameObject::Get(id).GetComponentReference<T>();
+	}
+
 private:
 	std::map<ComponentType, ObjectID> components;
 	std::vector<ObjectID> childGameObjects;		//  array lookup means nothing, just storage

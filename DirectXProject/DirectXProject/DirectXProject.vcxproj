@@ -83,6 +83,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="cameraclass.cpp" />
     <ClCompile Include="colorshaderclass.cpp" />
     <ClCompile Include="Component.cpp" />
@@ -98,6 +99,7 @@
     <ClCompile Include="ModelClass.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Quaternion.cpp" />
+    <ClCompile Include="Scale.cpp" />
     <ClCompile Include="simd.cpp" />
     <ClCompile Include="textureclass.cpp" />
     <ClCompile Include="textureshaderclass.cpp" />
@@ -107,6 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="cameraclass.h" />
     <ClInclude Include="colorshaderclass.h" />
     <ClInclude Include="Component.h" />
@@ -125,6 +128,7 @@
     <ClInclude Include="Orientation.h" />
     <ClInclude Include="Position.h" />
     <ClInclude Include="Quaternion.h" />
+    <ClInclude Include="Scale.h" />
     <ClInclude Include="ShaderInterface.h" />
     <ClInclude Include="simd.h" />
     <ClInclude Include="textureclass.h" />

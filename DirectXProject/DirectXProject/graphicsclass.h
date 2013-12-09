@@ -13,6 +13,8 @@
 #include "lightclass.h"
 #include "lightshaderclass.h"
 
+#include "LookupTable.h"
+
 
 class GraphicsClass
 {
@@ -25,8 +27,14 @@ public:
 	bool Frame();
 	CameraClass* Camera() {return m_Camera;}
 
+	void SetTESTCamera(ObjectID camera);
+	bool TESTFrame();
+
 private:
 	bool Render();
+
+	bool TESTRender();
+
 private:
 	D3DClass* m_D3D;
 	CameraClass* m_Camera;
@@ -35,6 +43,9 @@ private:
 	TextureShaderClass* m_TextureShader;
 	LightShaderClass* m_LightShader;
 	LightClass* m_Light;
+
+
+	ObjectID TESTCamera;
 };
 
 #endif
