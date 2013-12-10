@@ -2,11 +2,13 @@
 #include "graphicsclass.h"
 #include "Camera.h"
 #include "Component.h"
+#include "GameObject.h"
+#include "Position.h"
+#include "Texture.h"
 
 GraphicsClass::GraphicsClass()
 {
 	m_D3D = 0;
-	m_Camera = 0;
 	m_Model = 0;
 	m_TextureShader = 0;
 }
@@ -35,16 +37,10 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, boo
 		return false;
 	}
 
-	// Create the camera object.
-	m_Camera = new CameraClass;
-	if(!m_Camera)
-	{
-		return false;
-	}
+	//////////////////////////////IMPORTANT////////////////////////////////
+	TextureBase::SetDevice(m_D3D->GetDevice());
+	///////////////////////////////////////////////////////////////////////
 
-	// Set the initial position of the camera.
-	m_Camera->SetPosition(0.0f, 0.0f, -5.0f);
-	
 	// Create the model object.
 	m_Model = new ModelClass;
 	if(!m_Model)
@@ -130,13 +126,6 @@ void GraphicsClass::Shutdown()
 		m_LightShader = 0;
 	}
 
-	// Release the camera object.
-	if(m_Camera)
-	{
-		delete m_Camera;
-		m_Camera = 0;
-	}
-
 	if(m_D3D)
 	{
 		m_D3D->Shutdown();
@@ -144,20 +133,6 @@ void GraphicsClass::Shutdown()
 		m_D3D = 0;
 	}
 	return;
-}
-
-bool GraphicsClass::Frame()
-{
-	bool result;
-
-	// Render the graphics scene.
-	result = Render();
-	if(!result)
-	{
-		return false;
-	}
-
-	return true;
 }
 
 bool GraphicsClass::TESTFrame()
@@ -177,53 +152,6 @@ bool GraphicsClass::TESTFrame()
 void GraphicsClass::SetTESTCamera(ObjectID camera)
 {
 	TESTCamera = camera;
-}
-
-
-bool GraphicsClass::Render()
-{
-	D3DXMATRIX viewMatrix, projectionMatrix, worldMatrix;
-	static float rotation = 0;
-
-	// Update the rotation variable each frame.
-	rotation += (float)D3DX_PI * 0.001f;
-	if(rotation > 360.0f)
-	{
-		rotation -= 360.0f;
-	}
-	
-	bool result;
-
-
-	// Clear the buffers to begin the scene.
-	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
-
-	// Generate the view matrix based on the camera's position.
-	m_Camera->Render();
-
-	// Get the world, view, and projection matrices from the camera and d3d objects.
-	m_Camera->GetViewMatrix(viewMatrix);
-	m_D3D->GetWorldMatrix(worldMatrix);
-	m_D3D->GetProjectionMatrix(projectionMatrix);
-
-	// Rotate the world matrix by the rotation value so that the triangle will spin.
-	D3DXMatrixRotationY(&worldMatrix, rotation);
-
-	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	m_Model->Render(m_D3D->GetDeviceContext());
-
-	// Render the model using the light shader.
-	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, 
-		m_Model->GetTexture(), m_Light->GetDirection(), m_Light->GetDiffuseColor(), m_Camera->GetPosition(), m_Light->GetSpecularPower());
-	if(!result)
-	{
-		return false;
-	}
-
-	// Present the rendered scene to the screen.
-	m_D3D->EndScene();
-
-	return true;
 }
 
 bool GraphicsClass::TESTRender()
@@ -255,9 +183,10 @@ bool GraphicsClass::TESTRender()
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	m_Model->Render(m_D3D->GetDeviceContext());
 
+
 	// Render the model using the light shader.
 	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, 
-		m_Model->GetTexture(), m_Light->GetDirection(), m_Light->GetDiffuseColor(), m_Camera->GetPosition(), m_Light->GetSpecularPower());
+		m_Model->GetTexture(), m_Light->GetDirection(), m_Light->GetDiffuseColor(), GameObject::GetComponent<Position>(Camera::Get(TESTCamera).GetParentID()).GetPosition(), m_Light->GetSpecularPower());
 	if(!result)
 	{
 		return false;

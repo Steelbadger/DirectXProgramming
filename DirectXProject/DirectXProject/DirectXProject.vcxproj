@@ -103,6 +103,7 @@
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Scale.cpp" />
     <ClCompile Include="simd.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="textureclass.cpp" />
     <ClCompile Include="textureshaderclass.cpp" />
     <ClCompile Include="Vector2.cpp" />
@@ -110,6 +111,7 @@
     <ClCompile Include="Vector4.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="TextureTypes.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="cameraclass.h" />
@@ -124,9 +126,11 @@
     <ClInclude Include="lightclass.h" />
     <ClInclude Include="lightshaderclass.h" />
     <ClInclude Include="LookupTable.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="MathsClasses.h" />
     <ClInclude Include="Matrix4x4.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MessagePasser.h" />
     <ClInclude Include="ModelClass.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Orientation.h" />
@@ -135,6 +139,7 @@
     <ClInclude Include="Scale.h" />
     <ClInclude Include="ShaderInterface.h" />
     <ClInclude Include="simd.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="textureclass.h" />
     <ClInclude Include="textureshaderclass.h" />
     <ClInclude Include="UtilityFunctions.h" />

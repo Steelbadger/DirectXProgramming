@@ -55,7 +55,7 @@ public:
 		lookup = id;
 	}
 
-	static char GetComponentTypeID(){return componentTypeID;}
+	static ComponentType GetComponentTypeID(){return componentTypeID;}
 	static T& Get(ObjectID id){return componentStorage.Get(id);}
 	static void DeleteFromStorage(ObjectID id){componentStorage.Remove(id);}
 	static ObjectID New(){return T().CopyToStorage();}

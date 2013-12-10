@@ -17,7 +17,9 @@ Window::~Window(void)
 	UnregisterClass(wcex.lpszClassName, wcex.hInstance);// Free the window class
 
 	WindowMap.erase(handleToWindow);
-
+	if (messageHandler) {
+		delete messageHandler;
+	}
 	PostQuitMessage(0);		// Post a QUIT message to the window
 }
 
@@ -183,7 +185,7 @@ LRESULT CALLBACK Window::WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 				case WM_KEYDOWN:
 				case WM_KEYUP:
 				case WM_DESTROY:
-					pWindow->parent->MessageHandler(pWindow, message, wParam, lParam);
+					pWindow->messageHandler->Handle(pWindow, message, wParam, lParam);
 					return 0;
 			}
 		}

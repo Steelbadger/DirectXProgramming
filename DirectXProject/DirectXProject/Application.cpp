@@ -4,7 +4,11 @@
 #include "GameObject.h"
 #include "Camera.h"
 #include "FirstPersonController.h"
+#include "Material.h"
+#include "TextureTypes.h"
 
+
+#include <functional>
 
 Application::Application(): window(this)
 {
@@ -25,6 +29,9 @@ bool Application::Initialize()
 
 	// Create the input object.  This object will be used to handle reading the keyboard input from the user.
 	m_Input = &HardwareState::GetInstance();
+
+	//  Before creating the Windows window, tell the container what Message Handler function to use.
+	window.SetMessageHandler<Application>((*this), std::mem_fn(&Application::MessageHandler));
 
 
 	if (fullscreen)
@@ -53,7 +60,6 @@ bool Application::Initialize()
 
 void Application::TestFunction()
 {
-
 	//  Can create components within their  static storage using New()
 	positionComp = Position::New();
 	ObjectID orientID = Orientation::New();
@@ -118,12 +124,16 @@ void Application::TestFunction()
 	GameObject::Get(cam).AddComponent<Position>();
 	GameObject::Get(cam).AddComponent<Orientation>();
 	GameObject::Get(cam).AddComponent<Camera>();
+	GameObject::Get(cam).AddComponent<Material>();
+
+	//  Oh, and a controller
 	GameObject::Get(cam).AddComponent<FirstPersonController>();
 
 	//  Set to the default position, initialise camera and set control sensitivity
 	GameObject::GetComponent<Position>(cam).SetPosition(0,0,-5.0);
 	GameObject::GetComponent<Camera>(cam).Initialise(true, 45, window.GetWidth(), window.GetHeight(), 0.1f, 1000.0f);
 	GameObject::GetComponent<FirstPersonController>(cam).SetSensitivity(20.0f);
+	GameObject::GetComponent<Material>(cam).AddTexture<AmbientTexture>("seafloor.dds");
 
 	Camera* camSecond = &GameObject::GetComponent<Camera>(cam);
 
@@ -194,8 +204,6 @@ void Application::Run()
 
 void Application::TestUpdate()
 {
-	if (m_Input->MousePressed(Mouse::RIGHT)) {
-	}
 	for (int i = 0; i < FirstPersonController::GetList().Size(); i++) {
 		if (FirstPersonController::GetList().Exists(i)) {
 			FirstPersonController::GetList().Get(i).Update();
@@ -210,25 +218,6 @@ void Application::TestUpdate()
 bool Application::Frame()
 {
 	bool result;
-
-	//if (m_Input->Button(VK_UP)) {
-	//	m_Graphics->Camera()->SetPosition(m_Graphics->Camera()->GetPosition().x, m_Graphics->Camera()->GetPosition().y, m_Graphics->Camera()->GetPosition().z+0.025f);
-	//}
-
-	//if (m_Input->Button(VK_DOWN)) {
-	//	m_Graphics->Camera()->SetPosition(m_Graphics->Camera()->GetPosition().x, m_Graphics->Camera()->GetPosition().y, m_Graphics->Camera()->GetPosition().z-0.025f);
-	//}
-
-	//if (m_Input->Button(VK_LEFT)) {
-	//	m_Graphics->Camera()->SetPosition(m_Graphics->Camera()->GetPosition().x+0.025f, m_Graphics->Camera()->GetPosition().y, m_Graphics->Camera()->GetPosition().z);
-	//}
-
-	//if (m_Input->Button(VK_RIGHT)) {
-	//	m_Graphics->Camera()->SetPosition(m_Graphics->Camera()->GetPosition().x-0.025f, m_Graphics->Camera()->GetPosition().y, m_Graphics->Camera()->GetPosition().z);
-	//}
-
-	// Do the frame processing for the graphics object.
-//	result = m_Graphics->Frame();
 
 	result = m_Graphics->TESTFrame();
 	if(!result)

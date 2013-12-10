@@ -1,6 +1,8 @@
 #pragma once
 #include <Windows.h>
 #include <map>
+#include <functional>
+#include "MessagePasser.h"
 
 class Application;
 
@@ -11,6 +13,10 @@ public:
 	void Create(LPSTR strWindowName, int width, int height, DWORD dwStyle, bool bFullScreen, HINSTANCE hInstance);
 	void CreateFullScreen(LPSTR strWindowName, HINSTANCE hInstance);
 	void CreateWindowed(LPSTR strWindowName, int width, int height, HINSTANCE hInstance);
+
+	template<class T> void SetMessageHandler(T& t, std::function<void (T&, Window* wind, UINT Msg, WPARAM wParam, LPARAM lParam)> func) {
+		messageHandler = new MessagePasser<T>(t, func);
+	}
 
 	~Window(void);
 
@@ -39,6 +45,7 @@ private:
 	RECT windowRect;
 
 	Application* parent;
+	MessagePasserInterface* messageHandler;
 
 	int gWidth, gHeight;
 	int borderWidth;

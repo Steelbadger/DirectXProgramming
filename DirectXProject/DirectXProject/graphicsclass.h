@@ -24,26 +24,23 @@ public:
 
 	bool Initialize(int screenWidth, int screenHeight, HWND hwnd, bool vSync, bool fullscreen, float screenDepth, float screenNear);
 	void Shutdown();
-	bool Frame();
-	CameraClass* Camera() {return m_Camera;}
 
 	void SetTESTCamera(ObjectID camera);
 	bool TESTFrame();
 
+
+
 private:
-	bool Render();
 
 	bool TESTRender();
 
 private:
 	D3DClass* m_D3D;
-	CameraClass* m_Camera;
 	ModelClass* m_Model;
 	ColorShaderClass* m_ColorShader;
 	TextureShaderClass* m_TextureShader;
 	LightShaderClass* m_LightShader;
 	LightClass* m_Light;
-
 
 	ObjectID TESTCamera;
 };

@@ -55,6 +55,18 @@
     <Filter Include="Source Files\World\Objects and Components">
       <UniqueIdentifier>{08b8bfd6-baf3-412e-a243-f40a07f07227}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\World\Material">
+      <UniqueIdentifier>{905dfb9f-9900-485a-8425-8ef2fde01b88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\World\Material">
+      <UniqueIdentifier>{7f8c727d-77a4-4f23-886b-23d704a12e25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\World\Material\Textures">
+      <UniqueIdentifier>{8ee7ea18-5dbb-460f-aad1-b57aed202eca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\World\Material\Textures">
+      <UniqueIdentifier>{67575b43-e663-4362-a96c-588e6d84283e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Vector2.cpp">
@@ -134,6 +146,9 @@
     </ClCompile>
     <ClCompile Include="Orientation.cpp">
       <Filter>Source Files\World\Objects and Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files\World\Material\Textures</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -224,11 +239,23 @@
     <ClInclude Include="Scale.h">
       <Filter>Header Files\World\Objects and Components</Filter>
     </ClInclude>
-    <ClInclude Include="FirstPersonController.h">
-      <Filter>Header Files\World</Filter>
-    </ClInclude>
     <ClInclude Include="Mesh.h">
       <Filter>Header Files\World\Objects and Components</Filter>
+    </ClInclude>
+    <ClInclude Include="MessagePasser.h">
+      <Filter>Header Files\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="FirstPersonController.h">
+      <Filter>Header Files\World\Objects and Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Header Files\World\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Header Files\World\Material\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureTypes.h">
+      <Filter>Header Files\World\Material\Textures</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

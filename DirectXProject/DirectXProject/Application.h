@@ -24,7 +24,6 @@ public:
 	void Run();
 
 	void MessageHandler(Window* window, UINT message, WPARAM wParam, LPARAM lParam);
-
 private:
 	bool Frame();
 	void InitializeWindows(int&, int&);
