@@ -13,6 +13,7 @@ public:
 	void Create(LPSTR strWindowName, int width, int height, DWORD dwStyle, bool bFullScreen, HINSTANCE hInstance);
 	void CreateFullScreen(LPSTR strWindowName, HINSTANCE hInstance);
 	void CreateWindowed(LPSTR strWindowName, int width, int height, HINSTANCE hInstance);
+	void CreateMessageWindow(LPSTR strWindowName, HINSTANCE hInstance);
 
 	template<class T> void SetMessageHandler(T& t, std::function<void (T&, Window* wind, UINT Msg, WPARAM wParam, LPARAM lParam)> func) {
 		messageHandler = new MessagePasser<T>(t, func);

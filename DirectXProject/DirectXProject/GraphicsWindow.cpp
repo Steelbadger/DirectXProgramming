@@ -150,6 +150,43 @@ void Window::CreateWindowed(LPSTR strWindowName, int width, int height, HINSTANC
 	Create(strWindowName, width, height, (WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP), false, hInstance);
 }
 
+void Window::CreateMessageWindow(LPSTR strWindowName, HINSTANCE hInstance)
+{
+	memset(&wcex, 0, sizeof(WNDCLASS));
+	wcex.style			= CS_HREDRAW | CS_VREDRAW;		
+	wcex.lpfnWndProc	= &Window::WndProc;		
+	wcex.hInstance		= hInstance;						
+	wcex.hIcon			= LoadIcon(NULL, IDI_APPLICATION);
+	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);		
+	wcex.hbrBackground	= (HBRUSH) (COLOR_WINDOW+1);
+	wcex.lpszMenuName	= NULL;	
+	wcex.lpszClassName	= strWindowName;	
+
+	
+	RegisterClass(&wcex);// Register the class
+
+	//Set the Client area of the window to be our resolution.
+
+	// Create the window with the screen settings and get the handle to it.
+	handleToWindow = CreateWindowEx(WS_EX_APPWINDOW,
+									strWindowName,
+									strWindowName, 
+									0,
+									CW_USEDEFAULT, CW_USEDEFAULT,
+									CW_USEDEFAULT,
+									CW_USEDEFAULT,
+									HWND_MESSAGE,
+									NULL,
+									hInstance,
+									NULL								);
+
+	if(!handleToWindow) {
+		MessageBox(NULL, "Could Not Get Handle To Window", "Error", MB_OK); // If we couldn't get a handle, return NULL
+		PostQuitMessage (0);
+	}
+	WindowMap[handleToWindow] = this;
+}
+
 Window* Window::GetWindowReference(HWND hwnd)
 {
 	return WindowMap[hwnd];
@@ -185,7 +222,7 @@ LRESULT CALLBACK Window::WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 				case WM_KEYDOWN:
 				case WM_KEYUP:
 				case WM_DESTROY:
-					pWindow->messageHandler->Handle(pWindow, message, wParam, lParam);
+					(*pWindow->messageHandler)(pWindow, message, wParam, lParam);
 					return 0;
 			}
 		}

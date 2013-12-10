@@ -12,7 +12,7 @@ public:
 	MessagePasserInterface(){};
 	virtual ~MessagePasserInterface(){};
 
-	virtual void Handle(Window* wind, UINT Msg, WPARAM wParam, LPARAM lParam) = 0;
+	virtual void operator ()(Window* wind, UINT Msg, WPARAM wParam, LPARAM lParam) = 0;
 };
 
 template<class T>
@@ -22,7 +22,7 @@ public:
 	MessagePasser(T& t, std::function<void(T&, Window* wind, UINT Msg, WPARAM wParam, LPARAM lParam)> func):target(&t),handler(func){};
 	virtual ~MessagePasser(){};
 
-	virtual void Handle(Window* wind, UINT Msg, WPARAM wParam, LPARAM lParam) {
+	virtual void operator ()(Window* wind, UINT Msg, WPARAM wParam, LPARAM lParam){
 		handler(*target, wind, Msg, wParam, lParam);
 	}
 private:
