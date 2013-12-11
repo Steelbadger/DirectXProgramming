@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "FirstPersonController.h"
 #include "Material.h"
+#include "SpinController.h"
 
 
 #include <functional>
@@ -38,6 +39,20 @@ bool Application::Initialize()
 	else
 		window.CreateWindowed("Engine", 800, 800, m_hinstance);
 
+
+	// Initialize the Direct3D object.
+	result = m_D3D.Initialize(window.GetWidth(), window.GetHeight(), vSyncEnabled, window.GetHandleToWindow(), fullscreen, 1000.0f, 0.1f);
+	if(!result)
+	{
+		MessageBox(window.GetHandleToWindow(), "Could not initialize Direct3D", "Error", MB_OK);
+		return false;
+	}
+	factory.SetDevice(m_D3D.GetDevice());
+	world.PassMeshFactory(&factory);
+	//////////////////////////////IMPORTANT////////////////////////////////
+	TextureBase::SetDevice(m_D3D.GetDevice());
+	///////////////////////////////////////////////////////////////////////
+
 	// Create the graphics object.  This object will handle rendering all the graphics for this application.
 	m_Graphics = new GraphicsClass;
 	if(!m_Graphics)
@@ -46,40 +61,27 @@ bool Application::Initialize()
 	}
 
 	// Initialize the graphics object.
-	result = m_Graphics->Initialize(window.GetWidth(), window.GetHeight(), window.GetHandleToWindow(), vSyncEnabled, fullscreen, 1000.0f, 0.1f);
+	result = m_Graphics->Initialize(window.GetHandleToWindow(), &m_D3D);
 	if(!result)
 	{
 		return false;
 	}
 
-	TestFunction();
+
+	ObjectID camera = GameObject::New();
+	GameObject::AddComponent<Position>(camera);
+	GameObject::AddComponent<Orientation>(camera);
+	GameObject::AddComponent<Camera>(camera);
+	GameObject::AddComponent<FirstPersonController>(camera);
+
+	GameObject::GetComponent<Position>(camera).SetPosition(0,0,-5);
+	GameObject::GetComponent<Camera>(camera).Initialise(true, 45, window.GetWidth(), window.GetHeight(), 0.01f, 1000.0f);
+	GameObject::GetComponent<FirstPersonController>(camera).SetSensitivity(5.0f);
+
+	world.SetCameraObject(camera);
+	world.CreateScene();
 	
 	return true;
-}
-
-void Application::TestFunction()
-{
-	////////  CAMERA TEST /////////
-	//  Create the Camera Object with position, orientation and a camera component
-	ObjectID cam = GameObject::New();
-	GameObject::Get(cam).AddComponent<Position>();
-	GameObject::Get(cam).AddComponent<Orientation>();
-	GameObject::Get(cam).AddComponent<Camera>();
-
-	//  Oh, and a controller
-	GameObject::Get(cam).AddComponent<FirstPersonController>();
-
-	//  Set to the default position, initialise camera and set control sensitivity
-	GameObject::GetComponent<Position>(cam).SetPosition(0,0,-5.0);
-	GameObject::GetComponent<Camera>(cam).Initialise(true, 45, window.GetWidth(), window.GetHeight(), 0.1f, 1000.0f);
-	GameObject::GetComponent<FirstPersonController>(cam).SetSensitivity(20.0f);
-
-	Camera* camSecond = &GameObject::GetComponent<Camera>(cam);
-
-	//  Add to the GraphicsClass
-	m_Graphics->SetTESTCamera(GameObject::GetComponentReference<Camera>(cam));
-
-	m_Graphics->TESTinit();
 }
 
 void Application::Shutdown()
@@ -147,6 +149,11 @@ void Application::TestUpdate()
 			FirstPersonController::GetList().Get(i).Update();
 		}
 	}
+	for (int i = 0; i < SpinController::GetList().Size(); i++) {
+		if (SpinController::GetList().Exists(i)) {
+			SpinController::GetList().Get(i).Update();
+		}
+	}
 	if (m_Input->MouseButton(Mouse::RIGHT)) {
 		window.SetCursorToCentre();
 		window.SetMouseLockedCentre();
@@ -157,7 +164,7 @@ bool Application::Frame()
 {
 	bool result;
 
-	result = m_Graphics->TESTFrame();
+	result = m_Graphics->Frame(world);
 	if(!result)
 	{
 		return false;

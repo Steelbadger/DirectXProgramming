@@ -58,9 +58,9 @@ public:
 	template<class T> bool HasComponent() {
 		ComponentType type = T::GetComponentTypeID();
 		if (components.count(type) != 0) {
-			return false;
-		} else {
 			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -129,6 +129,8 @@ public:
 	template<class T> static bool HasComponent(ObjectID id){
 		return GameObject::Get(id).HasComponent<T>();
 	}
+
+	static void SetParentChild(ObjectID parent, ObjectID child);
 
 private:
 	std::map<ComponentType, ObjectID> components;	//  map because lookup is simple unsigned char type, may be sparse

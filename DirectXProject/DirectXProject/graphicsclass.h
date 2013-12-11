@@ -14,39 +14,31 @@
 #include "lightshaderclass.h"
 
 #include "LookupTable.h"
-
-
+class World;
 class GraphicsClass
 {
 public:
 	GraphicsClass();
 	~GraphicsClass();
 
-	bool Initialize(int screenWidth, int screenHeight, HWND hwnd, bool vSync, bool fullscreen, float screenDepth, float screenNear);
+	bool Initialize(HWND hwnd, D3DClass* d3d);
 	void Shutdown();
 
-	void SetTESTCamera(ObjectID camera);
-	bool TESTFrame();
-	void TESTinit();
-
-	bool Frame();
-
-
-
+	bool Frame(World& world);
 private:
 
-	bool TESTRender();
-	bool Render();
+	bool Render(World& world);
 
 private:
 	D3DClass* m_D3D;
-	ModelClass* m_Model;
 	ColorShaderClass* m_ColorShader;
 	TextureShaderClass* m_TextureShader;
 	LightShaderClass* m_LightShader;
 	LightClass* m_Light;
 
 	ObjectID quad;
+
+	ObjectID test;
 
 	ObjectID TESTCamera;
 };

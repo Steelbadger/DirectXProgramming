@@ -39,7 +39,6 @@ public:
 
 	bool Initialize(ID3D11Device*, HWND);
 	void Shutdown();
-	bool Render(ID3D11DeviceContext*, int, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*, D3DXVECTOR3, D3DXVECTOR4, D3DXVECTOR3, float);
 	bool Render(ID3D11DeviceContext* dc, ObjectID drawObject, D3DXMATRIX world, ObjectID cameraObject, D3DXVECTOR3 lightdir, D3DXVECTOR4 lightcolour, float specPow);
 
 private:
@@ -47,7 +46,6 @@ private:
 	void ShutdownShader();
 	void OutputShaderErrorMessage(ID3D10Blob*, HWND, char*);
 
-	bool SetShaderParameters(ID3D11DeviceContext*, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*, D3DXVECTOR3, D3DXVECTOR4, D3DXVECTOR3, float);
 	bool SetShaderParameters(ID3D11DeviceContext* dc, ObjectID drawObject, D3DXMATRIX world, ObjectID cameraObject, D3DXVECTOR3 lightdir, D3DXVECTOR4 lightcolour, float specPow);
 
 	void RenderShader(ID3D11DeviceContext*, int);

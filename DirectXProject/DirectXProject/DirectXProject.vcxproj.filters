@@ -156,6 +156,12 @@
     <ClCompile Include="MeshFactory.cpp">
       <Filter>Source Files\Factories</Filter>
     </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
+    <ClCompile Include="SpinController.cpp">
+      <Filter>Source Files\World\Objects and Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vector2.h">
@@ -265,6 +271,12 @@
     </ClInclude>
     <ClInclude Include="MeshFactory.h">
       <Filter>Header Files\Factories</Filter>
+    </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>Header Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="SpinController.h">
+      <Filter>Header Files\World\Objects and Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -104,6 +104,7 @@
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Scale.cpp" />
     <ClCompile Include="simd.cpp" />
+    <ClCompile Include="SpinController.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="textureclass.cpp" />
     <ClCompile Include="textureshaderclass.cpp" />
@@ -111,9 +112,11 @@
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Vector3.cpp" />
     <ClCompile Include="Vector4.cpp" />
+    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MeshFactory.h" />
+    <ClInclude Include="SpinController.h" />
     <ClInclude Include="TextureTypes.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />
@@ -149,6 +152,7 @@
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Vector4.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="brick1.dds" />

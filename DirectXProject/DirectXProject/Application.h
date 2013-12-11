@@ -11,6 +11,9 @@
 #include "GraphicsWindow.h"
 #include "graphicsclass.h"
 #include "Position.h"
+#include "World.h"
+#include "MeshFactory.h"
+#include "d3dclass.h"
 
 // Class name: Application
 class Application
@@ -28,7 +31,6 @@ private:
 	bool Frame();
 	void InitializeWindows(int&, int&);
 	void ShutdownWindows();
-	void TestFunction();
 	void TestUpdate();
 
 private:
@@ -37,11 +39,12 @@ private:
 
 	HardwareState* m_Input;
 	GraphicsClass* m_Graphics;
+	D3DClass m_D3D;
 	Window window;
+	World world;
+	MeshFactory factory;
 
 	bool fullscreen, vSyncEnabled;
-
-	ObjectID positionComp;
 
 	bool running;
 };

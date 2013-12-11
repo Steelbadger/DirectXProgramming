@@ -49,7 +49,10 @@ public:
 	ObjectID GetID(){return lookup;}
 	bool HasParent(){return ((parent > -1) ? true : false);}
 	ObjectID GetParentID(){return parent;}
-	void SetParentID(ObjectID id){parent = id;}
+	void SetParentID(ObjectID id){
+		parent = id;
+
+	}
 
 	void SetLookup(ObjectID id) {
 		lookup = id;

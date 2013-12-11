@@ -9,11 +9,11 @@
 #include "MeshFactory.h"
 #include "Orientation.h"
 #include "Material.h"
+#include "World.h"
 
 GraphicsClass::GraphicsClass()
 {
 	m_D3D = 0;
-	m_Model = 0;
 	m_TextureShader = 0;
 }
 
@@ -21,44 +21,12 @@ GraphicsClass::~GraphicsClass()
 {
 }
 
-bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, bool vSync, bool fullscreen, float screenDepth, float screenNear)
+bool GraphicsClass::Initialize(HWND hwnd, D3DClass* d3d)
 {
 	bool result;
 
 		
-	// Create the Direct3D object.
-	m_D3D = new D3DClass;
-	if(!m_D3D)
-	{
-		return false;
-	}
-
-	// Initialize the Direct3D object.
-	result = m_D3D->Initialize(screenWidth, screenHeight, vSync, hwnd, fullscreen, screenDepth, screenNear);
-	if(!result)
-	{
-		MessageBox(hwnd, "Could not initialize Direct3D", "Error", MB_OK);
-		return false;
-	}
-
-	//////////////////////////////IMPORTANT////////////////////////////////
-	TextureBase::SetDevice(m_D3D->GetDevice());
-	///////////////////////////////////////////////////////////////////////
-
-	// Create the model object.
-	m_Model = new ModelClass;
-	if(!m_Model)
-	{
-		return false;
-	}
-
-	// Initialize the model object.
-	result = m_Model->Initialize(m_D3D->GetDevice(), "brick1.dds");
-	if(!result)
-	{
-		MessageBox(hwnd, "Could not initialize the model object.", "Error", MB_OK);
-		return false;
-	}
+	m_D3D = d3d;
 
 	// Create the light shader object.
 	m_LightShader = new LightShaderClass;
@@ -90,23 +58,6 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd, boo
 	return true;
 }
 
-void GraphicsClass::TESTinit()
-{
-	quad = GameObject::New();
-	GameObject::AddComponent<Position>(quad);
-	GameObject::AddComponent<Orientation>(quad);
-	GameObject::AddComponent<Mesh>(quad);
-	GameObject::AddComponent<Material>(quad);
-
-	MeshFactory mf;
-	mf.SetDevice(m_D3D->GetDevice());
-
-	GameObject::GetComponent<Position>(quad).SetPosition(0,0,0);
-	GameObject::GetComponent<Mesh>(quad).SetMeshData(mf.CreateMeshBuffersFromFile("outwardCube.obj", Mesh::LIT));
-	GameObject::GetComponent<Material>(quad).AddTexture<AmbientTexture>("brick1.dds");
-}
-
-
 void GraphicsClass::Shutdown()
 {
 
@@ -116,14 +67,6 @@ void GraphicsClass::Shutdown()
 		m_TextureShader->Shutdown();
 		delete m_TextureShader;
 		m_TextureShader = 0;
-	}
-
-	// Release the model object.
-	if(m_Model)
-	{
-		m_Model->Shutdown();
-		delete m_Model;
-		m_Model = 0;
 	}
 
 	if (m_Light)
@@ -146,35 +89,16 @@ void GraphicsClass::Shutdown()
 		m_LightShader = 0;
 	}
 
-	if(m_D3D)
-	{
-		m_D3D->Shutdown();
-		delete m_D3D;
-		m_D3D = 0;
-	}
 	return;
 }
 
-bool GraphicsClass::TESTFrame()
+
+bool GraphicsClass::Frame(World& world)
 {
 	bool result;
 
 	// Render the graphics scene.
-	result = TESTRender();
-	if(!result)
-	{
-		return false;
-	}
-
-	return true;
-}
-
-bool GraphicsClass::Frame()
-{
-	bool result;
-
-	// Render the graphics scene.
-	result = Render();
+	result = Render(world);
 	if(!result)
 	{
 		return false;
@@ -184,23 +108,11 @@ bool GraphicsClass::Frame()
 }
 
 
-void GraphicsClass::SetTESTCamera(ObjectID camera)
-{
-	TESTCamera = camera;
-}
 
-bool GraphicsClass::Render()
+bool GraphicsClass::Render(World& world)
 {
-	D3DXMATRIX viewMatrix, projectionMatrix, worldMatrix;
-	static float rotation = 0;
+	D3DXMATRIX model;
 
-	// Update the rotation variable each frame.
-	rotation += (float)D3DX_PI * 0.001f;
-	if(rotation > 360.0f)
-	{
-		rotation -= 360.0f;
-	}
-	
 	bool result;
 
 
@@ -208,70 +120,25 @@ bool GraphicsClass::Render()
 	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Get the world, view, and projection matrices from the camera and d3d objects.
-	viewMatrix = Camera::Get(TESTCamera).GetViewMatrix();
-	D3DXMatrixIdentity(&worldMatrix);
-	projectionMatrix = Camera::Get(TESTCamera).GetProjectionMatrix();
-
-	// Rotate the world matrix by the rotation value so that the triangle will spin.
-	D3DXMatrixRotationY(&worldMatrix, rotation);
-
-	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	m_Model->Render(m_D3D->GetDeviceContext());
-
-	// Render the model using the light shader.
-	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, 
-		m_Model->GetTexture(), m_Light->GetDirection(), m_Light->GetDiffuseColor(), GameObject::GetComponent<Position>(Camera::Get(TESTCamera).GetParentID()).GetPosition(), m_Light->GetSpecularPower());
-	if(!result)
-	{
-		return false;
-	}
-
-	// Present the rendered scene to the screen.
-	m_D3D->EndScene();
-
-	return true;
-}
-
-bool GraphicsClass::TESTRender()
-{
-	D3DXMATRIX viewMatrix, projectionMatrix, worldMatrix;
-	static float rotation = 0;
-
-	// Update the rotation variable each frame.
-	rotation += (float)D3DX_PI * 0.001f;
-	if(rotation > 360.0f)
-	{
-		rotation -= 360.0f;
-	}
 	
-	bool result;
+	std::list<ObjectID> drawList = world.GetDrawList();
 
-
-	// Clear the buffers to begin the scene.
-	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
-
-	// Get the world, view, and projection matrices from the camera and d3d objects.
-	viewMatrix = Camera::Get(TESTCamera).GetViewMatrix();
-	D3DXMatrixIdentity(&worldMatrix);
-	projectionMatrix = Camera::Get(TESTCamera).GetProjectionMatrix();
-
-	// Rotate the world matrix by the rotation value so that the triangle will spin.
-	D3DXMatrixRotationY(&worldMatrix, rotation);
-
-	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	m_Model->Render(m_D3D->GetDeviceContext());
-
-	// Render the model using the light shader.	
-	result = m_LightShader->Render(m_D3D->GetDeviceContext(), quad, worldMatrix, Camera::Get(TESTCamera).GetParentID(), m_Light->GetDirection(), m_Light->GetDiffuseColor(), m_Light->GetSpecularPower());
-	if(!result)
-	{
-		return false;
+	while (drawList.size() > 0) {
+		ObjectID current = drawList.back();
+		drawList.pop_back();
+		model = GameObject::Get(current).GetLocalMatrix();
+		// Render the model using the light shader.	
+		result = m_LightShader->Render(m_D3D->GetDeviceContext(), current, model, world.GetCameraObject(), m_Light->GetDirection(), m_Light->GetDiffuseColor(), m_Light->GetSpecularPower());
+		if(!result)
+		{
+			return false;
+		}
 	}
-
 	// Present the rendered scene to the screen.
 	m_D3D->EndScene();
 
 	return true;
 }
+
 
 
