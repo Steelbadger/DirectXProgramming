@@ -27,6 +27,7 @@ HardwareState::HardwareState(void)
 	currentTime = clock();
 	screenWidth =  GetSystemMetrics(SM_CXSCREEN);
 	screenHeight = GetSystemMetrics(SM_CYSCREEN);
+	loopCount = 0;
 }
 
 
@@ -73,9 +74,21 @@ void HardwareState::KeyUp(UINT wParam)
 
 void HardwareState::Update()
 {
-	lastTime = currentTime;
-	currentTime = clock();
-	timeForLastFrame = currentTime - lastTime;
+
+	if (enableFrameRate) {
+		loopCount++;
+		if (loopCount > loopMax) {
+			lastTime = currentTime;
+			currentTime = clock();
+			timeForLastFrame = currentTime - lastTime;
+			timeForLastFrame /= loopCount;
+			loopCount = 0;
+		}
+	} else {
+		lastTime = currentTime;
+		currentTime = clock();
+		timeForLastFrame = currentTime - lastTime;
+	}
 
 	for (int i = 256; i > 0; i--)
 	{

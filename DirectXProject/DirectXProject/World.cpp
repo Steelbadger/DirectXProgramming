@@ -12,6 +12,7 @@
 #include "UtilityFunctions.h"
 #include "Material.h"
 #include "SpinController.h"
+#include "DirectionalLight.h"
 
 
 World::World()
@@ -53,6 +54,12 @@ void World::CreateScene()
 
 	GameObject::SetParentChild(quad, test);
 
+
+	light = GameObject::New();
+	GameObject::AddComponent<DirectionalLight>(light);
+	GameObject::GetComponent<DirectionalLight>(light).SetColour(1.0f, 1.0f, 1.0f, 1.0f);
+	GameObject::GetComponent<DirectionalLight>(light).SetDirection(1.0f, 0.0f, 0.0f);
+
 	AddToScene(quad);
 	AddToScene(test);
 }
@@ -63,6 +70,12 @@ void World::SetCameraObject(ObjectID id)
 		currentCamera = id;
 	} else {
 		Warning("Object has no camera component and was not added to world");
+	}
+
+	if (GameObject::HasComponent<FirstPersonController>(id)) {
+		updateList.push_back(id);
+	} else {
+		Warning("Object has no controller component and was not added to the update list");
 	}
 }
 
@@ -76,6 +89,11 @@ std::list<ObjectID> World::GetDrawList()
 	return drawList;
 }
 
+std::list<ObjectID> World::GetUpdateList()
+{
+	return updateList;
+}
+
 void World::AddToScene(ObjectID id)
 {
 	if (GameObject::HasComponent<Mesh>(id)) {
@@ -83,9 +101,20 @@ void World::AddToScene(ObjectID id)
 	} else {
 		Warning("Object has no mesh component and was not added to draw List");
 	}
+
+	if (GameObject::HasComponent<SpinController>(id)) {
+		updateList.push_back(id);
+	} else {
+		Warning("Object has no controller component and was not added to the update list");
+	}
 }
 
 void World::PassMeshFactory(MeshFactory* factory)
 {
 	meshFactory = factory;
+}
+
+ObjectID World::GetLight()
+{
+	return light;
 }

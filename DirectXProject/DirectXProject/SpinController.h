@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component.h"
+#include "ControllerUpdateInterface.h"
 
 
 class SpinController : public Component<SpinController>

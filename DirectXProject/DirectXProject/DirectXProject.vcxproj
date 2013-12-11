@@ -115,6 +115,8 @@
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ControllerUpdateInterface.h" />
+    <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="MeshFactory.h" />
     <ClInclude Include="SpinController.h" />
     <ClInclude Include="TextureTypes.h" />

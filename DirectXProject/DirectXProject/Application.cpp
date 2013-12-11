@@ -80,6 +80,8 @@ bool Application::Initialize()
 
 	world.SetCameraObject(camera);
 	world.CreateScene();
+
+	m_Input->EnableAveragedFrameRate();
 	
 	return true;
 }
@@ -127,7 +129,6 @@ void Application::Run()
 		if (m_Input->Pressed(VK_ESCAPE)) {
 			running = false;
 		} else {
-			m_Input->Update();
 			TestUpdate();
 			result = Frame();
 			if(!result)
@@ -144,6 +145,8 @@ void Application::Run()
 
 void Application::TestUpdate()
 {
+	m_Input->Update();
+
 	for (int i = 0; i < FirstPersonController::GetList().Size(); i++) {
 		if (FirstPersonController::GetList().Exists(i)) {
 			FirstPersonController::GetList().Get(i).Update();
@@ -154,10 +157,16 @@ void Application::TestUpdate()
 			SpinController::GetList().Get(i).Update();
 		}
 	}
+
 	if (m_Input->MouseButton(Mouse::RIGHT)) {
 		window.SetCursorToCentre();
 		window.SetMouseLockedCentre();
 	}
+
+	if (m_Input->Pressed(VK_RETURN)) {
+		std::cout << "FrameRate: " << m_Input->Framerate() << std::endl;
+	}
+
 }
 
 bool Application::Frame()

@@ -36,6 +36,10 @@ public:
 	double GetTimeForLastFrame() {return timeForLastFrame/CLOCKS_PER_SEC;}
 	double GetTimeSinceLastFrame();
 
+	void EnableAveragedFrameRate(int averageLength = 60){enableFrameRate = true; loopMax = averageLength;}
+	void DisableAveragedFrameRate(){enableFrameRate = false;}
+	double Framerate(){return (1/GetTimeForLastFrame());}
+
 	int GetScreenWidth(){return screenWidth;}
 	int GetScreenHeight(){return screenHeight;}
 
@@ -51,6 +55,9 @@ private:
 	double timeForLastFrame;
 	double lastTime;
 	double currentTime;
+	bool enableFrameRate;
+	int loopCount;
+	int loopMax;
 
 	Mouse mouse;
 

@@ -2,6 +2,7 @@
 
 
 #include "Component.h"
+#include "ControllerUpdateInterface.h"
 
 class FirstPersonController : public Component<FirstPersonController>
 {

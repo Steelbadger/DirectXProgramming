@@ -278,6 +278,12 @@
     <ClInclude Include="SpinController.h">
       <Filter>Header Files\World\Objects and Components</Filter>
     </ClInclude>
+    <ClInclude Include="ControllerUpdateInterface.h">
+      <Filter>Header Files\World\Objects and Components</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>Header Files\World\Objects and Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="seafloor.dds">

@@ -82,13 +82,6 @@ void GraphicsClass::Shutdown()
 		m_LightShader = 0;
 	}
 
-	if (m_LightShader)
-	{
-		m_LightShader->Shutdown();
-		delete m_LightShader;
-		m_LightShader = 0;
-	}
-
 	return;
 }
 
@@ -126,9 +119,10 @@ bool GraphicsClass::Render(World& world)
 	while (drawList.size() > 0) {
 		ObjectID current = drawList.back();
 		drawList.pop_back();
-		model = GameObject::Get(current).GetLocalMatrix();
+//		model = GameObject::Get(current).GetLocalMatrix();
 		// Render the model using the light shader.	
-		result = m_LightShader->Render(m_D3D->GetDeviceContext(), current, model, world.GetCameraObject(), m_Light->GetDirection(), m_Light->GetDiffuseColor(), m_Light->GetSpecularPower());
+//		result = m_LightShader->Render(m_D3D->GetDeviceContext(), current, model, world.GetCameraObject(), m_Light->GetDirection(), m_Light->GetDiffuseColor(), m_Light->GetSpecularPower());
+		result = m_LightShader->TESTRender(m_D3D->GetDeviceContext(), current, world.GetCameraObject(), world.GetLight());
 		if(!result)
 		{
 			return false;
