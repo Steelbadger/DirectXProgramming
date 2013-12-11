@@ -97,6 +97,7 @@
     <ClCompile Include="lightshaderclass.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix4x4.cpp" />
+    <ClCompile Include="MeshFactory.cpp" />
     <ClCompile Include="ModelClass.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Orientation.cpp" />
@@ -106,11 +107,13 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="textureclass.cpp" />
     <ClCompile Include="textureshaderclass.cpp" />
+    <ClCompile Include="UtilityFunctions.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Vector3.cpp" />
     <ClCompile Include="Vector4.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MeshFactory.h" />
     <ClInclude Include="TextureTypes.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />

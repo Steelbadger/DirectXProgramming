@@ -1,5 +1,10 @@
 #include "lightshaderclass.h"
-
+#include "Camera.h"
+#include "GameObject.h"
+#include "Position.h"
+#include "Material.h"
+#include "Texture.h"
+#include "TextureTypes.h"
 
 LightShaderClass::LightShaderClass()
 {
@@ -61,6 +66,40 @@ bool LightShaderClass::Render(	ID3D11DeviceContext* deviceContext, int indexCoun
 
 	// Now render the prepared buffers with the shader.
 	RenderShader(deviceContext, indexCount);
+
+	return true;
+}
+
+bool LightShaderClass::Render(ID3D11DeviceContext* deviceContext, ObjectID meshObject, D3DXMATRIX world,
+								ObjectID cameraObject, D3DXVECTOR3 lightdir, D3DXVECTOR4 lightcolour, float specPow)
+{
+	bool result;
+	unsigned int stride, offset;
+	// Set vertex buffer stride and offset.
+	MeshData data = GameObject::GetComponent<Mesh>(meshObject).GetGeometry();
+
+	stride = data.stride;
+	offset = 0;
+    
+	// Set the vertex buffer to active in the input assembler so it can be rendered.
+	deviceContext->IASetVertexBuffers(0, 1, &data.m_vertexBuffer, &stride, &offset);
+
+	// Set the index buffer to active in the input assembler so it can be rendered.
+	deviceContext->IASetIndexBuffer(data.m_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+	// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
+	deviceContext->IASetPrimitiveTopology(data.topology);
+
+
+	// Set the shader parameters that it will use for rendering.
+	result = SetShaderParameters(deviceContext, meshObject, world, cameraObject, lightdir, lightcolour, specPow);
+	if(!result)
+	{
+		return false;
+	}
+
+	// Now render the prepared buffers with the shader.
+	RenderShader(deviceContext, data.m_indexCount);
 
 	return true;
 }
@@ -400,6 +439,106 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, D
 
 	// Now set the camera constant buffer in the vertex shader with the updated values.
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_cameraBuffer);
+
+	// Set shader texture resource in the pixel shader.
+	deviceContext->PSSetShaderResources(0, 1, &texture);
+
+	// Lock the light constant buffer so it can be written to.
+	result = deviceContext->Map(m_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if(FAILED(result))
+	{
+		return false;
+	}
+
+	// Get a pointer to the data in the constant buffer.
+	dataPtr2 = (LightBufferType*)mappedResource.pData;
+
+	// Copy the lighting variables into the constant buffer.
+	dataPtr2->lightColor = lightColor;
+	dataPtr2->lightDirection = lightDirection;
+	dataPtr2->specularPower = specularPower;
+
+	// Unlock the constant buffer.
+	deviceContext->Unmap(m_lightBuffer, 0);
+
+	// Set the position of the light constant buffer in the pixel shader.
+	bufferNumber = 0;
+
+	// Finally set the light constant buffer in the pixel shader with the updated values.
+	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_lightBuffer);
+
+	return true;
+}
+
+
+bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, ObjectID meshObject, D3DXMATRIX worldMatrix, 
+											ObjectID cameraObject, D3DXVECTOR3 lightDirection, D3DXVECTOR4 lightColor, 
+											float specularPower)
+{
+	HRESULT result;
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	unsigned int bufferNumber;
+	MatrixBufferType* dataPtr;
+	LightBufferType* dataPtr2;
+	CameraBufferType* dataPtr3;
+	D3DXMATRIX viewMatrix = GameObject::GetComponent<Camera>(cameraObject).GetViewMatrix();
+	D3DXMATRIX projectionMatrix = GameObject::GetComponent<Camera>(cameraObject).GetProjectionMatrix();
+
+	// Transpose the matrices to prepare them for the shader.
+	D3DXMatrixTranspose(&worldMatrix, &worldMatrix);
+	D3DXMatrixTranspose(&viewMatrix, &viewMatrix);
+	D3DXMatrixTranspose(&projectionMatrix, &projectionMatrix);
+
+	// Lock the constant buffer so it can be written to.
+	result = deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if(FAILED(result))
+	{
+		return false;
+	}
+
+	// Get a pointer to the data in the constant buffer.
+	dataPtr = (MatrixBufferType*)mappedResource.pData;
+
+	// Copy the matrices into the constant buffer.
+	dataPtr->world = worldMatrix;
+	dataPtr->view = viewMatrix;
+	dataPtr->projection = projectionMatrix;
+
+	// Unlock the constant buffer.
+	deviceContext->Unmap(m_matrixBuffer, 0);
+
+	// Set the position of the constant buffer in the vertex shader.
+	bufferNumber = 0;
+
+	// Now set the constant buffer in the vertex shader with the updated values.
+	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
+
+	// Lock the camera constant buffer so it can be written to.
+	result = deviceContext->Map(m_cameraBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if(FAILED(result))
+	{
+		return false;
+	}
+
+	// Get a pointer to the data in the constant buffer.
+	dataPtr3 = (CameraBufferType*)mappedResource.pData;
+
+	D3DXVECTOR3 cameraPosition = GameObject::GetComponent<Position>(cameraObject).GetPosition();
+
+	// Copy the camera position into the constant buffer.
+	dataPtr3->position = cameraPosition;
+	dataPtr3->padding = 0.0f;
+
+	// Unlock the camera constant buffer.
+	deviceContext->Unmap(m_cameraBuffer, 0);
+
+	// Set the position of the camera constant buffer in the vertex shader.
+	bufferNumber = 1;
+
+	// Now set the camera constant buffer in the vertex shader with the updated values.
+	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_cameraBuffer);
+
+	ID3D11ShaderResourceView* texture = GameObject::GetComponent<Material>(meshObject).GetTextureResource<AmbientTexture>();
 
 	// Set shader texture resource in the pixel shader.
 	deviceContext->PSSetShaderResources(0, 1, &texture);

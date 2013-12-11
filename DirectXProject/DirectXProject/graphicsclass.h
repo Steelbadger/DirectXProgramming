@@ -27,12 +27,16 @@ public:
 
 	void SetTESTCamera(ObjectID camera);
 	bool TESTFrame();
+	void TESTinit();
+
+	bool Frame();
 
 
 
 private:
 
 	bool TESTRender();
+	bool Render();
 
 private:
 	D3DClass* m_D3D;
@@ -41,6 +45,8 @@ private:
 	TextureShaderClass* m_TextureShader;
 	LightShaderClass* m_LightShader;
 	LightClass* m_Light;
+
+	ObjectID quad;
 
 	ObjectID TESTCamera;
 };

@@ -150,6 +150,12 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Source Files\World\Material\Textures</Filter>
     </ClCompile>
+    <ClCompile Include="UtilityFunctions.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshFactory.cpp">
+      <Filter>Source Files\Factories</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vector2.h">
@@ -256,6 +262,9 @@
     </ClInclude>
     <ClInclude Include="TextureTypes.h">
       <Filter>Header Files\World\Material\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshFactory.h">
+      <Filter>Header Files\Factories</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

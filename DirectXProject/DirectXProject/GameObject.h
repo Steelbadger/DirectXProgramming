@@ -3,6 +3,9 @@
 #include "Component.h"
 #include <vector>
 #include <map>
+#include "UtilityFunctions.h"
+#include <D3D11.h>
+#include <D3DX10math.h>
 
 
 //  A GameObject is both a component and an 'owner' of components
@@ -17,6 +20,8 @@ public:
 	//  Return the lookup for a component of type specified by the unique id of
 	//  the component type of interest.  Largely ignored now
 	ObjectID GetComponentOfType(ComponentType type);
+
+	D3DXMATRIX GetLocalMatrix();
 
 	//  Make a pre-existing GameObject object a child of this object
 	//  This could be imporoved by simply making it a template specialisation
@@ -39,22 +44,6 @@ public:
 	//  Largely ignored now in favour of templated functions
 	void AddComponent(ObjectID id, ComponentType type);
 
-	//  Add a pre-existing component of type T, with ObjectID id to this GameObject
-	//  Largely ignored now in favour of creating the components in place
-	//  using other AddComponent function
-	template<class T> void AddComponent(ObjectID id){
-		ComponentType type = T::GetComponentTypeID();
-		if (components.count(type) == 0) {
-			components[type] = id;
-			T* tempPointer = &T::Get(id);
-			GameObject* checkPointer = this;
-			ObjectID thisID = GetID();
-			tempPointer->SetParentID(thisID);	
-		} else {
-			//panic
-		} 
-	}
-
 	//  This is the primary method of adding a component to a GameObject
 	//  It creates a new component of the type T and adds it to the gameObject
 	//  It then returns the ID of that component in the component lookup table
@@ -64,6 +53,15 @@ public:
 		ObjectID newComp = T::New(GetID());
 		components[type] = newComp;
 		return newComp;
+	}
+
+	template<class T> bool HasComponent() {
+		ComponentType type = T::GetComponentTypeID();
+		if (components.count(type) != 0) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	//  This removes the Component of the type T from the GameObject
@@ -76,6 +74,7 @@ public:
 			components.erase(type);
 			T::DeleteFromStorage(comp);
 		} else {
+			Error("Cannot Delete, No Component of this Type");
 			//panic
 		}
 	}
@@ -88,6 +87,7 @@ public:
 			ObjectID compID = components[type];
 			return T::Get(compID);
 		} else {
+			Warning("No Component of type, creating new Component in place");
 			ObjectID compID = AddComponent<T>();
 			return T::Get(compID);
 		}
@@ -101,6 +101,7 @@ public:
 		if(components.count(type) != 0) {
 			compID = components[type];
 		} else {
+			Warning("No Component of type, creating new Component in place and passing reference");
 			compID = AddComponent<T>();
 		}
 		return compID;
@@ -117,6 +118,16 @@ public:
 	//  This is just for shortening/simplifying the code necessary to fetch a component reference
 	template<class T> static ObjectID GetComponentReference(ObjectID id) {
 		return GameObject::Get(id).GetComponentReference<T>();
+	}
+
+	//  Add a component of type T to the GameObject id
+	//  This is just for shortening/simplifying the code necessary to add a new component
+	template<class T> static ObjectID AddComponent(ObjectID id){
+		return GameObject::Get(id).AddComponent<T>();
+	}
+
+	template<class T> static bool HasComponent(ObjectID id){
+		return GameObject::Get(id).HasComponent<T>();
 	}
 
 private:

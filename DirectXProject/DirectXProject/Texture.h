@@ -28,7 +28,7 @@ public:
 	~Texture(){;}
 
 	void SetFile(std::string file) {filename = file;}
-	ID3D11ShaderResourceView* GetTexture() {return m_texture;}
+	ID3D11ShaderResourceView* GetTexture() {return texture;}
 	void DeleteFromStorage(){textureStorage.Remove(lookup);}
 
 	static T& Get(ObjectID id){return textureStorage.Get(id);}
