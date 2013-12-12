@@ -90,6 +90,21 @@ void HardwareState::Update()
 		timeForLastFrame = currentTime - lastTime;
 	}
 
+	LARGE_INTEGER currentTime, frequency;
+	long long int tickCount, countsPerSecond;
+	QueryPerformanceCounter(&currentTime);
+	QueryPerformanceFrequency(&frequency);
+	tickCount = currentTime.QuadPart-frameTimeOld;
+	frameTimeOld = currentTime.QuadPart;
+	countsPerSecond = frequency.QuadPart;
+
+	if(tickCount < 0.0f) {
+		tickCount = 0.0f;
+	}
+
+
+	highResTimer = double(tickCount)/countsPerSecond;
+
 	for (int i = 256; i > 0; i--)
 	{
 		if (keys[i-1] == true && oldkey[i-1] == false)

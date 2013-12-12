@@ -112,7 +112,7 @@ void Application::Run()
 	while(running)
 	{
 		// Handle the windows messages.
-		if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		while(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
@@ -139,7 +139,7 @@ void Application::Run()
 void Application::TestUpdate()
 {
 	m_Input->Update();
-
+	float timestep = m_Input->GetTimeForLastFrameHighResolution();
 	for (int i = 0; i < FirstPersonController::GetList().Size(); i++) {
 		if (FirstPersonController::GetList().Exists(i)) {
 			FirstPersonController::GetList().Get(i).Update();
@@ -147,7 +147,7 @@ void Application::TestUpdate()
 	}
 	for (int i = 0; i < SpinController::GetList().Size(); i++) {
 		if (SpinController::GetList().Exists(i)) {
-			SpinController::GetList().Get(i).Update();
+			SpinController::GetList().Get(i).Update(timestep);
 		}
 	}
 
@@ -158,6 +158,7 @@ void Application::TestUpdate()
 
 	if (m_Input->Pressed(VK_RETURN)) {
 		std::cout << "FrameRate: " << m_Input->Framerate() << std::endl;
+		std::cout << "HighResTimer: " << m_Input->GetTimeForLastFrameHighResolution() << std::endl;
 	}
 
 }

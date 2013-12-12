@@ -10,7 +10,7 @@ public:
 	SpinController();
 	~SpinController();
 
-	void Update();
+	void Update(float time);
 	void SetSpinSpeed(float spinSpeed);
 private:
 	float spinSpeed;

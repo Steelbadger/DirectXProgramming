@@ -35,6 +35,7 @@ public:
 
 	double GetTimeForLastFrame() {return timeForLastFrame/CLOCKS_PER_SEC;}
 	double GetTimeSinceLastFrame();
+	double GetTimeForLastFrameHighResolution(){return highResTimer;}
 
 	void EnableAveragedFrameRate(int averageLength = 60){enableFrameRate = true; loopMax = averageLength;}
 	void DisableAveragedFrameRate(){enableFrameRate = false;}
@@ -58,6 +59,9 @@ private:
 	bool enableFrameRate;
 	int loopCount;
 	int loopMax;
+
+	long long int frameTimeOld;
+	double highResTimer;
 
 	Mouse mouse;
 

@@ -30,7 +30,7 @@ void FirstPersonController::Update()
 	Camera* camera = &GameObject::GetComponent<Camera>(GetParentID());
 	Position* position = &GameObject::GetComponent<Position>(GetParentID());
 	Orientation* orientation = &GameObject::GetComponent<Orientation>(GetParentID());
-	float mulp = sensitivity*input.GetTimeForLastFrame();
+	float mulp = sensitivity*input.GetTimeForLastFrameHighResolution();
 
 	//  Zoom with mouse wheel
 	if (input.CheckMouseWheel()) {

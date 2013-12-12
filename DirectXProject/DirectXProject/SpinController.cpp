@@ -14,10 +14,10 @@ SpinController::~SpinController()
 }
 
 
-void SpinController::Update()
+void SpinController::Update(float time)
 {
 	Orientation* orientation = &GameObject::GetComponent<Orientation>(GetParentID());
-	orientation->Rotate(spinSpeed, D3DXVECTOR3(0,1,0));
+	orientation->Rotate(spinSpeed*time, D3DXVECTOR3(0,1,0));
 }
 
 void SpinController::SetSpinSpeed(float s)

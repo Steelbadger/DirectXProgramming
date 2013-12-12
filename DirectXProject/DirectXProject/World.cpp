@@ -41,7 +41,7 @@ void World::CreateScene()
 	GameObject::GetComponent<Material>(quad).AddTexture<AmbientTexture>("crateDiffuse.jpg");
 	GameObject::GetComponent<Material>(quad).AddTexture<NormalMap>("crateNormal.jpg");
 	GameObject::GetComponent<Material>(quad).SetShader(ShaderLibrary::Shaders::NORMAL);
-	GameObject::GetComponent<SpinController>(quad).SetSpinSpeed(0.01f);
+	GameObject::GetComponent<SpinController>(quad).SetSpinSpeed(2.0f);
 
 	ObjectID test= GameObject::New();
 	GameObject::AddComponent<Position>(test);
@@ -54,7 +54,7 @@ void World::CreateScene()
 	GameObject::GetComponent<Mesh>(test).SetMeshData(meshFactory->CreateMeshBuffersFromFile("outwardCube.obj", Mesh::LIT));
 	GameObject::GetComponent<Material>(test).AddTexture<AmbientTexture>("seafloor.dds");
 	GameObject::GetComponent<Material>(test).SetShader(ShaderLibrary::Shaders::LIT);
-	GameObject::GetComponent<SpinController>(test).SetSpinSpeed(0.2f);
+	GameObject::GetComponent<SpinController>(test).SetSpinSpeed(4.0f);
 
 	GameObject::SetParentChild(quad, test);
 
