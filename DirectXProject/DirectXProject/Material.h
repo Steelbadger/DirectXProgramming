@@ -2,7 +2,8 @@
 
 #include "Texture.h"
 #include "Component.h"
-
+#include "ShaderInterface.h"
+#include "ShaderLibrary.h"
 #include <map>
 
 //  A Material contains a collection of Textures and can retrieve 
@@ -57,6 +58,9 @@ public:
 		return T::Get(id);
 	}
 
+	ShaderLibrary::Shaders GetShader(){return shader;}
+	void SetShader(ShaderLibrary::Shaders s){shader = s;}
 private:
 	std::map<TextureType, ObjectID> textures;		//  Store the texture IDs
+	ShaderLibrary::Shaders shader;
 };

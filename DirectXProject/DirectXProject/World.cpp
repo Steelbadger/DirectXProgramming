@@ -13,6 +13,7 @@
 #include "Material.h"
 #include "SpinController.h"
 #include "DirectionalLight.h"
+#include "ShaderLibrary.h"
 
 
 World::World()
@@ -38,6 +39,8 @@ void World::CreateScene()
 	GameObject::GetComponent<Position>(quad).SetPosition(0,0,0);
 	GameObject::GetComponent<Mesh>(quad).SetMeshData(meshFactory->CreateMeshBuffersFromFile("outwardCube.obj", Mesh::LIT));
 	GameObject::GetComponent<Material>(quad).AddTexture<AmbientTexture>("brick1.dds");
+	GameObject::GetComponent<Material>(quad).AddTexture<NormalMap>("bump01.dds");
+	GameObject::GetComponent<Material>(quad).SetShader(ShaderLibrary::Shaders::LIT);
 	GameObject::GetComponent<SpinController>(quad).SetSpinSpeed(0.04f);
 
 	ObjectID test= GameObject::New();
@@ -50,6 +53,7 @@ void World::CreateScene()
 	GameObject::GetComponent<Position>(test).SetPosition(0,0,3);
 	GameObject::GetComponent<Mesh>(test).SetMeshData(meshFactory->CreateMeshBuffersFromFile("outwardCube.obj", Mesh::LIT));
 	GameObject::GetComponent<Material>(test).AddTexture<AmbientTexture>("seafloor.dds");
+	GameObject::GetComponent<Material>(test).SetShader(ShaderLibrary::Shaders::LIT);
 	GameObject::GetComponent<SpinController>(test).SetSpinSpeed(0.2f);
 
 	GameObject::SetParentChild(quad, test);
@@ -106,6 +110,12 @@ void World::AddToScene(ObjectID id)
 		updateList.push_back(id);
 	} else {
 		Warning("Object has no controller component and was not added to the update list");
+	}
+
+	if (GameObject::HasComponent<DirectionalLight>(id)) {
+		lightList.push_back(id);
+	} else {
+		Warning("Object has no light component and was not added to the light list");
 	}
 }
 

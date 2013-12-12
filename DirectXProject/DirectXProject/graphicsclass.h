@@ -12,7 +12,7 @@
 #include "textureshaderclass.h"
 #include "lightclass.h"
 #include "lightshaderclass.h"
-
+#include "ShaderLibrary.h"
 #include "LookupTable.h"
 class World;
 class GraphicsClass
@@ -31,16 +31,11 @@ private:
 
 private:
 	D3DClass* m_D3D;
+	ShaderLibrary shaderLibrary;
+
 	ColorShaderClass* m_ColorShader;
 	TextureShaderClass* m_TextureShader;
 	LightShaderClass* m_LightShader;
-	LightClass* m_Light;
-
-	ObjectID quad;
-
-	ObjectID test;
-
-	ObjectID TESTCamera;
 };
 
 #endif

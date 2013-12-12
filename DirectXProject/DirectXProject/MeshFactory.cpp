@@ -116,47 +116,6 @@ MeshData MeshFactory::CreateLitMeshBuffersFromFile(std::string filename)
 	D3D11_SUBRESOURCE_DATA vertexData, indexData;
 	HRESULT result;
 
-	//////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////TEST STUFF//////////////////////////////////////
-
-	//// Set the number of vertices in the vertex array.
-	//output.m_vertexCount = 4;
-
-	//// Set the number of indices in the index array.
-	//output.m_indexCount = 4;
-
-	//verts.resize(4);
-	//output.topology = D3D_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
-
-	//// Load the vertex array with data.
-	//verts[0].position = D3DXVECTOR3(-1.0f, -1.0f, 0.0f);  // Bottom Left.
-	//verts[0].texture = D3DXVECTOR2(0.0f, 0.0f);
-	//verts[0].normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
-
-	//verts[1].position = D3DXVECTOR3(-1.0f, 1.0f, 0.0f);  // Top Left.
-	//verts[1].texture = D3DXVECTOR2(0.0f, 1.0f);
-	//verts[1].normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
-	//
-	//verts[2].position = D3DXVECTOR3(1.0f, -1.0f, 0.0f);  // Bottom Right.
-	//verts[2].texture = D3DXVECTOR2(1.0f, 0.0f);
-	//verts[2].normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
-
-	//verts[3].position = D3DXVECTOR3(1.0f, 1.0f, 0.0f);  // Top Right.
-	//verts[3].texture = D3DXVECTOR2(1.0f, 1.0f);
-	//verts[3].normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
-
-	//index.resize(4);
-
-	//// Load the index array with data.
-	//index[0] = 0;  // Bottom left.
-	//index[1] = 1;  // Top left.
-	//index[2] = 2;  // Top right.
-	//index[3] = 3;  // Top right.
-
-	//////////////////////////////////END OF TEST STUFF///////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////
-
-
 	// Set up the description of the static vertex buffer.
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	vertexBufferDesc.ByteWidth = sizeof(LitVertexType) * output.m_vertexCount;
@@ -202,7 +161,64 @@ MeshData MeshFactory::CreateLitMeshBuffersFromFile(std::string filename)
 
 MeshData MeshFactory::CreateMappedMeshBuffersFromFile(std::string filename)
 {
+	std::vector<LitVertexType> vertsLoad;
+	std::vector<MappedVertexType> verts;
+	std::vector<unsigned int> index;
+	LoadLitVerts(filename, vertsLoad, index);
+
+	verts = ComputeTangentSpace(vertsLoad, index);
+
 	MeshData output;
+
+	output.m_vertexCount = verts.size();
+	output.m_indexCount = index.size();
+	output.stride = sizeof(MappedVertexType);
+	output.topology = D3D_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+
+	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
+	D3D11_SUBRESOURCE_DATA vertexData, indexData;
+	HRESULT result;
+
+	// Set up the description of the static vertex buffer.
+	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	vertexBufferDesc.ByteWidth = sizeof(MappedVertexType) * output.m_vertexCount;
+	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexBufferDesc.CPUAccessFlags = 0;
+	vertexBufferDesc.MiscFlags = 0;
+	vertexBufferDesc.StructureByteStride = 0;
+
+	// Give the subresource structure a pointer to the vertex data.
+	vertexData.pSysMem = &verts[0];
+	vertexData.SysMemPitch = 0;
+	vertexData.SysMemSlicePitch = 0;
+
+	// Now create the vertex buffer.
+	result = device->CreateBuffer(&vertexBufferDesc, &vertexData, &output.m_vertexBuffer);
+	if(FAILED(result))
+	{
+		Error("Failed to Create Vertex Buffer for file: " + filename);
+	}
+
+	// Set up the description of the static index buffer.
+	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	indexBufferDesc.ByteWidth = sizeof(unsigned int) * output.m_indexCount;
+	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	indexBufferDesc.CPUAccessFlags = 0;
+	indexBufferDesc.MiscFlags = 0;
+	indexBufferDesc.StructureByteStride = 0;
+
+	// Give the subresource structure a pointer to the index data.
+	indexData.pSysMem = &index[0];
+	indexData.SysMemPitch = 0;
+	indexData.SysMemSlicePitch = 0;
+
+	// Create the index buffer.
+	result = device->CreateBuffer(&indexBufferDesc, &indexData, &output.m_indexBuffer);
+	if(FAILED(result))
+	{
+		Error("Failed to Create Index Buffer for file: " + filename);
+	}
+
 	return output;
 }
 
@@ -232,6 +248,90 @@ void MeshFactory::LoadLitVerts(std::string filename, std::vector<LitVertexType>&
 std::vector<MeshFactory::MappedVertexType> MeshFactory::ComputeTangentSpace(const std::vector<LitVertexType>& data, const std::vector<unsigned int>& index)
 {
 	std::vector<MappedVertexType> thingy;
+
+	for (int i = 0; i < index.size();) {
+
+		LitVertexType vertex1, vertex2, vertex3;
+		vertex1 = data[index[i]];
+		vertex2 = data[index[i+1]];
+		vertex3 = data[index[i+2]];
+		D3DXVECTOR3 tangent;
+		D3DXVECTOR3 binormal;
+
+		float vector1[3], vector2[3];
+		float tuVector[2], tvVector[2];
+		float den;
+		float length;
+
+		// Calculate the two vectors for this face.
+		vector1[0] = vertex2.position.x - vertex1.position.x;
+		vector1[1] = vertex2.position.y - vertex1.position.y;
+		vector1[2] = vertex2.position.z - vertex1.position.z;
+
+		vector2[0] = vertex3.position.x - vertex1.position.x;
+		vector2[1] = vertex3.position.y - vertex1.position.y;
+		vector2[2] = vertex3.position.z - vertex1.position.z;
+
+		// Calculate the tu and tv texture space vectors.
+		tuVector[0] = vertex2.texture.x - vertex1.texture.y;
+		tvVector[0] = vertex2.texture.y - vertex1.texture.y;
+
+		tuVector[1] = vertex3.texture.x - vertex1.texture.x;
+		tvVector[1] = vertex3.texture.y - vertex1.texture.y;
+
+		// Calculate the denominator of the tangent/binormal equation.
+		den = 1.0f / (tuVector[0] * tvVector[1] - tuVector[1] * tvVector[0]);
+
+		// Calculate the cross products and multiply by the coefficient to get the tangent and binormal.
+		tangent.x = (tvVector[1] * vector1[0] - tvVector[0] * vector2[0]) * den;
+		tangent.y = (tvVector[1] * vector1[1] - tvVector[0] * vector2[1]) * den;
+		tangent.z = (tvVector[1] * vector1[2] - tvVector[0] * vector2[2]) * den;
+
+		binormal.x = (tuVector[0] * vector2[0] - tuVector[1] * vector1[0]) * den;
+		binormal.y = (tuVector[0] * vector2[1] - tuVector[1] * vector1[1]) * den;
+		binormal.z = (tuVector[0] * vector2[2] - tuVector[1] * vector1[2]) * den;
+
+		// Calculate the length of this normal.
+		length = sqrt((tangent.x * tangent.x) + (tangent.y * tangent.y) + (tangent.z * tangent.z));
+			
+		// Normalize the normal and then store it
+		tangent.x = tangent.x / length;
+		tangent.y = tangent.y / length;
+		tangent.z = tangent.z / length;
+
+		// Calculate the length of this normal.
+		length = sqrt((binormal.x * binormal.x) + (binormal.y * binormal.y) + (binormal.z * binormal.z));
+			
+		// Normalize the normal and then store it
+		binormal.x = binormal.x / length;
+		binormal.y = binormal.y / length;
+		binormal.z = binormal.z / length;
+
+		MappedVertexType mVertex1, mVertex2, mVertex3;
+		mVertex1.position = vertex1.position;
+		mVertex1.normal = vertex1.normal;
+		mVertex1.texture = vertex1.texture;
+		mVertex1.tangent = tangent;
+		mVertex1.bitangent = binormal;
+
+		mVertex2.position = vertex2.position;
+		mVertex2.normal = vertex2.normal;
+		mVertex2.texture = vertex2.texture;
+		mVertex2.tangent = tangent;
+		mVertex2.bitangent = binormal;
+
+		mVertex3.position = vertex3.position;
+		mVertex3.normal = vertex3.normal;
+		mVertex3.texture = vertex3.texture;
+		mVertex3.tangent = tangent;
+		mVertex3.bitangent = binormal;
+
+		thingy.push_back(mVertex1);
+		thingy.push_back(mVertex2);
+		thingy.push_back(mVertex3);
+		i+=3;
+	}
+
 	return thingy;
 }
 

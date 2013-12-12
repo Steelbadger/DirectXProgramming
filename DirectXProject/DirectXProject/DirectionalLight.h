@@ -12,7 +12,11 @@ public:
 	void SetDirection(float x, float y, float z){m_Direction = D3DXVECTOR3(x, y, z);}
 
 	D3DXVECTOR4 GetColour(){return m_Colour;}
-	D3DXVECTOR3 GetDirection(){return m_Direction;}
+	D3DXVECTOR3 GetDirection(){
+		D3DXVECTOR4 output(m_Direction);
+		D3DXVec3Transform(&output, &m_Direction, &GameObject::Get(GetParentID()).GetLocalMatrix());
+		return D3DXVECTOR3(output);	
+	}
 private:
 	D3DXVECTOR4 m_Colour;
 	D3DXVECTOR3 m_Direction;

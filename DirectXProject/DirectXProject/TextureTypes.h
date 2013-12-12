@@ -22,6 +22,11 @@ class SpecularMap : public Texture<SpecularMap>
 public:
 	SpecularMap(){};
 	~SpecularMap(){};
+
+	void SetShininessScale(float shin){shininessMax = shin;}
+	float GetShininessScale(){return shininessMax;}
+private:
+	float shininessMax;
 };
 
 //  For altering the light normals across a single poly

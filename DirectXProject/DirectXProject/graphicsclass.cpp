@@ -28,6 +28,8 @@ bool GraphicsClass::Initialize(HWND hwnd, D3DClass* d3d)
 		
 	m_D3D = d3d;
 
+	shaderLibrary.Initialise(m_D3D->GetDevice(), hwnd);
+
 	// Create the light shader object.
 	m_LightShader = new LightShaderClass;
 	if(!m_LightShader)
@@ -43,18 +45,6 @@ bool GraphicsClass::Initialize(HWND hwnd, D3DClass* d3d)
 		return false;
 	}
 
-	// Create the light object.
-	m_Light = new LightClass;
-	if(!m_Light)
-	{
-		return false;
-	}
-
-	// Initialize the light object.
-	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_Light->SetDirection(1.0f, 0.0f, 0.0f);
-	m_Light->SetSpecularPower(30.0f);
-
 	return true;
 }
 
@@ -67,12 +57,6 @@ void GraphicsClass::Shutdown()
 		m_TextureShader->Shutdown();
 		delete m_TextureShader;
 		m_TextureShader = 0;
-	}
-
-	if (m_Light)
-	{
-		delete m_Light;	
-		m_Light = 0;
 	}
 
 	if (m_LightShader)
@@ -115,14 +99,15 @@ bool GraphicsClass::Render(World& world)
 	// Get the world, view, and projection matrices from the camera and d3d objects.
 	
 	std::list<ObjectID> drawList = world.GetDrawList();
+	ForwardShaderInterface* currentShader;
 
 	while (drawList.size() > 0) {
 		ObjectID current = drawList.back();
 		drawList.pop_back();
-//		model = GameObject::Get(current).GetLocalMatrix();
-		// Render the model using the light shader.	
-//		result = m_LightShader->Render(m_D3D->GetDeviceContext(), current, model, world.GetCameraObject(), m_Light->GetDirection(), m_Light->GetDiffuseColor(), m_Light->GetSpecularPower());
-		result = m_LightShader->TESTRender(m_D3D->GetDeviceContext(), current, world.GetCameraObject(), world.GetLight());
+
+		currentShader = shaderLibrary.GetShader(GameObject::GetComponent<Material>(current).GetShader());
+//		result = m_LightShader->Render(m_D3D->GetDeviceContext(), current, world.GetCameraObject(), world.GetLight());
+		result = currentShader->Render(m_D3D->GetDeviceContext(), current, world.GetCameraObject(), world.GetLight());
 		if(!result)
 		{
 			return false;

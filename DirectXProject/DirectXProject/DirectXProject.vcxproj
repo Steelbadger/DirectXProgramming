@@ -100,9 +100,11 @@
     <ClCompile Include="MeshFactory.cpp" />
     <ClCompile Include="ModelClass.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="NormalMapShaderClass.cpp" />
     <ClCompile Include="Orientation.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Scale.cpp" />
+    <ClCompile Include="ShaderLibrary.cpp" />
     <ClCompile Include="simd.cpp" />
     <ClCompile Include="SpinController.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -118,6 +120,8 @@
     <ClInclude Include="ControllerUpdateInterface.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="MeshFactory.h" />
+    <ClInclude Include="NormalMapShaderClass.h" />
+    <ClInclude Include="ShaderLibrary.h" />
     <ClInclude Include="SpinController.h" />
     <ClInclude Include="TextureTypes.h" />
     <ClInclude Include="Application.h" />

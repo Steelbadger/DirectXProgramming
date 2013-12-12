@@ -81,7 +81,7 @@ bool Application::Initialize()
 	world.SetCameraObject(camera);
 	world.CreateScene();
 
-	m_Input->EnableAveragedFrameRate();
+	m_Input->EnableAveragedFrameRate(200);
 	
 	return true;
 }
@@ -94,13 +94,6 @@ void Application::Shutdown()
 		m_Graphics->Shutdown();
 		delete m_Graphics;
 		m_Graphics = 0;
-	}
-
-	// Release the input object.
-	if(m_Input)
-	{
-		delete m_Input;
-		m_Input = 0;
 	}
 
 	return;
