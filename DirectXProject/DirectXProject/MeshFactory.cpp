@@ -19,9 +19,9 @@ void MeshFactory::SetDevice(ID3D11Device* dev)
 MeshData MeshFactory::CreateMeshBuffersFromFile(std::string filename, Mesh::FeatureLevel features)
 {
 	MeshData output;
-	if (loadedMeshMap.count(filename) != 0) {
-		output = loadedMeshMap[filename];
-	} else {
+//	if (loadedMeshMap.count(filename) != 0) {
+//		output = loadedMeshMap[filename];
+//	} else {
 
 		switch (features) {
 		case Mesh::FeatureLevel::TEXTURED:
@@ -34,8 +34,8 @@ MeshData MeshFactory::CreateMeshBuffersFromFile(std::string filename, Mesh::Feat
 			output = CreateMappedMeshBuffersFromFile(filename);
 			break;
 		}
-		loadedMeshMap[filename] = output;
-	}
+//		loadedMeshMap[filename] = output;
+//	}
 	return output;
 }
 
@@ -247,7 +247,8 @@ void MeshFactory::LoadLitVerts(std::string filename, std::vector<LitVertexType>&
 
 std::vector<MeshFactory::MappedVertexType> MeshFactory::ComputeTangentSpace(const std::vector<LitVertexType>& data, const std::vector<unsigned int>& index)
 {
-	std::vector<MappedVertexType> thingy;
+	std::vector<MappedVertexType> output;
+	output.resize(data.size());
 
 	for (int i = 0; i < index.size();) {
 
@@ -326,13 +327,13 @@ std::vector<MeshFactory::MappedVertexType> MeshFactory::ComputeTangentSpace(cons
 		mVertex3.tangent = tangent;
 		mVertex3.bitangent = binormal;
 
-		thingy.push_back(mVertex1);
-		thingy.push_back(mVertex2);
-		thingy.push_back(mVertex3);
+		output[index[i]] = mVertex1;
+		output[index[i+1]] = mVertex2;
+		output[index[i+2]] = mVertex3;
 		i+=3;
 	}
 
-	return thingy;
+	return output;
 }
 
 void MeshFactory::LoadObj(std::string filename, std::vector<LitVertexType>& outverts, std::vector<unsigned int>& outindex)

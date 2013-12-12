@@ -167,11 +167,12 @@
     <None Include="dirt1.JPG" />
     <None Include="light.ps" />
     <None Include="light.vs" />
+    <None Include="normalmappixelshader.fx" />
+    <None Include="normalmapvertexshader.fx" />
     <None Include="plastic1.JPG" />
     <None Include="seafloor.dds" />
     <None Include="texture.ps" />
     <None Include="texture.vs" />
-    <None Include="Tutorial07.fx" />
     <None Include="Tutorial07.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

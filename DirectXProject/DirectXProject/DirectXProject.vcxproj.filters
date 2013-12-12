@@ -67,6 +67,15 @@
     <Filter Include="Source Files\World\Material\Textures">
       <UniqueIdentifier>{67575b43-e663-4362-a96c-588e6d84283e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Textures">
+      <UniqueIdentifier>{2c6d8080-1f0a-4fdb-985d-ab6c9a5908f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Vertex Shaders">
+      <UniqueIdentifier>{20ee88b8-0ece-4dfb-9aef-16421222ca49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Pixel Shaders">
+      <UniqueIdentifier>{93d1b782-b845-4811-83e8-b032022e9a42}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Vector2.cpp">
@@ -298,41 +307,47 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="seafloor.dds">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Tutorial07.fx">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Tutorial07.jpg">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="brick1.dds">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="color.ps">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="color.vs">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Textures</Filter>
     </None>
     <None Include="dirt1.JPG">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="light.ps">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="light.vs">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Textures</Filter>
     </None>
     <None Include="plastic1.JPG">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Textures</Filter>
     </None>
-    <None Include="texture.ps">
-      <Filter>Resource Files</Filter>
+    <None Include="seafloor.dds">
+      <Filter>Resource Files\Textures</Filter>
+    </None>
+    <None Include="Tutorial07.jpg">
+      <Filter>Resource Files\Textures</Filter>
+    </None>
+    <None Include="color.vs">
+      <Filter>Resource Files\Vertex Shaders</Filter>
+    </None>
+    <None Include="light.vs">
+      <Filter>Resource Files\Vertex Shaders</Filter>
     </None>
     <None Include="texture.vs">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Vertex Shaders</Filter>
+    </None>
+    <None Include="color.ps">
+      <Filter>Resource Files\Pixel Shaders</Filter>
+    </None>
+    <None Include="texture.ps">
+      <Filter>Resource Files\Pixel Shaders</Filter>
+    </None>
+    <None Include="light.ps">
+      <Filter>Resource Files\Pixel Shaders</Filter>
+    </None>
+    <None Include="normalmapshader.fx">
+      <Filter>Resource Files\Vertex Shaders</Filter>
+    </None>
+    <None Include="normalmapvertexshader.fx">
+      <Filter>Resource Files\Vertex Shaders</Filter>
+    </None>
+    <None Include="normalmappixelshader.fx">
+      <Filter>Resource Files\Pixel Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

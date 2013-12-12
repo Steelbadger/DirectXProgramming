@@ -37,11 +37,11 @@ void World::CreateScene()
 	GameObject::AddComponent<SpinController>(quad);
 
 	GameObject::GetComponent<Position>(quad).SetPosition(0,0,0);
-	GameObject::GetComponent<Mesh>(quad).SetMeshData(meshFactory->CreateMeshBuffersFromFile("outwardCube.obj", Mesh::LIT));
-	GameObject::GetComponent<Material>(quad).AddTexture<AmbientTexture>("brick1.dds");
-	GameObject::GetComponent<Material>(quad).AddTexture<NormalMap>("bump01.dds");
-	GameObject::GetComponent<Material>(quad).SetShader(ShaderLibrary::Shaders::LIT);
-	GameObject::GetComponent<SpinController>(quad).SetSpinSpeed(0.04f);
+	GameObject::GetComponent<Mesh>(quad).SetMeshData(meshFactory->CreateMeshBuffersFromFile("crate.obj", Mesh::NORMALMAPPED));
+	GameObject::GetComponent<Material>(quad).AddTexture<AmbientTexture>("crateDiffuse.jpg");
+	GameObject::GetComponent<Material>(quad).AddTexture<NormalMap>("crateNormal.jpg");
+	GameObject::GetComponent<Material>(quad).SetShader(ShaderLibrary::Shaders::NORMAL);
+	GameObject::GetComponent<SpinController>(quad).SetSpinSpeed(0.01f);
 
 	ObjectID test= GameObject::New();
 	GameObject::AddComponent<Position>(test);
@@ -61,8 +61,11 @@ void World::CreateScene()
 
 	light = GameObject::New();
 	GameObject::AddComponent<DirectionalLight>(light);
+//	GameObject::AddComponent<SpinController>(light);
 	GameObject::GetComponent<DirectionalLight>(light).SetColour(1.0f, 1.0f, 1.0f, 1.0f);
 	GameObject::GetComponent<DirectionalLight>(light).SetDirection(1.0f, 0.0f, 0.0f);
+	GameObject::GetComponent<DirectionalLight>(light).SetSpecularPower(400.0f);
+//	GameObject::GetComponent<SpinController>(light).SetSpinSpeed(-0.02f);
 
 	AddToScene(quad);
 	AddToScene(test);

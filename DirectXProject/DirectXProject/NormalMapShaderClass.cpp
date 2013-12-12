@@ -5,6 +5,8 @@
 #include "Material.h"
 #include "DirectionalLight.h"
 #include "Camera.h"
+#include "Position.h"
+#include "TextureTypes.h"
 
 
 NormalMapShaderClass::NormalMapShaderClass()
@@ -17,12 +19,6 @@ NormalMapShaderClass::NormalMapShaderClass()
 	m_lightBuffer = 0;
 }
 
-
-NormalMapShaderClass::NormalMapShaderClass(const NormalMapShaderClass& other)
-{
-}
-
-
 NormalMapShaderClass::~NormalMapShaderClass()
 {
 }
@@ -33,7 +29,7 @@ bool NormalMapShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 
 
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, "bumpmap.vs", "bumpmap.ps");
+	result = InitializeShader(device, hwnd, "normalmapvertexshader.fx", "normalmappixelshader.fx");
 	if(!result)
 	{
 		return false;
@@ -94,6 +90,8 @@ bool NormalMapShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, cha
 	D3D11_BUFFER_DESC matrixBufferDesc;
 	D3D11_SAMPLER_DESC samplerDesc;
 	D3D11_BUFFER_DESC lightBufferDesc;
+	D3D11_BUFFER_DESC cameraBufferDesc;
+
 
 
 	// Initialize the pointers this function will use to null.
@@ -102,7 +100,7 @@ bool NormalMapShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, cha
 	pixelShaderBuffer = 0;
 
 	// Compile the vertex shader code.
-	result = D3DX11CompileFromFile(vsFilename, NULL, NULL, "BumpMapVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 
+	result = D3DX11CompileFromFile(vsFilename, NULL, NULL, "NormalMapVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 
 				       0, NULL, &vertexShaderBuffer, &errorMessage, NULL);
 	if(FAILED(result))
 	{
@@ -121,7 +119,7 @@ bool NormalMapShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, cha
 	}
 
 	// Compile the pixel shader code.
-	result = D3DX11CompileFromFile(psFilename, NULL, NULL, "BumpMapPixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 
+	result = D3DX11CompileFromFile(psFilename, NULL, NULL, "NormalMapPixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 
 				       0, NULL, &pixelShaderBuffer, &errorMessage, NULL);
 	if(FAILED(result))
 	{
@@ -251,6 +249,22 @@ bool NormalMapShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, cha
 	{
 		return false;
 	}
+
+	// Setup the description of the camera dynamic constant buffer that is in the vertex shader.
+	cameraBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	cameraBufferDesc.ByteWidth = sizeof(CameraBufferType);
+	cameraBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cameraBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cameraBufferDesc.MiscFlags = 0;
+	cameraBufferDesc.StructureByteStride = 0;
+
+	// Create the camera constant buffer pointer so we can access the vertex shader constant buffer from within this class.
+	result = device->CreateBuffer(&cameraBufferDesc, NULL, &m_cameraBuffer);
+	if(FAILED(result))
+	{
+		return false;
+	}
+
 
 	// Setup the description of the light dynamic constant buffer that is in the pixel shader.
 	lightBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
@@ -420,12 +434,21 @@ bool NormalMapShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContex
 	// Now set the camera constant buffer in the vertex shader with the updated values.
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_cameraBuffer);
 
-	ID3D11ShaderResourceView* textureArray[2];
-	textureArray[0] = GameObject::GetComponent<Material>(drawObject).GetTextureResource<AmbientTexture>();
-	textureArray[1] = GameObject::GetComponent<Material>(drawObject).GetTextureResource<NormalMap>();
+	ID3D11ShaderResourceView* ambientTexture;
+	ID3D11ShaderResourceView* normalTexture;
+
+	ambientTexture = GameObject::GetComponent<Material>(drawObject).GetTextureResource<AmbientTexture>();
+	normalTexture = GameObject::GetComponent<Material>(drawObject).GetTextureResource<NormalMap>();
+
+	std::vector<ID3D11ShaderResourceView*> textures;
+	textures.push_back(ambientTexture);
+	textures.push_back(normalTexture);
 
 	// Set shader texture array resource in the pixel shader.
-	deviceContext->PSSetShaderResources(0, 2, textureArray[0]);
+//	deviceContext->PSSetShaderResources(0, 1, &ambientTexture);
+//	deviceContext->PSSetShaderResources(1, 1, &normalTexture);
+	deviceContext->PSSetShaderResources(0, 2, textures.data());
+
 
 	// Lock the light constant buffer so it can be written to.
 	result = deviceContext->Map(m_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -440,7 +463,7 @@ bool NormalMapShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContex
 	// Copy the lighting variables into the constant buffer.
 	dataPtr2->lightColor = GameObject::GetComponent<DirectionalLight>(light).GetColour();
 	dataPtr2->lightDirection = GameObject::GetComponent<DirectionalLight>(light).GetDirection();
-	dataPtr2->specularPower = 40;
+	dataPtr2->specularPower = GameObject::GetComponent<DirectionalLight>(light).GetSpecularPower();
 
 	// Unlock the constant buffer.
 	deviceContext->Unmap(m_lightBuffer, 0);
