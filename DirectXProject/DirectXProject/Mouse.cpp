@@ -3,6 +3,7 @@
 #include <WindowsX.h>
 
 #include <stdio.h>
+#include <iostream>
 
 Mouse::Mouse(void)
 {
@@ -22,10 +23,12 @@ Mouse::~Mouse(void)
 
 void Mouse::UpdatePosition(LPARAM lParam)
 {
-	oldx = x;
-	oldy = y;
-	x = GET_X_LPARAM(lParam)+8; 
-	y = GET_Y_LPARAM(lParam)+30; 
+	x = GET_X_LPARAM(lParam); 
+	y = GET_Y_LPARAM(lParam); 
+
+	//std::cout << "Position: (" << x << ", " << y << ")" << std::endl;
+	//std::cout << "Old Position: (" << oldx << ", " << oldy << ")" << std::endl;
+	//std::cout << "Change: (" << frameMoveX << ", " << frameMoveY << ")" << std::endl;
 }
 
 void Mouse::Message(UINT message, WPARAM wParam, LPARAM lParam)
@@ -67,6 +70,14 @@ void Mouse::Update()
 		pressed[i] = false;
 		released[i] = false;
 	}
+
+	frameMoveX = x - oldx;
+	frameMoveY = y - oldy;
+	std::cout << "Position: (" << x << ", " << y << ")" << std::endl;
+	std::cout << "Old Position: (" << oldx << ", " << oldy << ")" << std::endl;
+	std::cout << "Change: (" << frameMoveX << ", " << frameMoveY << ")" << std::endl;
+	oldx = x;
+	oldy = y;
 
 
 	wheelWasMoved = wheelMoved;

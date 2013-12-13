@@ -28,9 +28,14 @@ void Window::SetCursorToCentre()
 	SetCursorPos(gWidth/2+windowRect.left,gHeight/2+windowRect.top);
 }
 
-void Window::SetMouseLockedCentre()
+void Window::SetMouseLockedCentreWindow()
 {
-	HardwareState::GetInstance().SetMouseLocked(gWidth/2,gHeight/2);
+	HardwareState::GetInstance().SetMouseLocked((gWidth/2)-1,(gHeight/2)-23);
+}
+
+void Window::SetMouseLockedCentreFullscreen()
+{
+	HardwareState::GetInstance().SetMouseLocked((gWidth/2),(gHeight/2));
 }
 
 void Window::OnResize()
@@ -48,7 +53,7 @@ void Window::OnMove()
 }
 
 
-void Window::Create(LPSTR strWindowName, int width, int height, DWORD dwStyle, bool bFullScreen, HINSTANCE hInstance)
+void Window::Create(LPSTR strWindowName, int width, int height, HINSTANCE hInstance, bool bFullScreen, DWORD dwStyle)
 {
 
 	DEVMODE dmScreenSettings;
@@ -59,7 +64,7 @@ void Window::Create(LPSTR strWindowName, int width, int height, DWORD dwStyle, b
 	wcex.hInstance		= hInstance;						
 	wcex.hIcon			= LoadIcon(NULL, IDI_APPLICATION);
 	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);		
-	wcex.hbrBackground	= (HBRUSH) (COLOR_WINDOW+1);
+	wcex.hbrBackground	= (HBRUSH) (COLOR_WINDOW);
 	wcex.lpszMenuName	= NULL;	
 	wcex.lpszClassName	= strWindowName;	
 
@@ -73,82 +78,49 @@ void Window::Create(LPSTR strWindowName, int width, int height, DWORD dwStyle, b
 	glwindow.top		= 0;		
 	glwindow.bottom		= height;	
 
-//	AdjustWindowRect( &glwindow, dwStyle, false);
 	// Setup the screen settings depending on whether it is running in full screen or in windowed mode.
-	if(bFullScreen)
-	{
-		glwindow.left		= 0;		
-		glwindow.right		= HardwareState::GetInstance().GetScreenWidth();
-		glwindow.top		= 0;		
-		glwindow.bottom		= HardwareState::GetInstance().GetScreenHeight();
 
-		// If full screen set the screen to maximum size of the users desktop and 32bit.
-		memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));
-		dmScreenSettings.dmSize       = sizeof(dmScreenSettings);
-		dmScreenSettings.dmPelsWidth  = (unsigned long)glwindow.right;
-		dmScreenSettings.dmPelsHeight = (unsigned long)glwindow.bottom;
-		dmScreenSettings.dmBitsPerPel = 32;			
-		dmScreenSettings.dmFields     = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
+	AdjustWindowRect( &glwindow, dwStyle, false);
 
-		// Change the display settings to full screen.
-		ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN);
-
-		// Create the window with the screen settings and get the handle to it.
-		handleToWindow = CreateWindowEx(WS_EX_APPWINDOW,
-										strWindowName,
-										strWindowName, 
-										dwStyle,
-										glwindow.left, glwindow.top,
-										glwindow.right  - glwindow.left,
-										glwindow.bottom - glwindow.top,
-										NULL,
-										NULL,
-										hInstance,
-										NULL								);
-	}
-	else
-	{
-		AdjustWindowRect( &glwindow, dwStyle, false);
-
-		//Create the window
-		handleToWindow = CreateWindow(	strWindowName, 
-								strWindowName, 
-								dwStyle, 
-								0, 
-								0,
-								glwindow.right  - glwindow.left,
-								glwindow.bottom - glwindow.top, 
-								NULL,
-								NULL,
-								hInstance,
-								NULL
-								);
-	}
-
+	//Create the window
+	handleToWindow = CreateWindowEx(NULL,
+							strWindowName, 
+							strWindowName, 
+							dwStyle, 
+							0, 
+							0,
+							glwindow.right  - glwindow.left,
+							glwindow.bottom - glwindow.top, 
+							NULL,
+							NULL,
+							hInstance,
+							NULL
+							);
 	if(!handleToWindow) {
 		MessageBox(NULL, "Could Not Get Handle To Window", "Error", MB_OK); // If we couldn't get a handle, return NULL
 		PostQuitMessage (0);
 	}
 	WindowMap[handleToWindow] = this;
 
-	ShowWindow(handleToWindow, SW_SHOWNORMAL);	
+	ShowWindow(handleToWindow, SW_SHOWNORMAL);
+
 	UpdateWindow(handleToWindow);					
 	SetFocus(handleToWindow);
 
 	OnResize();
 	titleCaptionHeight = GetSystemMetrics(SM_CYCAPTION);
-	borderWidth = GetSystemMetrics(SM_CXFRAME);
+	borderWidth = GetSystemMetrics(SM_CXFIXEDFRAME);
 }
 
-void Window::CreateFullScreen(LPSTR strWindowName, HINSTANCE hInstance)
-{
-	Create(strWindowName, 200, 200, (WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP), true, hInstance);
-}
-
-void Window::CreateWindowed(LPSTR strWindowName, int width, int height, HINSTANCE hInstance)
-{
-	Create(strWindowName, width, height, (WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP), false, hInstance);
-}
+//void Window::CreateFullScreen(LPSTR strWindowName, HINSTANCE hInstance)
+//{
+//	Create(strWindowName, 200, 200, (WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP), true, hInstance);
+//}
+//
+//void Window::CreateWindowed(LPSTR strWindowName, int width, int height, HINSTANCE hInstance)
+//{
+//	Create(strWindowName, width, height, (WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP), false, hInstance);
+//}
 
 void Window::CreateMessageWindow(LPSTR strWindowName, HINSTANCE hInstance)
 {

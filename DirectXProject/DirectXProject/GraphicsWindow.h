@@ -10,9 +10,9 @@ class Window
 {
 public:
 	Window(Application* parent);
-	void Create(LPSTR strWindowName, int width, int height, DWORD dwStyle, bool bFullScreen, HINSTANCE hInstance);
-	void CreateFullScreen(LPSTR strWindowName, HINSTANCE hInstance);
-	void CreateWindowed(LPSTR strWindowName, int width, int height, HINSTANCE hInstance);
+	void Create(LPSTR strWindowName, int width, int height, HINSTANCE hInstance, bool bFullScreen = false, DWORD dwStyle = (WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP));
+//	void CreateFullScreen(LPSTR strWindowName, HINSTANCE hInstance);
+//	void CreateWindowed(LPSTR strWindowName, int width, int height, HINSTANCE hInstance);
 	void CreateMessageWindow(LPSTR strWindowName, HINSTANCE hInstance);
 
 	template<class T> void SetMessageHandler(T& t, std::function<void (T&, Window* wind, UINT Msg, WPARAM wParam, LPARAM lParam)> func) {
@@ -32,7 +32,8 @@ public:
 	int GetY(){return windowRect.top;}
 
 	void SetCursorToCentre();
-	void SetMouseLockedCentre();
+	void SetMouseLockedCentreWindow();
+	void SetMouseLockedCentreFullscreen();
 
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 	static Window* GetWindowReference(HWND hWnd);

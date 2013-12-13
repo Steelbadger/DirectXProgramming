@@ -19,17 +19,20 @@ public:
 	void Message(UINT, WPARAM, LPARAM);
 	void Update();
 
-	D3DXVECTOR2 FrameDeltaMovement(){return D3DXVECTOR2(x-oldx, y-oldy);}
+	D3DXVECTOR2 FrameDeltaMovement(){return D3DXVECTOR2(frameMoveX, frameMoveY);}
 	D3DXVECTOR2 Position(){return D3DXVECTOR2(x,y);}
 
-	void SetLocked(int xl, int yl){Lockedx = xl;Lockedy=yl;x=xl;y=yl;}
+	void SetLocked(int xl, int yl){oldx = xl; oldy = yl;}
+	void Unlock(){locked = false;}
 	int GetWheelDelta(){return wheelDelta;}
 	bool CheckWheelMoved(){return wheelWasMoved;}
 
 private:
 	int x, y;
 	int oldx, oldy;
+	int frameMoveX, frameMoveY;
 	int Lockedx, Lockedy;
+	bool locked;
 	bool buttons[3];
 	bool lastFrameButtons[3];
 	bool pressed[3];

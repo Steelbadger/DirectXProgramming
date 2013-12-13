@@ -7,7 +7,6 @@
 #include "Material.h"
 #include "SpinController.h"
 
-
 #include <functional>
 
 Application::Application(): window(this)
@@ -34,10 +33,8 @@ bool Application::Initialize()
 	window.SetMessageHandler<Application>((*this), std::mem_fn(&Application::MessageHandler));
 
 
-	if (fullscreen)
-		window.CreateFullScreen("Engine", m_hinstance);
-	else
-		window.CreateWindowed("Engine", 800, 800, m_hinstance);
+
+	window.Create("Engine", 720, 450, m_hinstance, fullscreen);
 
 
 	// Initialize the Direct3D object.
@@ -112,21 +109,21 @@ void Application::Run()
 	while(running)
 	{
 		// Handle the windows messages.
-		while(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
-		}
-
-		// Otherwise do the frame processing.
-		if (m_Input->Pressed(VK_ESCAPE)) {
-			running = false;
 		} else {
-			TestUpdate();
-			result = Frame();
-			if(!result)
-			{
+			// Otherwise do the frame processing.
+			if (m_Input->Pressed(VK_ESCAPE)) {
 				running = false;
+			} else {
+				TestUpdate();
+				result = Frame();
+				if(!result)
+				{
+					running = false;
+				}
 			}
 		}
 		
@@ -139,26 +136,33 @@ void Application::Run()
 void Application::TestUpdate()
 {
 	m_Input->Update();
+
 	float timestep = m_Input->GetTimeForLastFrameHighResolution();
 	for (int i = 0; i < FirstPersonController::GetList().Size(); i++) {
 		if (FirstPersonController::GetList().Exists(i)) {
 			FirstPersonController::GetList().Get(i).Update();
 		}
 	}
+
 	for (int i = 0; i < SpinController::GetList().Size(); i++) {
 		if (SpinController::GetList().Exists(i)) {
 			SpinController::GetList().Get(i).Update(timestep);
 		}
 	}
 
-	if (m_Input->MouseButton(Mouse::RIGHT)) {
-		window.SetCursorToCentre();
-		window.SetMouseLockedCentre();
-	}
-
 	if (m_Input->Pressed(VK_RETURN)) {
 		std::cout << "FrameRate: " << m_Input->Framerate() << std::endl;
 		std::cout << "HighResTimer: " << m_Input->GetTimeForLastFrameHighResolution() << std::endl;
+	}
+
+	if (m_Input->MouseButton(Mouse::RIGHT)) {
+		window.SetCursorToCentre();
+		int fullscreen;
+		m_D3D.GetSwapChain()->GetFullscreenState(&fullscreen, NULL);
+		if (fullscreen)
+			window.SetMouseLockedCentreFullscreen();
+		else 
+			window.SetMouseLockedCentreWindow();
 	}
 
 }

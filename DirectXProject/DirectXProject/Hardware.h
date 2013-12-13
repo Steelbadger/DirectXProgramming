@@ -29,6 +29,7 @@ public:
 	bool Released(int key) {return released[key];}
 
 	void SetMouseLocked(int x, int y){mouse.SetLocked(x, y);}
+	void SetMouseUnlock(){mouse.Unlock();}
 
 	bool CheckMouseWheel(){return mouse.CheckWheelMoved();}
 	int GetMouseWheelDelta(){return mouse.GetWheelDelta();}

@@ -1,4 +1,5 @@
 #include "d3dclass.h"
+#include "Hardware.h"
 
 D3DClass::D3DClass()
 {
@@ -44,6 +45,11 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	D3D11_RASTERIZER_DESC rasterDesc;
 	D3D11_VIEWPORT viewport;
 	float fieldOfView, screenAspect;
+
+//	if (fullscreen) {
+		screenWidth = HardwareState::GetInstance().GetScreenWidth();
+		screenHeight = HardwareState::GetInstance().GetScreenHeight();
+//	}
 
 
 	// Store the vsync setting.
@@ -177,14 +183,14 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	swapChainDesc.SampleDesc.Quality = 0;
 
 	// Set to full screen or windowed mode.
-	if(fullscreen)
-	{
-		swapChainDesc.Windowed = false;
-	}
-	else
-	{
+	//if(fullscreen)
+	//{
+	//	swapChainDesc.Windowed = false;
+	//}
+	//else
+	//{
 		swapChainDesc.Windowed = true;
-	}
+	//}
 
 	// Set the scan line ordering and scaling to unspecified.
 	swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
@@ -194,7 +200,7 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
 	// Don't set the advanced flags.
-	swapChainDesc.Flags = 0;
+	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 		// Set the feature level to DirectX 11.
 	featureLevel = D3D_FEATURE_LEVEL_11_0;
@@ -484,6 +490,11 @@ ID3D11Device* D3DClass::GetDevice()
 ID3D11DeviceContext* D3DClass::GetDeviceContext()
 {
 	return m_deviceContext;
+}
+
+IDXGISwapChain* D3DClass::GetSwapChain()
+{
+	return m_swapChain;
 }
 
 void D3DClass::GetProjectionMatrix(D3DXMATRIX& projectionMatrix)
