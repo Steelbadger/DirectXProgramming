@@ -25,10 +25,6 @@ void Mouse::UpdatePosition(LPARAM lParam)
 {
 	x = GET_X_LPARAM(lParam); 
 	y = GET_Y_LPARAM(lParam); 
-
-	//std::cout << "Position: (" << x << ", " << y << ")" << std::endl;
-	//std::cout << "Old Position: (" << oldx << ", " << oldy << ")" << std::endl;
-	//std::cout << "Change: (" << frameMoveX << ", " << frameMoveY << ")" << std::endl;
 }
 
 void Mouse::Message(UINT message, WPARAM wParam, LPARAM lParam)
@@ -73,9 +69,6 @@ void Mouse::Update()
 
 	frameMoveX = x - oldx;
 	frameMoveY = y - oldy;
-	std::cout << "Position: (" << x << ", " << y << ")" << std::endl;
-	std::cout << "Old Position: (" << oldx << ", " << oldy << ")" << std::endl;
-	std::cout << "Change: (" << frameMoveX << ", " << frameMoveY << ")" << std::endl;
 	oldx = x;
 	oldy = y;
 

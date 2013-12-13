@@ -13,7 +13,6 @@ Window::Window(Application* p): parent(p)
 
 Window::~Window(void)
 {
-	ChangeDisplaySettings(NULL, 0);
 	UnregisterClass(wcex.lpszClassName, wcex.hInstance);// Free the window class
 
 	WindowMap.erase(handleToWindow);
@@ -111,16 +110,6 @@ void Window::Create(LPSTR strWindowName, int width, int height, HINSTANCE hInsta
 	titleCaptionHeight = GetSystemMetrics(SM_CYCAPTION);
 	borderWidth = GetSystemMetrics(SM_CXFIXEDFRAME);
 }
-
-//void Window::CreateFullScreen(LPSTR strWindowName, HINSTANCE hInstance)
-//{
-//	Create(strWindowName, 200, 200, (WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP), true, hInstance);
-//}
-//
-//void Window::CreateWindowed(LPSTR strWindowName, int width, int height, HINSTANCE hInstance)
-//{
-//	Create(strWindowName, width, height, (WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP), false, hInstance);
-//}
 
 void Window::CreateMessageWindow(LPSTR strWindowName, HINSTANCE hInstance)
 {
