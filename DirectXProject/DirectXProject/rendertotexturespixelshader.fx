@@ -7,7 +7,7 @@
 // GLOBALS //
 /////////////
 
-Texture2D shaderTextures[2];
+Texture2D shaderTextures[3];
 SamplerState SampleType;
 
 //////////////
@@ -44,6 +44,7 @@ PixelOutputType AmbientNormalShader(PixelInputType input) : SV_TARGET
 
     // Sample the texture pixel at this location.
     textureColor = shaderTextures[0].Sample(SampleType, input.tex);
+	float specularity = shaderTextures[2].Sample(SampleType, input.tex);
 	output.color = textureColor;
 		
     // Sample the pixel in the bump map.
@@ -58,8 +59,8 @@ PixelOutputType AmbientNormalShader(PixelInputType input) : SV_TARGET
     // Normalize the resulting bump normal.
     bumpNormal = normalize(bumpNormal);
 
-	output.normal = float4(bumpNormal, 1.0f);
-	output.position = input.worldPosition;
+	output.normal = float4(bumpNormal, 0.0f);
+	output.position = float4(input.worldPosition.xyz, specularity) ;
 
     return output;
 }

@@ -11,7 +11,9 @@ public:
 	~SpinController();
 
 	void Update(float time);
-	void SetSpinSpeed(float spinSpeed);
+	void SetSpinSpeed(float spinSpeedx, float spinSpeedy, float spinSpeedz);
 private:
-	float spinSpeed;
+	float spinSpeedy;
+	float spinSpeedz;
+	float spinSpeedx;
 };

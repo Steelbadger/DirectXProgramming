@@ -2,6 +2,7 @@
 
 #include "lightshaderclass.h"
 #include "NormalMapShaderClass.h"
+#include "AmbientNormalDeferredShader.h"
 
 
 
@@ -24,6 +25,9 @@ void ShaderLibrary::Initialise(ID3D11Device* dev, HWND handle)
 
 	shaders[NORMAL] = new NormalMapShaderClass;
 	shaders[NORMAL]->Initialize(dev, handle);
+
+	shaders[DEFERRED] = new AmbientNormalDeferredShader;
+	shaders[DEFERRED]->Initialize(dev, handle);
 }
 
 

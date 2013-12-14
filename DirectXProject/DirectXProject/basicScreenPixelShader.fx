@@ -7,7 +7,7 @@
 // GLOBALS //
 /////////////
 
-Texture2D shaderTextures[2];
+Texture2D shaderTextures[1];
 SamplerState SampleType;
 
 //////////////
@@ -26,7 +26,7 @@ float4 BasicPixelShader(PixelInputType input) : SV_TARGET
 {
     float4 color;
 
-    color = shaderTextures[1].Sample(SampleType, input.tex);
+    color = shaderTextures[0].Sample(SampleType, input.tex);
 
     return color;
 }

@@ -6,7 +6,7 @@
 class ShaderLibrary
 {
 public:
-	enum Shaders {LIT, NORMAL};
+	enum Shaders {LIT, NORMAL, DEFERRED};
 	ShaderLibrary();
 	~ShaderLibrary();
 

@@ -33,6 +33,12 @@ public:
 	void EnableZBuffer();
 	void DisableZBuffer();
 
+	void EnableWireframe();
+	void DisableWireframe();
+
+	void EnableLightBlending();
+	void DisableLightBlending();
+
 	void SetBackBufferRenderTarget();
 
 	ID3D11Device* GetDevice();
@@ -55,9 +61,11 @@ private:
 	ID3D11DepthStencilState* m_depthDisabledStencilState;
 	ID3D11DepthStencilView* m_depthStencilView;
 	ID3D11RasterizerState* m_rasterState;
+	ID3D11RasterizerState* m_rasterStateWireframe;
 
 	ID3D11BlendState* m_alphaEnableBlendingState;
 	ID3D11BlendState* m_alphaDisableBlendingState;
+	ID3D11BlendState* m_lightBlendingState;
 
 };
 

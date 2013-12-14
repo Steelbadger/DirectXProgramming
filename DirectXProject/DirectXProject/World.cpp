@@ -40,8 +40,9 @@ void World::CreateScene()
 	GameObject::GetComponent<Mesh>(quad).SetMeshData(meshFactory->CreateMeshBuffersFromFile("crate.obj", Mesh::NORMALMAPPED));
 	GameObject::GetComponent<Material>(quad).AddTexture<AmbientTexture>("crateDiffuse.jpg");
 	GameObject::GetComponent<Material>(quad).AddTexture<NormalMap>("crateNormal.jpg");
+	GameObject::GetComponent<Material>(quad).AddTexture<SpecularMap>("crateSpec.jpg");
 	GameObject::GetComponent<Material>(quad).SetShader(ShaderLibrary::Shaders::NORMAL);
-	GameObject::GetComponent<SpinController>(quad).SetSpinSpeed(2.0f);
+	GameObject::GetComponent<SpinController>(quad).SetSpinSpeed(0, 0.3f, 0);
 
 	ObjectID test= GameObject::New();
 	GameObject::AddComponent<Position>(test);
@@ -51,21 +52,39 @@ void World::CreateScene()
 	GameObject::AddComponent<SpinController>(test);
 
 	GameObject::GetComponent<Position>(test).SetPosition(0,0,3);
-	GameObject::GetComponent<Mesh>(test).SetMeshData(meshFactory->CreateMeshBuffersFromFile("outwardCube.obj", Mesh::LIT));
-	GameObject::GetComponent<Material>(test).AddTexture<AmbientTexture>("seafloor.dds");
-	GameObject::GetComponent<Material>(test).SetShader(ShaderLibrary::Shaders::LIT);
-	GameObject::GetComponent<SpinController>(test).SetSpinSpeed(4.0f);
+	GameObject::GetComponent<Mesh>(test).SetMeshData(meshFactory->CreateMeshBuffersFromFile("outwardCube.obj", Mesh::NORMALMAPPED));
+	GameObject::GetComponent<Material>(test).AddTexture<AmbientTexture>("brick1.dds");
+	GameObject::GetComponent<Material>(test).AddTexture<NormalMap>("brick1norm.jpg");
+	GameObject::GetComponent<Material>(test).AddTexture<SpecularMap>("brick1spec.jpg");
+	GameObject::GetComponent<Material>(test).SetShader(ShaderLibrary::Shaders::NORMAL);
+	GameObject::GetComponent<SpinController>(test).SetSpinSpeed(0, 1.0f, 0);
+
 
 	GameObject::SetParentChild(quad, test);
+
+	ObjectID ground = GameObject::New();
+	GameObject::AddComponent<Position>(ground);
+	GameObject::AddComponent<Orientation>(ground);
+	GameObject::AddComponent<Mesh>(ground);
+	GameObject::AddComponent<Material>(ground);
+
+	GameObject::GetComponent<Position>(ground).SetPosition(-25,-0.5,-25);
+	GameObject::GetComponent<Mesh>(ground).SetMeshData(meshFactory->CreatePrimitive());
+	GameObject::GetComponent<Material>(ground).AddTexture<AmbientTexture>("stone01.dds");
+	GameObject::GetComponent<Material>(ground).AddTexture<NormalMap>("bump01.dds");
+	GameObject::GetComponent<Material>(ground).AddTexture<SpecularMap>("spec01.jpg");
+	GameObject::GetComponent<Material>(ground).SetShader(ShaderLibrary::Shaders::NORMAL);
+	AddToScene(ground);
+
 
 
 	light = GameObject::New();
 	GameObject::AddComponent<DirectionalLight>(light);
-//	GameObject::AddComponent<SpinController>(light);
+	GameObject::AddComponent<SpinController>(light);
 	GameObject::GetComponent<DirectionalLight>(light).SetColour(1.0f, 1.0f, 1.0f, 1.0f);
 	GameObject::GetComponent<DirectionalLight>(light).SetDirection(1.0f, 0.0f, 0.0f);
-	GameObject::GetComponent<DirectionalLight>(light).SetSpecularPower(400.0f);
-//	GameObject::GetComponent<SpinController>(light).SetSpinSpeed(-0.02f);
+	GameObject::GetComponent<DirectionalLight>(light).SetSpecularPower(200.0f);
+	GameObject::GetComponent<SpinController>(light).SetSpinSpeed(0.0, 0.0, -0.2f);
 
 	AddToScene(quad);
 	AddToScene(test);
@@ -112,13 +131,13 @@ void World::AddToScene(ObjectID id)
 	if (GameObject::HasComponent<SpinController>(id)) {
 		updateList.push_back(id);
 	} else {
-		Warning("Object has no controller component and was not added to the update list");
+//		Warning("Object has no controller component and was not added to the update list");
 	}
 
 	if (GameObject::HasComponent<DirectionalLight>(id)) {
 		lightList.push_back(id);
 	} else {
-		Warning("Object has no light component and was not added to the light list");
+//		Warning("Object has no light component and was not added to the light list");
 	}
 }
 

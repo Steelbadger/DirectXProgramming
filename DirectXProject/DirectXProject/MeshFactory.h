@@ -33,10 +33,13 @@ private:
 	};
 
 public:
+	enum Primitive {INNERCUBE, OUTERCUBE, INNERSPHERE, OUTERSPHERE, PLANE};
+
 	MeshFactory();
 	~MeshFactory();
 
 	MeshData CreateMeshBuffersFromFile(std::string filename, Mesh::FeatureLevel featurelevel);
+	MeshData CreatePrimitive(Primitive prim = Primitive::PLANE);
 	void SetDevice(ID3D11Device* device);
 private:
 
@@ -49,6 +52,9 @@ private:
 	std::vector<MappedVertexType> ComputeTangentSpace(const std::vector<LitVertexType>& data, const std::vector<unsigned int>& index);
 
 	void LoadObj(std::string filename, std::vector<LitVertexType>& outverts, std::vector<unsigned int>& outindex);
+
+	void Plane(std::vector<LitVertexType>& output, std::vector<unsigned int>& indexout, float width, float height, int widthSubDivs, int heightSubDivs);
+	void SimpleInnerBox(std::vector<LitVertexType>& output, std::vector<unsigned int>& index);
 
 	ID3D11Device* device;
 

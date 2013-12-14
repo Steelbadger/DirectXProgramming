@@ -7,7 +7,7 @@
 // GLOBALS //
 /////////////
 
-Texture2D shaderTextures[2];
+Texture2D shaderTextures[3];
 SamplerState SampleType;
 
 cbuffer LightBuffer
@@ -48,7 +48,7 @@ float4 NormalMapPixelShader(PixelInputType input) : SV_TARGET
     float3 fragToLight;
 	float3 fragToView;
     float4 color;
-	float fac = 0.6;
+	float fac = 0.3;
 
 	float4 diffuse = float4(0.0, 0.0, 0.0, 0.0);
 	float4 ambient = float4(0.0, 0.0, 0.0, 0.0);
@@ -57,6 +57,7 @@ float4 NormalMapPixelShader(PixelInputType input) : SV_TARGET
 
     // Sample the texture pixel at this location.
     textureColor = shaderTextures[0].Sample(SampleType, input.tex);
+	float specularity = shaderTextures[2].Sample(SampleType, input.tex);
 	//textureColor = shaderTextures[1].Sample(SampleType, input.tex);
 	color = diffuseColor;
 
@@ -75,7 +76,7 @@ float4 NormalMapPixelShader(PixelInputType input) : SV_TARGET
     bumpNormal = normalize(bumpNormal);
 
     // Invert the light direction for calculations.
-    fragToLight = -lightDirection;
+    fragToLight = normalize(-lightDirection);
 	fragToView = normalize(cameraPosition - input.worldPosition);
 
 	float diffuseContribution = max(0.0, dot(bumpNormal, fragToLight));
@@ -88,7 +89,7 @@ float4 NormalMapPixelShader(PixelInputType input) : SV_TARGET
 
 	float specularContribution = max(0.0, dot(-lightReflection, fragToView));
 
-	specularContribution = pow(specularContribution, specularPower);
+	specularContribution = pow(specularContribution, specularPower)*specularity;
 
 	specular = specular + (textureColor * diffuseColor * specularContribution * attenuation);
 

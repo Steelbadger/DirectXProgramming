@@ -374,13 +374,20 @@ bool AmbientNormalDeferredShader::SetShaderParameters(ID3D11DeviceContext* devic
 
 	ID3D11ShaderResourceView* ambientTexture;
 	ID3D11ShaderResourceView* normalTexture;
+	ID3D11ShaderResourceView* specularTexture;
 
 	ambientTexture = GameObject::GetComponent<Material>(drawObject).GetTextureResource<AmbientTexture>();
 	normalTexture = GameObject::GetComponent<Material>(drawObject).GetTextureResource<NormalMap>();
+	specularTexture = GameObject::GetComponent<Material>(drawObject).GetTextureResource<SpecularMap>();
 
 	std::vector<ID3D11ShaderResourceView*> textures;
 	textures.push_back(ambientTexture);
 	textures.push_back(normalTexture);
+	textures.push_back(specularTexture);
+
+	// Set shader texture array resource in the pixel shader.
+	deviceContext->PSSetShaderResources(0, 3, textures.data());
+
 
 	// Set shader texture array resource in the pixel shader.
 	deviceContext->PSSetShaderResources(0, 2, textures.data());

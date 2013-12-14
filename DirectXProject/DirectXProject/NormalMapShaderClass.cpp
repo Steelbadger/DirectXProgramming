@@ -411,16 +411,19 @@ bool NormalMapShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContex
 
 	ID3D11ShaderResourceView* ambientTexture;
 	ID3D11ShaderResourceView* normalTexture;
+	ID3D11ShaderResourceView* specularTexture;
 
 	ambientTexture = GameObject::GetComponent<Material>(drawObject).GetTextureResource<AmbientTexture>();
 	normalTexture = GameObject::GetComponent<Material>(drawObject).GetTextureResource<NormalMap>();
+	specularTexture = GameObject::GetComponent<Material>(drawObject).GetTextureResource<SpecularMap>();
 
 	std::vector<ID3D11ShaderResourceView*> textures;
 	textures.push_back(ambientTexture);
 	textures.push_back(normalTexture);
+	textures.push_back(specularTexture);
 
 	// Set shader texture array resource in the pixel shader.
-	deviceContext->PSSetShaderResources(0, 2, textures.data());
+	deviceContext->PSSetShaderResources(0, 3, textures.data());
 
 
 	// Lock the light constant buffer so it can be written to.

@@ -11,8 +11,10 @@ D3DClass::D3DClass()
 	m_depthStencilState = 0;
 	m_depthStencilView = 0;
 	m_rasterState = 0;
+	m_rasterStateWireframe = 0;
 	m_alphaEnableBlendingState = 0;
 	m_alphaDisableBlendingState = 0;
+	m_lightBlendingState = 0;
 
 }
 
@@ -327,6 +329,16 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 		return false;
 	}
 
+
+	rasterDesc.FillMode = D3D11_FILL_WIREFRAME;
+	// Create the rasterizer state from the description we just filled out.
+	result = m_device->CreateRasterizerState(&rasterDesc, &m_rasterStateWireframe);
+	if(FAILED(result))
+	{
+		return false;
+	}
+
+
 	// Now set the rasterizer state.
 	m_deviceContext->RSSetState(m_rasterState);
 
@@ -399,6 +411,15 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 		return false;
 	}
 
+	blendStateDescription.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+
+	// Create the blend state using the description.
+	result = m_device->CreateBlendState(&blendStateDescription, &m_lightBlendingState);
+	if(FAILED(result))
+	{
+		return false;
+	}
+
 
 	return true;
 }
@@ -422,6 +443,12 @@ void D3DClass::Shutdown()
 	{
 		m_rasterState->Release();
 		m_rasterState = 0;
+	}
+
+	if(m_rasterStateWireframe)
+	{
+		m_rasterStateWireframe->Release();
+		m_rasterStateWireframe = 0;
 	}
 
 	if(m_depthStencilView)
@@ -585,4 +612,43 @@ void D3DClass::DisableZBuffer()
 {
 	m_deviceContext->OMSetDepthStencilState(m_depthDisabledStencilState, 1);
 	return;
+}
+
+void D3DClass::EnableWireframe()
+{
+	m_deviceContext->RSSetState(m_rasterStateWireframe);
+}
+
+
+void D3DClass::DisableWireframe()
+{
+	m_deviceContext->RSSetState(m_rasterState);
+}
+
+void D3DClass::EnableLightBlending()
+{
+	float blendFactor[4];
+	
+	// Setup the blend factor.
+	blendFactor[0] = 0.0f;
+	blendFactor[1] = 0.0f;
+	blendFactor[2] = 0.0f;
+	blendFactor[3] = 0.0f;
+	
+	// Turn on the alpha blending.
+	m_deviceContext->OMSetBlendState(m_lightBlendingState, blendFactor, 0xffffffff);
+}
+
+void D3DClass::DisableLightBlending()
+{
+	float blendFactor[4];
+	
+	// Setup the blend factor.
+	blendFactor[0] = 0.0f;
+	blendFactor[1] = 0.0f;
+	blendFactor[2] = 0.0f;
+	blendFactor[3] = 0.0f;
+	
+	// Turn on the alpha blending.
+	m_deviceContext->OMSetBlendState(m_alphaDisableBlendingState, blendFactor, 0xffffffff);
 }

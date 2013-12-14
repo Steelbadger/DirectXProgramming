@@ -32,6 +32,7 @@ bool GraphicsClass::Initialize(HWND hwnd, D3DClass* d3d)
 
 	shaderLibrary.Initialise(m_D3D->GetDevice(), hwnd);
 	renderTarget.Initialize(m_D3D->GetDevice(), HardwareState::GetInstance().GetScreenWidth(), HardwareState::GetInstance().GetScreenHeight(), 3);
+	lightingRenderTarget.Initialize(m_D3D->GetDevice(), HardwareState::GetInstance().GetScreenWidth(), HardwareState::GetInstance().GetScreenHeight(), 2);
 	m_deferred.Initialize(m_D3D->GetDevice(), hwnd);
 	m_final.Initialize(m_D3D->GetDevice(), hwnd);
 	m_lighting.Initialize(m_D3D->GetDevice(), hwnd);
@@ -204,21 +205,15 @@ bool GraphicsClass::RenderDeferred(World& world)
 	while (drawList.size() > 0) {
 		ObjectID current = drawList.back();
 		drawList.pop_back();
-
-		result = m_deferred.Render(m_D3D->GetDeviceContext(), current, world.GetCameraObject());
+		result = m_deferred.Render(m_D3D->GetDeviceContext(), current, world.GetCameraObject(), 0);
 		if(!result)
 		{
 			return false;
 		}
 	}
 
-	m_D3D->SetBackBufferRenderTarget();
-
-
-
-	// Clear the buffers to begin the scene.
-	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
-
+	lightingRenderTarget.SetRenderTarget(m_D3D->GetDeviceContext(), m_D3D->GetDepthStencilView());
+	lightingRenderTarget.ClearRenderTarget(m_D3D->GetDeviceContext(), m_D3D->GetDepthStencilView());
 
 	// Set vertex buffer stride and offset.
 	unsigned int stride = sizeof(VertexType); 
@@ -233,7 +228,20 @@ bool GraphicsClass::RenderDeferred(World& world)
 	// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
 	m_D3D->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+	m_D3D->EnableLightBlending();
+
 	m_lighting.Render(m_D3D->GetDeviceContext(), renderTarget, world.GetCameraObject(), world.GetLight());
+
+
+
+	m_D3D->SetBackBufferRenderTarget();
+
+
+
+	// Clear the buffers to begin the scene.
+	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
+
+	m_final.Render(m_D3D->GetDeviceContext(), lightingRenderTarget);
 
 	m_D3D->EndScene();
 

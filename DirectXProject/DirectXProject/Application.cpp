@@ -16,6 +16,7 @@ Application::Application(): window(this)
 	fullscreen = false;
 	vSyncEnabled = false;
 	deferred = false;
+	wireframe = false;
 }
 
 Application::~Application()
@@ -152,12 +153,21 @@ void Application::TestUpdate()
 	}
 
 	if (m_Input->Pressed(VK_RETURN)) {
-		std::cout << "FrameRate: " << m_Input->Framerate() << std::endl;
+		std::cout << "FrameRate: " << (1/m_Input->GetTimeForLastFrameHighResolution()) << std::endl;
 		std::cout << "HighResTimer: " << m_Input->GetTimeForLastFrameHighResolution() << std::endl;
 	}
 
 	if (m_Input->Pressed('P')) {
 		deferred = !deferred;
+	}
+
+	if (m_Input->Pressed('M')) {
+		wireframe = !wireframe;
+		if (wireframe) {
+			m_D3D.EnableWireframe();
+		} else {
+			m_D3D.DisableWireframe();
+		}
 	}
 
 	if (m_Input->MouseButton(Mouse::RIGHT)) {

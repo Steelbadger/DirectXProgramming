@@ -46,6 +46,7 @@ private:
 
 	bool fullscreen, vSyncEnabled;
 	bool deferred;
+	bool wireframe;
 
 	bool running;
 };
