@@ -13,6 +13,7 @@ cbuffer MatrixBuffer
     matrix projectionMatrix;
 };
 
+
 //////////////
 // TYPEDEFS //
 //////////////
@@ -32,27 +33,25 @@ struct PixelInputType
     float3 normal : NORMAL;
     float3 tangent : TANGENT;
     float3 binormal : BINORMAL;
-	float3 worldPosition : TEXCOORD1;
+	float4 worldPosition : TEXCOORD1;
 };
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
 ////////////////////////////////////////////////////////////////////////////////
-PixelInputType NormalMapVertexShader(VertexInputType input)
+PixelInputType AmbientNormalShader(VertexInputType input)
 {
     PixelInputType output;
-	float4 worldPosition;
-    
 
     // Change the position vector to be 4 units for proper matrix calculations.
     input.position.w = 1.0f;
 
     // Calculate the position of the vertex against the world, view, and projection matrices.
-    output.position = mul(input.position, worldMatrix);
-    output.position = mul(output.position, viewMatrix);
+    output.worldPosition = mul(input.position, worldMatrix);
+    output.position = mul(output.worldPosition, viewMatrix);
     output.position = mul(output.position, projectionMatrix);
-    
+
     // Store the texture coordinates for the pixel shader.
     output.tex = input.tex;
     
@@ -68,7 +67,6 @@ PixelInputType NormalMapVertexShader(VertexInputType input)
     output.binormal = mul(input.binormal, (float3x3)worldMatrix);
     output.binormal = normalize(output.binormal);
 
-	output.worldPosition = mul(input.position, worldMatrix);
 
     return output;
 }

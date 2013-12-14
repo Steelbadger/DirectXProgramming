@@ -34,9 +34,6 @@
     <Filter Include="Source Files\Windows">
       <UniqueIdentifier>{f29918c7-7a2b-46cf-bf78-f25a51cfb7d7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Utility">
-      <UniqueIdentifier>{6bf55979-2bc5-4ceb-bcc2-45860ce51d17}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\World">
       <UniqueIdentifier>{070ee0d6-6084-488d-a883-597223ce59c2}</UniqueIdentifier>
     </Filter>
@@ -76,6 +73,15 @@
     <Filter Include="Resource Files\Pixel Shaders">
       <UniqueIdentifier>{93d1b782-b845-4811-83e8-b032022e9a42}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Utility">
+      <UniqueIdentifier>{6bf55979-2bc5-4ceb-bcc2-45860ce51d17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Shaders">
+      <UniqueIdentifier>{366fa7e5-b752-4706-b6ca-1d37d4372d1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Shaders">
+      <UniqueIdentifier>{546cc8ce-56f7-4f0a-b724-3f1f17bea2d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Vector2.cpp">
@@ -102,13 +108,7 @@
     <ClCompile Include="cameraclass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="colorshaderclass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="lightclass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="lightshaderclass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
@@ -118,9 +118,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="textureclass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="textureshaderclass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Mouse.cpp">
@@ -171,11 +168,32 @@
     <ClCompile Include="SpinController.cpp">
       <Filter>Source Files\World\Objects and Components</Filter>
     </ClCompile>
+    <ClCompile Include="RenderTarget.cpp">
+      <Filter>Source Files\World\Material\Textures</Filter>
+    </ClCompile>
     <ClCompile Include="ShaderLibrary.cpp">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Source Files\Graphics\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="colorshaderclass.cpp">
+      <Filter>Source Files\Graphics\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="lightshaderclass.cpp">
+      <Filter>Source Files\Graphics\Shaders</Filter>
     </ClCompile>
     <ClCompile Include="NormalMapShaderClass.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Graphics\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="textureshaderclass.cpp">
+      <Filter>Source Files\Graphics\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="AmbientNormalDeferredShader.cpp">
+      <Filter>Source Files\Graphics\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureToScreenShader.cpp">
+      <Filter>Source Files\Graphics\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredLightingShader.cpp">
+      <Filter>Source Files\Graphics\Shaders</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -212,25 +230,13 @@
     <ClInclude Include="cameraclass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="colorshaderclass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="lightclass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="lightshaderclass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ModelClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderInterface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="textureclass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="textureshaderclass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="d3dclass.h">
@@ -299,11 +305,35 @@
     <ClInclude Include="DirectionalLight.h">
       <Filter>Header Files\World\Objects and Components</Filter>
     </ClInclude>
+    <ClInclude Include="RenderTarget.h">
+      <Filter>Header Files\World\Material\Textures</Filter>
+    </ClInclude>
     <ClInclude Include="ShaderLibrary.h">
-      <Filter>Header Files\Graphics</Filter>
+      <Filter>Header Files\Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="colorshaderclass.h">
+      <Filter>Header Files\Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="lightshaderclass.h">
+      <Filter>Header Files\Graphics\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="NormalMapShaderClass.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="textureshaderclass.h">
+      <Filter>Header Files\Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="AmbientNormalDeferredShader.h">
+      <Filter>Header Files\Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureToScreenShader.h">
+      <Filter>Header Files\Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderInterface.h">
+      <Filter>Header Files\Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredLightingShader.h">
+      <Filter>Header Files\Graphics\Shaders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -340,14 +370,29 @@
     <None Include="light.ps">
       <Filter>Resource Files\Pixel Shaders</Filter>
     </None>
-    <None Include="normalmapshader.fx">
-      <Filter>Resource Files\Vertex Shaders</Filter>
-    </None>
     <None Include="normalmapvertexshader.fx">
       <Filter>Resource Files\Vertex Shaders</Filter>
     </None>
     <None Include="normalmappixelshader.fx">
       <Filter>Resource Files\Pixel Shaders</Filter>
+    </None>
+    <None Include="rendertotexturespixelshader.fx">
+      <Filter>Resource Files\Pixel Shaders</Filter>
+    </None>
+    <None Include="rendertotexturesvertexshader.fx">
+      <Filter>Resource Files\Vertex Shaders</Filter>
+    </None>
+    <None Include="basicScreenPixelShader.fx">
+      <Filter>Resource Files\Pixel Shaders</Filter>
+    </None>
+    <None Include="basicScreenVertexShader.fx">
+      <Filter>Resource Files\Vertex Shaders</Filter>
+    </None>
+    <None Include="deferredLightPixelShader.fx">
+      <Filter>Resource Files\Pixel Shaders</Filter>
+    </None>
+    <None Include="deferredLightVertexShader.fx">
+      <Filter>Resource Files\Vertex Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -30,13 +30,15 @@ public:
 	void EnableBlending();
 	void DisableBlending();
 
+	void EnableZBuffer();
+	void DisableZBuffer();
+
+	void SetBackBufferRenderTarget();
+
 	ID3D11Device* GetDevice();
 	ID3D11DeviceContext* GetDeviceContext();
 	IDXGISwapChain* GetSwapChain();
-
-	void GetProjectionMatrix(D3DXMATRIX&);
-	void GetWorldMatrix(D3DXMATRIX&);
-	void GetOrthoMatrix(D3DXMATRIX&);
+	ID3D11DepthStencilView* GetDepthStencilView();
 
 	void GetVideoCardInfo(char*, int&);
 
@@ -50,11 +52,9 @@ private:
 	ID3D11RenderTargetView* m_renderTargetView;
 	ID3D11Texture2D* m_depthStencilBuffer;
 	ID3D11DepthStencilState* m_depthStencilState;
+	ID3D11DepthStencilState* m_depthDisabledStencilState;
 	ID3D11DepthStencilView* m_depthStencilView;
 	ID3D11RasterizerState* m_rasterState;
-	D3DXMATRIX m_projectionMatrix;
-	D3DXMATRIX m_worldMatrix;
-	D3DXMATRIX m_orthoMatrix;
 
 	ID3D11BlendState* m_alphaEnableBlendingState;
 	ID3D11BlendState* m_alphaDisableBlendingState;

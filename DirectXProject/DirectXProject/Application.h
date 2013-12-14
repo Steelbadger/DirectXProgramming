@@ -45,6 +45,7 @@ private:
 	MeshFactory factory;
 
 	bool fullscreen, vSyncEnabled;
+	bool deferred;
 
 	bool running;
 };

@@ -14,7 +14,8 @@ Application::Application(): window(this)
 	m_Input = 0;
 	m_Graphics = 0;
 	fullscreen = false;
-	vSyncEnabled = true;
+	vSyncEnabled = false;
+	deferred = false;
 }
 
 Application::~Application()
@@ -155,6 +156,10 @@ void Application::TestUpdate()
 		std::cout << "HighResTimer: " << m_Input->GetTimeForLastFrameHighResolution() << std::endl;
 	}
 
+	if (m_Input->Pressed('P')) {
+		deferred = !deferred;
+	}
+
 	if (m_Input->MouseButton(Mouse::RIGHT)) {
 		window.SetCursorToCentre();
 		int fullscreen;
@@ -171,7 +176,7 @@ bool Application::Frame()
 {
 	bool result;
 
-	result = m_Graphics->Frame(world);
+	result = m_Graphics->Frame(world, deferred);
 	if(!result)
 	{
 		return false;

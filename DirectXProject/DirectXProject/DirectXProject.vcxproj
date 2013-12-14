@@ -82,12 +82,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AmbientNormalDeferredShader.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="cameraclass.cpp" />
     <ClCompile Include="colorshaderclass.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="d3dclass.cpp" />
+    <ClCompile Include="DeferredLightingShader.cpp" />
     <ClCompile Include="FirstPersonController.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="graphicsclass.cpp" />
@@ -103,6 +105,7 @@
     <ClCompile Include="NormalMapShaderClass.cpp" />
     <ClCompile Include="Orientation.cpp" />
     <ClCompile Include="Quaternion.cpp" />
+    <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="Scale.cpp" />
     <ClCompile Include="ShaderLibrary.cpp" />
     <ClCompile Include="simd.cpp" />
@@ -110,6 +113,7 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="textureclass.cpp" />
     <ClCompile Include="textureshaderclass.cpp" />
+    <ClCompile Include="TextureToScreenShader.cpp" />
     <ClCompile Include="UtilityFunctions.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Vector3.cpp" />
@@ -117,12 +121,16 @@
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AmbientNormalDeferredShader.h" />
     <ClInclude Include="ControllerUpdateInterface.h" />
+    <ClInclude Include="DeferredLightingShader.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="MeshFactory.h" />
     <ClInclude Include="NormalMapShaderClass.h" />
+    <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="ShaderLibrary.h" />
     <ClInclude Include="SpinController.h" />
+    <ClInclude Include="TextureToScreenShader.h" />
     <ClInclude Include="TextureTypes.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />
@@ -161,15 +169,21 @@
     <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="basicScreenPixelShader.fx" />
+    <None Include="basicScreenVertexShader.fx" />
     <None Include="brick1.dds" />
     <None Include="color.ps" />
     <None Include="color.vs" />
+    <None Include="deferredLightPixelShader.fx" />
+    <None Include="deferredLightVertexShader.fx" />
     <None Include="dirt1.JPG" />
     <None Include="light.ps" />
     <None Include="light.vs" />
     <None Include="normalmappixelshader.fx" />
     <None Include="normalmapvertexshader.fx" />
     <None Include="plastic1.JPG" />
+    <None Include="rendertotexturespixelshader.fx" />
+    <None Include="rendertotexturesvertexshader.fx" />
     <None Include="seafloor.dds" />
     <None Include="texture.ps" />
     <None Include="texture.vs" />

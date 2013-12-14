@@ -17,6 +17,12 @@ cbuffer LightBuffer
 	float specularPower;
 };
 
+cbuffer CameraBuffer
+{
+	float3 cameraPosition;
+	float padding;
+};
+
 
 //////////////
 // TYPEDEFS //
@@ -70,10 +76,9 @@ float4 NormalMapPixelShader(PixelInputType input) : SV_TARGET
 
     // Invert the light direction for calculations.
     fragToLight = -lightDirection;
-	fragToView = normalize(-input.worldPosition);
+	fragToView = normalize(cameraPosition - input.worldPosition);
 
 	float diffuseContribution = max(0.0, dot(bumpNormal, fragToLight));
-	diffuseContribution = max(0.0, dot(bumpNormal, fragToLight));
 
 	float attenuation = 1;
 
@@ -89,31 +94,5 @@ float4 NormalMapPixelShader(PixelInputType input) : SV_TARGET
 
 	color = ambient + diffuse + specular;
 
- //   // Calculate the amount of light on this pixel based on the bump map normal value.
- //   lightIntensity = saturate(dot(bumpNormal, lightDir));
-
-	//if(lightIntensity > 0.0f)
-	//{
-	//	// Add diffuse and light intensity to colour value (if greater than zero
-	//	color += (diffuseColor * lightIntensity);
-
-	//	// Saturate the ambient and diffuse color.
-	//	color = saturate(color);
-
-	//	// Calculate the reflection vector based on the light intensity, normal vector, and light direction.
-	//	reflection = normalize(2 * lightIntensity * input.normal - lightDir); 
-
-	//	 // Determine the amount of specular light based on the reflection vector, viewing direction, and specular power.
-	//	specular = pow(saturate(dot(reflection, input.viewDirection)), specularPower);
-	//}
-
- //   // Determine the final diffuse color based on the diffuse color and the amount of light intensity.
- //   color = saturate(color);
-
- //   // Combine the final bump light color with the texture color.
- //   color = color * textureColor;
-	//// Add the specular component last to the output color.
-	//color = saturate(color + specular);
-	
     return color;
 }

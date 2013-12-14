@@ -14,4 +14,3 @@ public:
 	virtual void Shutdown() = 0;
 	virtual bool Render(ID3D11DeviceContext* dc, ObjectID drawObject, ObjectID cameraObject, ObjectID light) = 0;
 };
-
