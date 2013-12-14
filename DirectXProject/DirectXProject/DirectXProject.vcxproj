@@ -127,6 +127,7 @@
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="MeshFactory.h" />
     <ClInclude Include="NormalMapShaderClass.h" />
+    <ClInclude Include="PointLight.h" />
     <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="ShaderLibrary.h" />
     <ClInclude Include="SpinController.h" />

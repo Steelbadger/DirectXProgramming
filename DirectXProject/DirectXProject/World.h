@@ -15,6 +15,7 @@ public:
 	std::list<ObjectID> GetDrawList();
 	std::list<ObjectID> GetUpdateList();
 	ObjectID GetLight();
+	std::list<ObjectID> GetLightList();
 	void AddToScene(ObjectID id);
 	void PassMeshFactory(MeshFactory* factory);
 private:

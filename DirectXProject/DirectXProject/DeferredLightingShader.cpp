@@ -5,6 +5,7 @@
 #include "Position.h"
 #include "DirectionalLight.h"
 #include <iostream>
+#include "PointLight.h"
 
 #include <D3DX11.h>
 
@@ -344,9 +345,17 @@ bool DeferredLightingShader::SetShaderParameters(ID3D11DeviceContext* deviceCont
 	dataPtr2 = (LightBufferType*)mappedResource.pData;
 
 	// Copy the lighting variables into the constant buffer.
-	dataPtr2->lightColor = GameObject::GetComponent<DirectionalLight>(lightObject).GetColour();
-	dataPtr2->lightDirection = GameObject::GetComponent<DirectionalLight>(lightObject).GetDirection();
-	dataPtr2->specularPower = 40;
+
+
+	if (GameObject::HasComponent<DirectionalLight>(lightObject)) {
+		dataPtr2->lightDirection = D3DXVECTOR4(GameObject::GetComponent<DirectionalLight>(lightObject).GetDirection(), 0);
+		dataPtr2->lightColor = GameObject::GetComponent<DirectionalLight>(lightObject).GetColour();
+		dataPtr2->specularPower = GameObject::GetComponent<DirectionalLight>(lightObject).GetSpecularPower();
+	} else if (GameObject::HasComponent<PointLight>(lightObject)){
+		dataPtr2->lightDirection = D3DXVECTOR4(GameObject::GetComponent<PointLight>(lightObject).GetPosition(), 1.0f);
+		dataPtr2->lightColor = GameObject::GetComponent<PointLight>(lightObject).GetColour();
+		dataPtr2->specularPower = GameObject::GetComponent<PointLight>(lightObject).GetSpecularPower();
+	}
 
 	// Unlock the constant buffer.
 	deviceContext->Unmap(m_lightBuffer, 0);

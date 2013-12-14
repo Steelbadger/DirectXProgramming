@@ -52,9 +52,6 @@ private:
 	DeferredLightingShader m_lighting;
 	RenderTarget renderTarget;
 	RenderTarget lightingRenderTarget;
-	RenderTarget oldContribution;
-	RenderTarget currentContribution;
-	RenderTarget newContribution;
 
 	////////////////////////////////////////////////////////////////
 	ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;

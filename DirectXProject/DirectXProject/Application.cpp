@@ -6,6 +6,7 @@
 #include "FirstPersonController.h"
 #include "Material.h"
 #include "SpinController.h"
+#include "PointLight.h"
 
 #include <functional>
 
@@ -66,19 +67,22 @@ bool Application::Initialize()
 		return false;
 	}
 
+	world.CreateScene();
 
 	ObjectID camera = GameObject::New();
 	GameObject::AddComponent<Position>(camera);
 	GameObject::AddComponent<Orientation>(camera);
 	GameObject::AddComponent<Camera>(camera);
 	GameObject::AddComponent<FirstPersonController>(camera);
+	GameObject::AddComponent<PointLight>(camera);
 
 	GameObject::GetComponent<Position>(camera).SetPosition(0,0,-5);
 	GameObject::GetComponent<Camera>(camera).Initialise(true, 45, window.GetWidth(), window.GetHeight(), 0.01f, 1000.0f);
 	GameObject::GetComponent<FirstPersonController>(camera).SetSensitivity(5.0f);
+	GameObject::GetComponent<PointLight>(camera).SetColour(1.0f, 0.0f, 0.0f, 1.0f);
+	GameObject::GetComponent<PointLight>(camera).SetSpecularPower(100);
 
 	world.SetCameraObject(camera);
-	world.CreateScene();
 
 	m_Input->EnableAveragedFrameRate(200);
 	

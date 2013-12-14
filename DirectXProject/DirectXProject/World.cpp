@@ -14,6 +14,7 @@
 #include "SpinController.h"
 #include "DirectionalLight.h"
 #include "ShaderLibrary.h"
+#include "PointLight.h"
 
 
 World::World()
@@ -88,6 +89,7 @@ void World::CreateScene()
 
 	AddToScene(quad);
 	AddToScene(test);
+	AddToScene(light);
 }
 
 void World::SetCameraObject(ObjectID id)
@@ -102,6 +104,12 @@ void World::SetCameraObject(ObjectID id)
 		updateList.push_back(id);
 	} else {
 		Warning("Object has no controller component and was not added to the update list");
+	}
+
+	if (GameObject::HasComponent<PointLight>(id)) {
+		lightList.push_back(id);
+	} else {
+//		Warning("Object has no controller component and was not added to the update list");
 	}
 }
 
@@ -120,6 +128,12 @@ std::list<ObjectID> World::GetUpdateList()
 	return updateList;
 }
 
+std::list<ObjectID> World::GetLightList()
+{
+	return lightList;
+}
+
+
 void World::AddToScene(ObjectID id)
 {
 	if (GameObject::HasComponent<Mesh>(id)) {
@@ -134,7 +148,7 @@ void World::AddToScene(ObjectID id)
 //		Warning("Object has no controller component and was not added to the update list");
 	}
 
-	if (GameObject::HasComponent<DirectionalLight>(id)) {
+	if (GameObject::HasComponent<DirectionalLight>(id) || GameObject::HasComponent<PointLight>(id)) {
 		lightList.push_back(id);
 	} else {
 //		Warning("Object has no light component and was not added to the light list");

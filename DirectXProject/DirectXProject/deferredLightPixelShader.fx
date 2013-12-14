@@ -13,8 +13,9 @@ SamplerState SampleType;
 cbuffer LightBuffer
 {
     float4 diffuseColor;
-    float3 lightDirection;
+    float4 lightDirection;
     float specularPower;
+	float3 lightPadding;
 };
 
 cbuffer CameraBuffer
@@ -53,15 +54,20 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 	pixelPosition = shaderTextures[2].Sample(SampleType, input.tex).xyz;
 	float specularity = shaderTextures[2].Sample(SampleType, input.tex).w;
 
-	ambient = textureColor * diffuseColor * fac;
 
 	// Invert the light direction for calculations.
-	float3 fragToLight = normalize(-lightDirection);
+	float3 fragToLight = normalize(lightDirection - (pixelPosition * lightDirection.w));
+	fragToLight = ((lightDirection.w*2)-1)*fragToLight;
+
 	float3 fragToView = normalize(position - pixelPosition);
+
+	float dist = distance(lightDirection.xyz, position) * lightDirection.w;
+
+	ambient = textureColor * diffuseColor * fac * (1-lightDirection.w);	
 
 	float diffuseContribution = max(0.0, dot(normal.xyz, fragToLight));
 
-	float attenuation = 1;
+	float attenuation = (1/(1 + 0.01*dist + 0.0001 * dist * dist));
 
 	diffuse = textureColor * diffuseColor * diffuseContribution * attenuation;
 

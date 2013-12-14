@@ -229,10 +229,15 @@ bool GraphicsClass::RenderDeferred(World& world)
 	m_D3D->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	m_D3D->EnableLightBlending();
+	std::list<ObjectID> light = world.GetLightList();
 
-	m_lighting.Render(m_D3D->GetDeviceContext(), renderTarget, world.GetCameraObject(), world.GetLight());
+	for (std::list<ObjectID>::iterator it = light.begin(); it != light.end(); it++) {
+		m_lighting.Render(m_D3D->GetDeviceContext(), renderTarget, world.GetCameraObject(), (*it));
+	}
+//	m_lighting.Render(m_D3D->GetDeviceContext(), renderTarget, world.GetCameraObject(), light.front());
 
 
+	m_D3D->DisableLightBlending();
 
 	m_D3D->SetBackBufferRenderTarget();
 

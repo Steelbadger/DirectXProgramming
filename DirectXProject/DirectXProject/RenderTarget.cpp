@@ -123,7 +123,7 @@ void RenderTarget::ClearRenderTarget(ID3D11DeviceContext* deviceContext, ID3D11D
 
 	// Setup the color to clear the buffer to.
 	color[0] = 0.0f;
-	color[1] = 1.0f;
+	color[1] = 0.0f;
 	color[2] = 0.0f;
 	color[3] = 1.0f;
 

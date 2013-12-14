@@ -11,8 +11,9 @@ private:
 	struct LightBufferType
 	{
 		D3DXVECTOR4 lightColor;
-		D3DXVECTOR3 lightDirection;
-		float specularPower;  
+		D3DXVECTOR4 lightDirection;
+		float specularPower; 
+		D3DXVECTOR3 padding;
 	};
 
 	struct CameraBufferType
