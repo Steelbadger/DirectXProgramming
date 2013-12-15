@@ -21,7 +21,6 @@ private:
 		D3DXVECTOR3 position;
 		float padding;  
 	};
-
 public:
 	DeferredLightingShader();
 	~DeferredLightingShader();

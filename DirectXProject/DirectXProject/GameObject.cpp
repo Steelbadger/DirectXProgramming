@@ -5,6 +5,7 @@
 
 GameObject::GameObject()
 {
+	modified = true;
 }
 
 GameObject::~GameObject()
@@ -18,33 +19,43 @@ ObjectID GameObject::GetComponentOfType(ComponentType type)
 
 D3DXMATRIX GameObject::GetLocalMatrix()
 {
-	D3DXMATRIX output;
-	D3DXMATRIX position;
-	D3DXMATRIX orientation;
-	D3DXMATRIX parent;
+	if (modified == true) {
+		D3DXMATRIX position;
+		D3DXMATRIX orientation;
+		D3DXMATRIX parent;
 
-	D3DXMatrixIdentity(&output);
-	D3DXMatrixIdentity(&position);
-	D3DXMatrixIdentity(&orientation);
-	D3DXMatrixIdentity(&parent);
+		D3DXMatrixIdentity(&localMatrix);
+		D3DXMatrixIdentity(&position);
+		D3DXMatrixIdentity(&orientation);
+		D3DXMatrixIdentity(&parent);
 
-	D3DXVECTOR3 pos(0,0,0);
-	if (HasComponent<Position>()) {
-		pos = GameObject::GetComponent<Position>().GetPosition();	
+		D3DXVECTOR3 pos(0,0,0);
+		if (HasComponent<Position>()) {
+			pos = GameObject::GetComponent<Position>().GetPosition();	
+		}
+		if (HasComponent<Orientation>()) {
+			orientation = GameObject::GetComponent<Orientation>().GetMatrix();
+		}
+		if (HasParent()) {
+			parent = GameObject::Get(GetParentID()).GetLocalMatrix();
+			pos = GameObject::GetComponent<Orientation>(GetParentID()).GetRotatedPoint(pos.x, pos.y, pos.z);
+		}
+
+		D3DXMatrixTranslation(&position, pos.x, pos.y, pos.z);
+
+		D3DXMatrixMultiply(&localMatrix, &parent, &orientation);
+		D3DXMatrixMultiply(&localMatrix, &orientation, &position);
+		modified = false;
 	}
-	if (HasComponent<Orientation>()) {
-		orientation = GameObject::GetComponent<Orientation>().GetMatrix();
-	}
-	if (HasParent()) {
-		parent = GameObject::Get(GetParentID()).GetLocalMatrix();
-		pos = GameObject::GetComponent<Orientation>(GetParentID()).GetRotatedPoint(pos.x, pos.y, pos.z);
-	}
+	return localMatrix;
+}
 
-	D3DXMatrixTranslation(&position, pos.x, pos.y, pos.z);
-
-	D3DXMatrixMultiply(&output, &parent, &orientation);
-	D3DXMatrixMultiply(&output, &orientation, &position);
-	return output;
+void GameObject::HasBeenModified()
+{
+	modified = true;
+	for (int i = 0; i < childGameObjects.size(); i++) {
+		GameObject::Get(childGameObjects[i]).HasBeenModified();
+	}
 }
 
 void GameObject::AddChild(ObjectID id)

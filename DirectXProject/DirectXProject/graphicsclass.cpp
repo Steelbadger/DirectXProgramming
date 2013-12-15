@@ -32,7 +32,7 @@ bool GraphicsClass::Initialize(HWND hwnd, D3DClass* d3d)
 
 	shaderLibrary.Initialise(m_D3D->GetDevice(), hwnd);
 	renderTarget.Initialize(m_D3D->GetDevice(), HardwareState::GetInstance().GetScreenWidth(), HardwareState::GetInstance().GetScreenHeight(), 3);
-	lightingRenderTarget.Initialize(m_D3D->GetDevice(), HardwareState::GetInstance().GetScreenWidth(), HardwareState::GetInstance().GetScreenHeight(), 2);
+	lightingRenderTarget.Initialize(m_D3D->GetDevice(), HardwareState::GetInstance().GetScreenWidth(), HardwareState::GetInstance().GetScreenHeight(), 1);
 	m_deferred.Initialize(m_D3D->GetDevice(), hwnd);
 	m_final.Initialize(m_D3D->GetDevice(), hwnd);
 	m_lighting.Initialize(m_D3D->GetDevice(), hwnd);
@@ -229,6 +229,7 @@ bool GraphicsClass::RenderDeferred(World& world)
 	m_D3D->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	m_D3D->EnableLightBlending();
+	m_D3D->DisableZBuffer();
 	std::list<ObjectID> light = world.GetLightList();
 
 	for (std::list<ObjectID>::iterator it = light.begin(); it != light.end(); it++) {
@@ -236,9 +237,9 @@ bool GraphicsClass::RenderDeferred(World& world)
 	}
 //	m_lighting.Render(m_D3D->GetDeviceContext(), renderTarget, world.GetCameraObject(), light.front());
 
-
 	m_D3D->DisableLightBlending();
-
+	m_D3D->EnableZBuffer();
+	
 	m_D3D->SetBackBufferRenderTarget();
 
 

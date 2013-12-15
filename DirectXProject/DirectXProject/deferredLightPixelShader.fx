@@ -54,6 +54,8 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 	pixelPosition = shaderTextures[2].Sample(SampleType, input.tex).xyz;
 	float specularity = shaderTextures[2].Sample(SampleType, input.tex).w;
 
+	float4 col = textureColor * diffuseColor;
+
 
 	// Invert the light direction for calculations.
 	float3 fragToLight = normalize(lightDirection - (pixelPosition * lightDirection.w));
@@ -61,15 +63,17 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 
 	float3 fragToView = normalize(position - pixelPosition);
 
-	float dist = distance(lightDirection.xyz, position) * lightDirection.w;
+	float dist = distance(lightDirection.xyz, pixelPosition) * lightDirection.w;
 
-	ambient = textureColor * diffuseColor * fac * (1-lightDirection.w);	
+	//ambient = textureColor * diffuseColor * fac * (1-lightDirection.w);	
+	ambient = fac * (1-lightDirection.w);
 
 	float diffuseContribution = max(0.0, dot(normal.xyz, fragToLight));
 
-	float attenuation = (1/(1 + 0.01*dist + 0.0001 * dist * dist));
+	float attenuation = (1/(1 + 0.1*dist + 0.01 * dist * dist));
 
-	diffuse = textureColor * diffuseColor * diffuseContribution * attenuation;
+	//diffuse = textureColor * diffuseColor * diffuseContribution * attenuation;
+	diffuse = diffuseContribution * attenuation;
 
 	float3 lightReflection = reflect(fragToLight, normal.xyz);
 
@@ -77,10 +81,11 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 
 	specularContribution = pow(specularContribution, specularPower) * specularity;
 
-	specular = textureColor * diffuseColor * specularContribution * attenuation;
+	//specular = textureColor * diffuseColor * specularContribution * attenuation;
+	specular = specularContribution * attenuation;
 
 	//  Don't apply lighting to areas with no geometry (normal.w will be set to 1.0 in those areas)
-	color = (ambient + diffuse + specular) * (1-normal.w) + textureColor * normal.w;
+	color = col * (ambient + diffuse + specular);
 
     return color;
 }

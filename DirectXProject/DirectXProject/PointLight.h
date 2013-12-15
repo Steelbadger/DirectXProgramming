@@ -14,7 +14,10 @@ public:
 
 	D3DXVECTOR4 GetColour(){return m_Colour;}
 	D3DXVECTOR3 GetPosition(){
-		return GameObject::Get(GetParentID()).GetComponent<Position>().GetPosition();	
+		D3DXVECTOR4 pos(0,0,0, 1);
+		D3DXMATRIX trans = GameObject::Get(GetParentID()).GetLocalMatrix();
+		D3DXVec4Transform(&pos, &pos, &trans);
+		return D3DXVECTOR3(pos.x, pos.y, pos.z);	
 	}
 	float GetSpecularPower(){return specularPower;}
 private:

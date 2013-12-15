@@ -1,4 +1,5 @@
 #include "Orientation.h"
+#include "GameObject.h"
 
 Orientation::Orientation()
 {
@@ -12,11 +13,13 @@ Orientation::~Orientation()
 void Orientation::SetOrientation(D3DXQUATERNION in)
 {
 	orientation = in;
+	GameObject::Get(GetParentID()).HasBeenModified();
 }
 
 void Orientation::SetOrientation(D3DXMATRIX in)
 {
 	D3DXQuaternionRotationMatrix(&orientation, &in);
+	GameObject::Get(GetParentID()).HasBeenModified();
 }
 
 void Orientation::Rotate(float angle, D3DXVECTOR3 axis)
@@ -24,6 +27,7 @@ void Orientation::Rotate(float angle, D3DXVECTOR3 axis)
 	D3DXQUATERNION modifier;
 	D3DXQuaternionRotationAxis(&modifier, &axis, angle);
 	D3DXQuaternionMultiply(&orientation, &orientation, &modifier);
+	GameObject::Get(GetParentID()).HasBeenModified();
 }
 
 void Orientation::RotateLocal(float angle, D3DXVECTOR3 axis)
@@ -32,6 +36,7 @@ void Orientation::RotateLocal(float angle, D3DXVECTOR3 axis)
 	D3DXQUATERNION modifier;
 	D3DXQuaternionRotationAxis(&modifier, &axis, angle);
 	D3DXQuaternionMultiply(&orientation, &orientation, &modifier);
+	GameObject::Get(GetParentID()).HasBeenModified();
 }
 
 

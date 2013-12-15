@@ -132,7 +132,11 @@ public:
 
 	static void SetParentChild(ObjectID parent, ObjectID child);
 
+	void HasBeenModified();
+
 private:
 	std::map<ComponentType, ObjectID> components;	//  map because lookup is simple unsigned char type, may be sparse
 	std::vector<ObjectID> childGameObjects;		//  array lookup means nothing, just storage
+	D3DXMATRIX localMatrix;
+	bool modified;
 };

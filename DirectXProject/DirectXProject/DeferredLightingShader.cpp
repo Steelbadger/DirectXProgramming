@@ -326,7 +326,7 @@ bool DeferredLightingShader::SetShaderParameters(ID3D11DeviceContext* deviceCont
 	bufferNumber = 1;
 
 	// Now set the camera constant buffer in the vertex shader with the updated values.
-	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_cameraBuffer);
+	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_cameraBuffer);
 
 	//  Get the render target and map it as input.
 	std::vector<ID3D11ShaderResourceView*> textures = renderTarget.GetShaderResourceViews();
