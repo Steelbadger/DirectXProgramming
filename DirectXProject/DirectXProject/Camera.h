@@ -25,4 +25,5 @@ private:
 	float fieldOfView, nearCull, farCull, viewportWidth, viewportHeight;
 	D3DXMATRIX projectionMatrix;
 	bool projectionChange;
+	D3DXMATRIX viewMatrix;
 };

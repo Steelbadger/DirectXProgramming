@@ -65,7 +65,7 @@ void World::CreateScene()
 	AddToScene(quad);
 	AddToScene(test);
 
-	for (int i = 0 ; i < 50; i++) {
+	for (int i = 0 ; i < 1000; i++) {
 		test= GameObject::New();
 		GameObject::AddComponent<Position>(test);
 		GameObject::AddComponent<Orientation>(test);
@@ -82,7 +82,7 @@ void World::CreateScene()
 		GameObject::GetComponent<SpinController>(test).SetSpinSpeed(0, float(rand()%200-100)/100.0f, 0);
 		AddToScene(test);
 
-		if (i%7 == 0) {
+		if (i%50 == 0) {
 			ObjectID light3 = GameObject::New();
 			GameObject::AddComponent<Position>(light3);
 			GameObject::AddComponent<Orientation>(light3);

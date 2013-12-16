@@ -84,8 +84,6 @@ bool Application::Initialize()
 
 	world.SetCameraObject(camera);
 
-	m_Input->EnableAveragedFrameRate(200);
-	
 	return true;
 }
 

@@ -50,22 +50,23 @@ void Camera::SetFieldOfView(float degrees)
 
 D3DXMATRIX Camera::GetViewMatrix()
 {
-	D3DXVECTOR3 up(0,1,0);
-	D3DXVECTOR3 forward(0,0,1);
-	D3DXVECTOR3 position = GameObject::GetComponent<Position>(GetParentID()).GetPosition();
-	D3DXMATRIX orientationMatrix = GameObject::GetComponent<Orientation>(GetParentID()).GetMatrix();
+	if (GameObject::Get(GetParentID()).Modified()) {
+		D3DXVECTOR3 up(0,1,0);
+		D3DXVECTOR3 forward(0,0,1);
+		D3DXVECTOR3 position = GameObject::GetComponent<Position>(GetParentID()).GetPosition();
+		D3DXMATRIX orientationMatrix = GameObject::GetComponent<Orientation>(GetParentID()).GetMatrix();
 
-	D3DXMATRIX output;
+		D3DXVec3TransformCoord(&forward, &forward, &orientationMatrix);
+		D3DXVec3TransformCoord(&up, &up, &orientationMatrix);
 
-	D3DXVec3TransformCoord(&forward, &forward, &orientationMatrix);
-	D3DXVec3TransformCoord(&up, &up, &orientationMatrix);
+		D3DXVECTOR3 lookAt = position + forward;
 
-	D3DXVECTOR3 lookAt = position + forward;
+		GameObject::Get(GetParentID()).GetLocalMatrix();
 
-	// Finally create the view matrix from the three updated vectors.
-	D3DXMatrixLookAtLH(&output, &position, &lookAt, &up);
-
-	return output;
+		// Finally create the view matrix from the three updated vectors.
+		D3DXMatrixLookAtLH(&viewMatrix, &position, &lookAt, &up);
+	}
+	return viewMatrix;
 }
 
 

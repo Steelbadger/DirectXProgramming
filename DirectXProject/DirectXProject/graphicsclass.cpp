@@ -236,8 +236,6 @@ bool GraphicsClass::RenderDeferred(World& world)
 	for (std::list<ObjectID>::iterator it = light.begin(); it != light.end(); it++) {
 		m_lighting.Render(m_D3D->GetDeviceContext(), renderTarget, world.GetCameraObject(), (*it));
 	}
-//	m_lighting.Render(m_D3D->GetDeviceContext(), renderTarget, world.GetCameraObject(), light.front());
-
 	m_D3D->DisableLightBlending();
 	m_D3D->EnableZBuffer();
 	
@@ -249,7 +247,6 @@ bool GraphicsClass::RenderDeferred(World& world)
 	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
 	m_final.Render(m_D3D->GetDeviceContext(), lightingRenderTarget);
-//	m_final.Render(m_D3D->GetDeviceContext(), renderTarget);
 
 	m_D3D->EndScene();
 

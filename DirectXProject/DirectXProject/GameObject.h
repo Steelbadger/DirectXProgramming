@@ -133,6 +133,7 @@ public:
 	static void SetParentChild(ObjectID parent, ObjectID child);
 
 	void HasBeenModified();
+	bool Modified(){return modified;}
 
 private:
 	std::map<ComponentType, ObjectID> components;	//  map because lookup is simple unsigned char type, may be sparse
