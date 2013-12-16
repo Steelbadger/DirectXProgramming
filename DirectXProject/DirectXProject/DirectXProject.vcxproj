@@ -85,8 +85,6 @@
     <ClCompile Include="AmbientNormalDeferredShader.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="cameraclass.cpp" />
-    <ClCompile Include="colorshaderclass.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="d3dclass.cpp" />
     <ClCompile Include="DeferredLightingShader.cpp" />
@@ -95,12 +93,10 @@
     <ClCompile Include="graphicsclass.cpp" />
     <ClCompile Include="GraphicsWindow.cpp" />
     <ClCompile Include="Hardware.cpp" />
-    <ClCompile Include="lightclass.cpp" />
     <ClCompile Include="lightshaderclass.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix4x4.cpp" />
     <ClCompile Include="MeshFactory.cpp" />
-    <ClCompile Include="ModelClass.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="NormalMapShaderClass.cpp" />
     <ClCompile Include="Orientation.cpp" />
@@ -111,8 +107,6 @@
     <ClCompile Include="simd.cpp" />
     <ClCompile Include="SpinController.cpp" />
     <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="textureclass.cpp" />
-    <ClCompile Include="textureshaderclass.cpp" />
     <ClCompile Include="TextureToScreenShader.cpp" />
     <ClCompile Include="UtilityFunctions.cpp" />
     <ClCompile Include="Vector2.cpp" />
@@ -125,6 +119,7 @@
     <ClInclude Include="ControllerUpdateInterface.h" />
     <ClInclude Include="DeferredLightingShader.h" />
     <ClInclude Include="DirectionalLight.h" />
+    <ClInclude Include="lightshaderclass.h" />
     <ClInclude Include="MeshFactory.h" />
     <ClInclude Include="NormalMapShaderClass.h" />
     <ClInclude Include="PointLight.h" />
@@ -135,8 +130,6 @@
     <ClInclude Include="TextureTypes.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="cameraclass.h" />
-    <ClInclude Include="colorshaderclass.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="d3dclass.h" />
     <ClInclude Include="FirstPersonController.h" />
@@ -144,15 +137,12 @@
     <ClInclude Include="graphicsclass.h" />
     <ClInclude Include="GraphicsWindow.h" />
     <ClInclude Include="Hardware.h" />
-    <ClInclude Include="lightclass.h" />
-    <ClInclude Include="lightshaderclass.h" />
     <ClInclude Include="LookupTable.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MathsClasses.h" />
     <ClInclude Include="Matrix4x4.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MessagePasser.h" />
-    <ClInclude Include="ModelClass.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Orientation.h" />
     <ClInclude Include="Position.h" />
@@ -161,8 +151,6 @@
     <ClInclude Include="ShaderInterface.h" />
     <ClInclude Include="simd.h" />
     <ClInclude Include="Texture.h" />
-    <ClInclude Include="textureclass.h" />
-    <ClInclude Include="textureshaderclass.h" />
     <ClInclude Include="UtilityFunctions.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vector3.h" />

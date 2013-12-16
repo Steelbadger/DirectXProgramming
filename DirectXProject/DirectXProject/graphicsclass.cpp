@@ -13,6 +13,7 @@
 #include <D3D11.h>
 #include <D3DX10math.h>
 #include "Hardware.h"
+#include <initializer_list>
 
 GraphicsClass::GraphicsClass()
 {

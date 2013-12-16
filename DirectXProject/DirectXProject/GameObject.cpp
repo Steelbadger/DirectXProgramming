@@ -39,6 +39,7 @@ D3DXMATRIX GameObject::GetLocalMatrix()
 		if (HasParent()) {
 			parent = GameObject::Get(GetParentID()).GetLocalMatrix();
 			pos = GameObject::GetComponent<Orientation>(GetParentID()).GetRotatedPoint(pos.x, pos.y, pos.z);
+			pos = pos + GameObject::GetComponent<Position>(GetParentID()).GetPosition();
 		}
 
 		D3DXMatrixTranslation(&position, pos.x, pos.y, pos.z);

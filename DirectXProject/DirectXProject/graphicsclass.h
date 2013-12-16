@@ -6,11 +6,6 @@
 
 
 #include "d3dclass.h"
-#include "cameraclass.h"
-#include "modelclass.h"
-#include "colorshaderclass.h"
-#include "textureshaderclass.h"
-#include "lightclass.h"
 #include "lightshaderclass.h"
 #include "ShaderLibrary.h"
 #include "LookupTable.h"
