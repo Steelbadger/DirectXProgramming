@@ -315,6 +315,19 @@ bool DeferredLightingShader::SetShaderParameters(ID3D11DeviceContext* deviceCont
 
 	D3DXVECTOR3 cameraPosition = GameObject::GetComponent<Position>(cameraObject).GetPosition();
 
+	//D3DXMATRIX projection = GameObject::GetComponent<Camera>(cameraObject).GetProjectionMatrix();
+	//D3DXMATRIX invProjection;
+	//float det;
+	//D3DXMatrixInverse(&invProjection, &det, &projection);
+	//invProjection = invProjection/det;
+
+	//D3DXVECTOR4 test1(20, 7, 243, 1);
+
+	//D3DXVec4Transform(&test1, &test1, &projection);
+	//test1 = test1/test1.w;
+	//D3DXVec4Transform(&test1, &test1, &invProjection);
+	//test1 = test1/test1.w;
+
 	// Copy the camera position into the constant buffer.
 	dataPtr3->position = cameraPosition;
 	dataPtr3->padding = 0.0f;

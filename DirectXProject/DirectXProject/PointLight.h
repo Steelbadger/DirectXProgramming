@@ -17,6 +17,7 @@ public:
 		D3DXVECTOR4 pos(0,0,0, 1);
 		D3DXMATRIX trans = GameObject::Get(GetParentID()).GetLocalMatrix();
 		D3DXVec4Transform(&pos, &pos, &trans);
+		pos = pos/pos.w;
 		return D3DXVECTOR3(pos.x, pos.y, pos.z);	
 	}
 	float GetSpecularPower(){return specularPower;}
