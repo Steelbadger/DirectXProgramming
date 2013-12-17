@@ -341,7 +341,6 @@ bool AmbientNormalDeferredShader::SetShaderParameters(ID3D11DeviceContext* devic
 	D3DXMATRIX projectionMatrix = GameObject::GetComponent<Camera>(cameraObject).GetProjectionMatrix();
 	D3DXMATRIX worldMatrix = GameObject::Get(drawObject).GetLocalMatrix();
 
-
 	// Transpose the matrices to prepare them for the shader.
 	D3DXMatrixTranspose(&worldMatrix, &worldMatrix);
 	D3DXMatrixTranspose(&viewMatrix, &viewMatrix);
