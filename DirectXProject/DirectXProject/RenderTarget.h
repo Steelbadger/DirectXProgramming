@@ -7,11 +7,13 @@
 class RenderTarget
 {
 public:
+	enum Type {COLOUR, NORMAL, DEPTH, FLOAT_RGBA, FLOAT_R, HALFFLOAT_RGBA};
 
 	RenderTarget();
 	~RenderTarget();
 
 	bool Initialize(ID3D11Device*, int width, int height, int numTargets);
+	bool InitializeTEST(ID3D11Device*, int width, int height, int number, ...);
 	void Shutdown();
 
 	void SetRenderTarget(ID3D11DeviceContext*, ID3D11DepthStencilView*);

@@ -1,5 +1,5 @@
 #include "RenderTarget.h"
-#include <initializer_list>
+#include <stdarg.h>
 
 RenderTarget::RenderTarget()
 {
@@ -75,6 +75,101 @@ bool RenderTarget::Initialize(ID3D11Device* device, int textureWidth, int textur
 		ID3D11ShaderResourceView* m_shaderResourceView = 0;
 		// Create the shader resource view.
 		result = device->CreateShaderResourceView(m_targetTextures[i], &shaderResourceViewDesc, &m_shaderResourceView);
+		if(FAILED(result))
+		{
+			return false;
+		}
+		m_resourceViews.push_back(m_shaderResourceView);
+	}
+
+	return true;
+}
+
+bool RenderTarget::InitializeTEST(ID3D11Device* device, int width, int height, int number, ...)
+{
+	DXGI_FORMAT format;
+	D3D11_TEXTURE2D_DESC textureDesc;
+	HRESULT result;
+	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
+	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
+
+
+	// Initialize the render target texture description.
+	ZeroMemory(&textureDesc, sizeof(textureDesc));
+
+	// Setup the render target texture description.
+	textureDesc.Width = width;
+	textureDesc.Height = height;
+	textureDesc.MipLevels = 1;
+	textureDesc.ArraySize = 1;
+	textureDesc.SampleDesc.Count = 1;
+	textureDesc.Usage = D3D11_USAGE_DEFAULT;
+	textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	textureDesc.CPUAccessFlags = 0;
+	textureDesc.MiscFlags = 0;
+
+	// Setup the description of the render target view.
+	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+	renderTargetViewDesc.Texture2D.MipSlice = 0;
+
+	// Setup the description of the shader resource view.
+	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
+	shaderResourceViewDesc.Texture2D.MipLevels = 1;
+
+	va_list args;
+	va_start(args, number);
+
+	for (int i = 0; i < number; i++) {
+		Type type = va_arg(args, Type);
+
+		switch(type) {
+		case COLOUR:
+			format = DXGI_FORMAT_R8G8B8A8_UNORM;
+			break;
+		case NORMAL:
+			format = DXGI_FORMAT_R8G8B8A8_UNORM;
+			break;
+		case DEPTH:
+			format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+			break;
+		case FLOAT_RGBA:
+			format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+			break;
+		case FLOAT_R:
+			format = DXGI_FORMAT_R32_FLOAT;
+			break;
+		case HALFFLOAT_RGBA:
+			format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+			break;
+		}
+
+
+		ID3D11Texture2D* m_renderTargetTexture = 0;
+		ID3D11RenderTargetView* m_renderTargetView = 0;
+		ID3D11ShaderResourceView* m_shaderResourceView = 0;
+
+		textureDesc.Format = format;
+		renderTargetViewDesc.Format = format;
+		shaderResourceViewDesc.Format = format;
+
+		result = device->CreateTexture2D(&textureDesc, NULL, &m_renderTargetTexture);
+		if(FAILED(result))
+		{
+			return false;
+		}
+		m_targetTextures.push_back(m_renderTargetTexture);
+
+		// Create the render target view.
+		result = device->CreateRenderTargetView(m_renderTargetTexture, &renderTargetViewDesc, &m_renderTargetView);
+		if(FAILED(result))
+		{
+			return false;
+		}
+		m_targetViews.push_back(m_renderTargetView);
+
+		// Create the shader resource view.
+		result = device->CreateShaderResourceView(m_renderTargetTexture, &shaderResourceViewDesc, &m_shaderResourceView);
 		if(FAILED(result))
 		{
 			return false;
