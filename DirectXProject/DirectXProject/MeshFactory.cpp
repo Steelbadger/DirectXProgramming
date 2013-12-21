@@ -44,7 +44,7 @@ MeshData MeshFactory::CreatePrimitive(Primitive prim)
 	std::vector<LitVertexType> vertsLoad;
 	std::vector<MappedVertexType> verts;
 	std::vector<unsigned int> index;
-	Plane(vertsLoad, index, 2000.0f, 2000.0f, 1000, 1000);
+	Plane(vertsLoad, index, 500.0f, 500.0f, 100, 100);
 
 	verts = ComputeTangentSpace(vertsLoad, index);
 

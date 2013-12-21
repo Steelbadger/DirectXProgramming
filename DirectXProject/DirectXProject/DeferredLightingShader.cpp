@@ -313,24 +313,30 @@ bool DeferredLightingShader::SetShaderParameters(ID3D11DeviceContext* deviceCont
 	// Get a pointer to the data in the constant buffer.
 	dataPtr3 = (CameraBufferType*)mappedResource.pData;
 
-	D3DXVECTOR3 cameraPosition = GameObject::GetComponent<Position>(cameraObject).GetPosition();
+//	D3DXVECTOR3 cameraPosition = GameObject::GetComponent<Position>(cameraObject).GetPosition();
 
-	//D3DXMATRIX projection = GameObject::GetComponent<Camera>(cameraObject).GetProjectionMatrix();
-	//D3DXMATRIX invProjection;
-	//float det;
-	//D3DXMatrixInverse(&invProjection, &det, &projection);
-	//invProjection = invProjection/det;
+	D3DXMATRIX projection = GameObject::GetComponent<Camera>(cameraObject).GetProjectionMatrix();
+	D3DXMATRIX thingy;
+	D3DXMatrixPerspectiveFovLH(&thingy, (45.0f * (float)D3DX_PI)/180.0f, 724.0f/454.0f, 1.0f, 100.0f);
 
-	//D3DXVECTOR4 test1(20, 7, 243, 1);
+	D3DXMATRIX view = GameObject::GetComponent<Camera>(cameraObject).GetViewMatrix();
+	D3DXMATRIX invProjection;
+	float det;
+	D3DXMatrixInverse(&invProjection, &det, &projection);
+	invProjection = invProjection/det;
+//	D3DXMatrixTranspose(&invProjection, &invProjection);
 
-	//D3DXVec4Transform(&test1, &test1, &projection);
-	//test1 = test1/test1.w;
-	//D3DXVec4Transform(&test1, &test1, &invProjection);
-	//test1 = test1/test1.w;
+	D3DXVECTOR4 test1(0, 0, 10, 1);
+
+	D3DXVec4Transform(&test1, &test1, &projection);
+	test1 = test1/test1.w;
+	D3DXVec4Transform(&test1, &test1, &invProjection);
+	test1 = test1/test1.w;
+
+	D3DXMatrixTranspose(&invProjection, &invProjection);
 
 	// Copy the camera position into the constant buffer.
-	dataPtr3->position = cameraPosition;
-	dataPtr3->padding = 0.0f;
+	dataPtr3->invProj = invProjection;
 
 	// Unlock the camera constant buffer.
 	deviceContext->Unmap(m_cameraBuffer, 0);
@@ -359,13 +365,38 @@ bool DeferredLightingShader::SetShaderParameters(ID3D11DeviceContext* deviceCont
 
 	// Copy the lighting variables into the constant buffer.
 
-
+	D3DXVECTOR4 position;
+	Position* lightPos = &GameObject::GetComponent<Position>(lightObject);
 	if (GameObject::HasComponent<DirectionalLight>(lightObject)) {
-		dataPtr2->lightDirection = D3DXVECTOR4(GameObject::GetComponent<DirectionalLight>(lightObject).GetDirection(), 0);
+		D3DXVECTOR4 direction = D3DXVECTOR4(GameObject::GetComponent<DirectionalLight>(lightObject).GetDirection(), 1.0f);
+		float det;
+		view._14 = 0;
+		view._24 = 0;
+		view._34 = 0;
+		view._41 = 0;
+		view._42 = 0;
+		view._43 = 0;
+		view._44 = 1;
+
+		D3DXMatrixTranspose(&view, &view);
+		D3DXMatrixInverse(&view, &det, &view);
+		view = view/det;
+
+		D3DXVec4Transform(&direction, &direction, &view);
+		direction = direction/direction.w;
+		direction.w = 0;
+		D3DXVec4Normalize(&direction, &direction);
+
+		dataPtr2->lightDirection = direction;
 		dataPtr2->lightColor = GameObject::GetComponent<DirectionalLight>(lightObject).GetColour();
 		dataPtr2->specularPower = GameObject::GetComponent<DirectionalLight>(lightObject).GetSpecularPower();
 	} else if (GameObject::HasComponent<PointLight>(lightObject)){
-		dataPtr2->lightDirection = D3DXVECTOR4(GameObject::GetComponent<PointLight>(lightObject).GetPosition(), 1.0f);
+
+		position = D3DXVECTOR4(GameObject::GetComponent<PointLight>(lightObject).GetPosition(), 1.0f);
+		D3DXVec4Transform(&position, &position, &view);
+		position = position/position.w;
+
+		dataPtr2->lightDirection = position;
 		dataPtr2->lightColor = GameObject::GetComponent<PointLight>(lightObject).GetColour();
 		dataPtr2->specularPower = GameObject::GetComponent<PointLight>(lightObject).GetSpecularPower();
 	}

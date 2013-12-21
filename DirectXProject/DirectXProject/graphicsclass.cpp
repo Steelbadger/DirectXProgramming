@@ -33,7 +33,7 @@ bool GraphicsClass::Initialize(HWND hwnd, D3DClass* d3d)
 
 	shaderLibrary.Initialise(m_D3D->GetDevice(), hwnd);
 //	renderTarget.Initialize(m_D3D->GetDevice(), HardwareState::GetInstance().GetScreenWidth(), HardwareState::GetInstance().GetScreenHeight(), 3);
-	renderTarget.InitializeTEST(m_D3D->GetDevice(), HardwareState::GetInstance().GetScreenWidth(), HardwareState::GetInstance().GetScreenHeight(), 3, RenderTarget::HALFFLOAT_RGBA, RenderTarget::HALFFLOAT_RGBA, RenderTarget::HALFFLOAT_RGBA);
+	renderTarget.InitializeTEST(m_D3D->GetDevice(), HardwareState::GetInstance().GetScreenWidth(), HardwareState::GetInstance().GetScreenHeight(), 3, RenderTarget::COLOUR, RenderTarget::NORMAL, RenderTarget::DEPTH);
 //	lightingRenderTarget.Initialize(m_D3D->GetDevice(), HardwareState::GetInstance().GetScreenWidth(), HardwareState::GetInstance().GetScreenHeight(), 1);
 	lightingRenderTarget.InitializeTEST(m_D3D->GetDevice(), HardwareState::GetInstance().GetScreenWidth(), HardwareState::GetInstance().GetScreenHeight(), 1, RenderTarget::COLOUR);
 	m_deferred.Initialize(m_D3D->GetDevice(), hwnd);

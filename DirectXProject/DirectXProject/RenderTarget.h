@@ -24,4 +24,8 @@ private:
 	std::vector<ID3D11Texture2D*> m_targetTextures;
 	std::vector<ID3D11RenderTargetView*> m_targetViews;
 	std::vector<ID3D11ShaderResourceView*> m_resourceViews;
+
+	ID3D11DepthStencilView* m_depthStencilView;
+
+	bool hasDepthStencil;
 };

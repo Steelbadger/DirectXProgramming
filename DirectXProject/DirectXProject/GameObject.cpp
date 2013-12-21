@@ -29,6 +29,8 @@ D3DXMATRIX GameObject::GetLocalMatrix()
 		D3DXMatrixIdentity(&orientation);
 		D3DXMatrixIdentity(&parent);
 
+		GameObject* thingy = this;
+
 		D3DXVECTOR3 pos(0,0,0);
 		if (HasComponent<Position>()) {
 			pos = GameObject::GetComponent<Position>().GetPosition();	

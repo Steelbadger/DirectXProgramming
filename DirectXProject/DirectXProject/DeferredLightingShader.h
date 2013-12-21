@@ -18,8 +18,7 @@ private:
 
 	struct CameraBufferType
 	{
-		D3DXVECTOR3 position;
-		float padding;  
+		D3DXMATRIX invProj;
 	};
 public:
 	DeferredLightingShader();

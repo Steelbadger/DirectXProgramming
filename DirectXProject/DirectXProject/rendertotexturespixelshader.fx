@@ -20,14 +20,12 @@ struct PixelInputType
     float3 normal : NORMAL;
     float3 tangent : TANGENT;
     float3 binormal : BINORMAL;
-	float4 worldPosition : TEXCOORD1;
 };
 
 struct PixelOutputType
 {
 	float4 color : SV_Target0;
 	float4 normal : SV_Target1;
-	float4 position : SV_Target2;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -59,8 +57,7 @@ PixelOutputType AmbientNormalShader(PixelInputType input) : SV_TARGET
     // Normalize the resulting bump normal.
     bumpNormal = normalize(bumpNormal);
 
-	output.normal = float4(bumpNormal, 0.0f);
-	output.position = float4(input.worldPosition.xyz, specularity) ;
+	output.normal = float4(bumpNormal, specularity);
 
     return output;
 }

@@ -20,8 +20,7 @@ cbuffer LightBuffer
 
 cbuffer CameraBuffer
 {
-	float3 position;
-	float padding;
+	matrix invProj;
 }
 
 //////////////
@@ -40,7 +39,7 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 {
     float4 textureColor;
 	float4 normal;
-	float3 pixelPosition;
+	float4 pixelPosition;
 	float4 color;
 	float fac = 0.3;
 
@@ -50,9 +49,15 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 
     textureColor = shaderTextures[0].Sample(SampleType, input.tex);
 	normal = shaderTextures[1].Sample(SampleType, input.tex);
-
-	pixelPosition = shaderTextures[2].Sample(SampleType, input.tex).xyz;
-	float specularity = shaderTextures[2].Sample(SampleType, input.tex).w;
+	float specularity = normal.w;
+	normal.w = 0.0f;
+	normal = normalize((normal*2)-1);
+//	normal = max(-normal, normal);
+	float cdepth = shaderTextures[2].Sample(SampleType, input.tex).x;
+	float depth = (cdepth);
+	float4 projectionPosition = float4(input.tex.x*2-1, (1-input.tex.y)*2-1, depth, 1.0f);
+	pixelPosition = mul(invProj, projectionPosition);
+	pixelPosition = pixelPosition/pixelPosition.w;
 
 	float4 col = textureColor * diffuseColor;
 
@@ -61,7 +66,7 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 	float3 fragToLight = normalize(lightDirection - (pixelPosition * lightDirection.w));
 	fragToLight = ((lightDirection.w*2)-1)*fragToLight;
 
-	float3 fragToView = normalize(position - pixelPosition);
+	float3 fragToView = normalize(-pixelPosition);
 
 	float dist = distance(lightDirection.xyz, pixelPosition) * lightDirection.w;
 
@@ -86,6 +91,16 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 
 	//  Don't apply lighting to areas with no geometry (normal.w will be set to 1.0 in those areas)
 	color = col * (ambient + diffuse + specular);
+//	color = (projectionPosition+1)/2;
+	color = pixelPosition/100.0f;
+//	color = float4(dist, dist, dist, 1.0f)/100;
+//	color = float4(diffuseContribution, diffuseContribution, diffuseContribution, 1.0f);
+//	color = float4(fragToLight, 1.0f);
+//	color = float4(fragToView, 1.0f);
+//	color = textureColor;
+//	color = float4(normal.xyz, 1.0f);
+//	color = float4(normal.y, normal.y, normal.y, 1.0f);
+//	color = float4(cdepth, cdepth, cdepth, 1.0f);
 
     return color;
 }

@@ -3,7 +3,7 @@
 
 RenderTarget::RenderTarget()
 {
-
+	hasDepthStencil = false;
 }
 
 RenderTarget::~RenderTarget()
@@ -149,32 +149,87 @@ bool RenderTarget::InitializeTEST(ID3D11Device* device, int width, int height, i
 		ID3D11RenderTargetView* m_renderTargetView = 0;
 		ID3D11ShaderResourceView* m_shaderResourceView = 0;
 
-		textureDesc.Format = format;
-		renderTargetViewDesc.Format = format;
-		shaderResourceViewDesc.Format = format;
+		if (format == DXGI_FORMAT_D24_UNORM_S8_UINT) {
+			D3D11_TEXTURE2D_DESC depthStencilDesc = textureDesc;
 
-		result = device->CreateTexture2D(&textureDesc, NULL, &m_renderTargetTexture);
-		if(FAILED(result))
-		{
-			return false;
-		}
-		m_targetTextures.push_back(m_renderTargetTexture);
+			depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+			depthStencilDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
 
-		// Create the render target view.
-		result = device->CreateRenderTargetView(m_renderTargetTexture, &renderTargetViewDesc, &m_renderTargetView);
-		if(FAILED(result))
-		{
-			return false;
-		}
-		m_targetViews.push_back(m_renderTargetView);
+			result = device->CreateTexture2D(&depthStencilDesc, NULL, &m_renderTargetTexture);
+			if(FAILED(result))
+			{
+				return false;
+			}
+			m_targetTextures.push_back(m_renderTargetTexture);
 
-		// Create the shader resource view.
-		result = device->CreateShaderResourceView(m_renderTargetTexture, &shaderResourceViewDesc, &m_shaderResourceView);
-		if(FAILED(result))
-		{
-			return false;
+			D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
+
+			// Initailze the depth stencil view.
+			ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
+
+			// Set up the depth stencil view description.
+			depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+			depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+			depthStencilViewDesc.Texture2D.MipSlice = 0;
+
+			// Create the depth stencil view.
+			result = device->CreateDepthStencilView(m_renderTargetTexture, &depthStencilViewDesc, &m_depthStencilView);
+			if(FAILED(result))
+			{
+				return false;
+			}
+
+			shaderResourceViewDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+
+			// Create the shader resource view for the depth component
+			result = device->CreateShaderResourceView(m_renderTargetTexture, &shaderResourceViewDesc, &m_shaderResourceView);
+			if(FAILED(result))
+			{
+				return false;
+			}
+			m_resourceViews.push_back(m_shaderResourceView);
+
+			shaderResourceViewDesc.Format = DXGI_FORMAT_X24_TYPELESS_G8_UINT;
+
+			// Create the shader resource view for the stencil component
+			result = device->CreateShaderResourceView(m_renderTargetTexture, &shaderResourceViewDesc, &m_shaderResourceView);
+			if(FAILED(result))
+			{
+				return false;
+			}
+			m_resourceViews.push_back(m_shaderResourceView);
+			hasDepthStencil = true;
+
+		} else {
+			textureDesc.Format = format;
+			renderTargetViewDesc.Format = format;
+			shaderResourceViewDesc.Format = format;
+
+			result = device->CreateTexture2D(&textureDesc, NULL, &m_renderTargetTexture);
+			if(FAILED(result))
+			{
+				return false;
+			}
+			m_targetTextures.push_back(m_renderTargetTexture);
+
+			// Create the render target view.
+			result = device->CreateRenderTargetView(m_renderTargetTexture, &renderTargetViewDesc, &m_renderTargetView);
+			if(FAILED(result))
+			{
+				return false;
+			}
+			m_targetViews.push_back(m_renderTargetView);
+
+			// Create the shader resource view.
+			result = device->CreateShaderResourceView(m_renderTargetTexture, &shaderResourceViewDesc, &m_shaderResourceView);
+			if(FAILED(result))
+			{
+				return false;
+			}
+			m_resourceViews.push_back(m_shaderResourceView);
+
+
 		}
-		m_resourceViews.push_back(m_shaderResourceView);
 	}
 
 	return true;
@@ -207,7 +262,11 @@ void RenderTarget::Shutdown()
 void RenderTarget::SetRenderTarget(ID3D11DeviceContext* deviceContext, ID3D11DepthStencilView* depthStencilView)
 {
 	// Bind the render target view and depth stencil buffer to the output render pipeline.
-	deviceContext->OMSetRenderTargets(m_targetViews.size(), m_targetViews.data(), depthStencilView);
+	if (hasDepthStencil) {
+		deviceContext->OMSetRenderTargets(m_targetViews.size(), m_targetViews.data(), m_depthStencilView);
+	} else {
+		deviceContext->OMSetRenderTargets(m_targetViews.size(), m_targetViews.data(), depthStencilView);
+	}
 	
 	return;
 }
@@ -229,7 +288,11 @@ void RenderTarget::ClearRenderTarget(ID3D11DeviceContext* deviceContext, ID3D11D
 	}
     
 	// Clear the depth buffer.
-	deviceContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	if (hasDepthStencil) {
+		deviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	} else {
+		deviceContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	}
 
 	return;
 }
