@@ -56,7 +56,7 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 	float cdepth = shaderTextures[2].Sample(SampleType, input.tex).x;
 	float depth = (cdepth);
 	float4 projectionPosition = float4(input.tex.x*2-1, (1-input.tex.y)*2-1, depth, 1.0f);
-	pixelPosition = mul(invProj, projectionPosition);
+	pixelPosition = mul(projectionPosition, invProj);
 	pixelPosition = pixelPosition/pixelPosition.w;
 
 	float4 col = textureColor * diffuseColor;
@@ -92,7 +92,7 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 	//  Don't apply lighting to areas with no geometry (normal.w will be set to 1.0 in those areas)
 	color = col * (ambient + diffuse + specular);
 //	color = (projectionPosition+1)/2;
-	color = pixelPosition/100.0f;
+//	color = pixelPosition/100.0f;
 //	color = float4(dist, dist, dist, 1.0f)/100;
 //	color = float4(diffuseContribution, diffuseContribution, diffuseContribution, 1.0f);
 //	color = float4(fragToLight, 1.0f);
@@ -100,7 +100,7 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 //	color = textureColor;
 //	color = float4(normal.xyz, 1.0f);
 //	color = float4(normal.y, normal.y, normal.y, 1.0f);
-//	color = float4(cdepth, cdepth, cdepth, 1.0f);
+	color = float4(cdepth, cdepth, cdepth, 1.0f);
 
     return color;
 }
