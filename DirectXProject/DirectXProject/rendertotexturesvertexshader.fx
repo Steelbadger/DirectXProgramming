@@ -45,11 +45,16 @@ PixelInputType AmbientNormalShader(VertexInputType input)
 
     // Change the position vector to be 4 units for proper matrix calculations.
     input.position.w = 1.0f;
+	float dist;
 
     // Calculate the position of the vertex against the world, view, and projection matrices.
     output.position = mul(input.position, worldMatrix);
     output.position = mul(output.position, viewMatrix);
+	dist = output.position.z/output.position.w;
     output.position = mul(output.position, projectionMatrix);
+	dist = dist/100.0f;
+	dist = dist * output.position.w;
+	output.position.z = dist;
 
 //	output.position = output.position/output.position.w;
 

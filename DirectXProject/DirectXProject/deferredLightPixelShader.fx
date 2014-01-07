@@ -20,7 +20,11 @@ cbuffer LightBuffer
 
 cbuffer CameraBuffer
 {
-	matrix invProj;
+//	matrix invProj;
+	float4 topLeft;
+	float4 topRight;
+	float4 bottomLeft;
+	float4 bottomRight;
 }
 
 //////////////
@@ -54,10 +58,21 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 	normal = normalize((normal*2)-1);
 //	normal = max(-normal, normal);
 	float cdepth = shaderTextures[2].Sample(SampleType, input.tex).x;
-	float depth = (cdepth);
+	float depth = cdepth*100.0f;
+
+	float3 horiz1 = lerp(topLeft.xyz, topRight.xyz, input.tex.x);
+	float3 horiz2 = lerp(bottomLeft.xyz, bottomRight.xyz, input.tex.x);
+
+	float3 vect = lerp(horiz2, horiz1, input.tex.y);
+
+	vect = normalize(vect);
+
 	float4 projectionPosition = float4(input.tex.x*2-1, (1-input.tex.y)*2-1, depth, 1.0f);
-	pixelPosition = mul(projectionPosition, invProj);
-	pixelPosition = pixelPosition/pixelPosition.w;
+//	pixelPosition = mul(projectionPosition, invProj);
+//	pixelPosition = pixelPosition/pixelPosition.w;
+
+	pixelPosition = float4(vect*depth, 1);
+
 
 	float4 col = textureColor * diffuseColor;
 
@@ -99,8 +114,18 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 //	color = float4(fragToView, 1.0f);
 //	color = textureColor;
 //	color = float4(normal.xyz, 1.0f);
+//	color = float4(horiz1, 1.0f);
+
+//	color = float4(topLeft.xyz, 1.0f);			//GREEN?
+//	color = float4(topRight.xyz, 1.0f);			//LIGHTBLUE?????
+//	color = float4(bottomLeft.xyz, 1.0f);		//ONLYRED?
+//	color = float4(bottomRight.xyz, 1.0f);		//BLACK?
+
+//	color = float4(64, -41, -99, 1.0f);
 //	color = float4(normal.y, normal.y, normal.y, 1.0f);
-	color = float4(cdepth, cdepth, cdepth, 1.0f);
+//	color = float4(input.tex, 0.0f, 1.0f);
+//	color = float4(vect, 1.0f);
+//	color = float4(cdepth, cdepth, cdepth, 1.0f);
 
     return color;
 }

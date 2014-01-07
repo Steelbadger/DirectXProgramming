@@ -319,6 +319,11 @@ bool DeferredLightingShader::SetShaderParameters(ID3D11DeviceContext* deviceCont
 	D3DXMATRIX thingy;
 	D3DXMatrixPerspectiveFovLH(&thingy, (45.0f * (float)D3DX_PI)/180.0f, 724.0f/454.0f, 1.0f, 100.0f);
 
+	D3DXVECTOR4 frustumCorners[8] = {	D3DXVECTOR4(-1, 1, 0, 1), D3DXVECTOR4(1, 1, 0, 1), D3DXVECTOR4(1, -1, 0, 1), D3DXVECTOR4(-1, -1, 0, 1),
+										D3DXVECTOR4(-1, 1, 1, 1), D3DXVECTOR4(1, 1, 1, 1), D3DXVECTOR4(1, -1, 1, 1), D3DXVECTOR4(-1, -1, 1, 1)};
+
+
+
 	D3DXMATRIX view = GameObject::GetComponent<Camera>(cameraObject).GetViewMatrix();
 	D3DXMATRIX invProjection;
 	float det;
@@ -333,10 +338,22 @@ bool DeferredLightingShader::SetShaderParameters(ID3D11DeviceContext* deviceCont
 	D3DXVec4Transform(&test1, &test1, &invProjection);
 	test1 = test1/test1.w;
 
+
+//  This is bizarre, 4 float4s apparently get treated as a matrix and thus need to be transposed for use in the shader?  Wat?
+	D3DXVec4TransformArray(frustumCorners, 16, frustumCorners, 16, &invProjection, 8);
+	dataPtr3->topLeft = (frustumCorners[0]/frustumCorners[0].w) - (frustumCorners[4]/frustumCorners[4].w);
+	dataPtr3->topRight = (frustumCorners[1]/frustumCorners[1].w) - (frustumCorners[5]/frustumCorners[5].w);
+	dataPtr3->bottomLeft = (frustumCorners[3]/frustumCorners[3].w) - (frustumCorners[7]/frustumCorners[7].w);
+	dataPtr3->bottomRight = (frustumCorners[2]/frustumCorners[2].w) - (frustumCorners[6]/frustumCorners[6].w);
+
+
+
+//	dataPtr3->topLeft = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+
 	D3DXMatrixTranspose(&invProjection, &invProjection);
 
 	// Copy the camera position into the constant buffer.
-	dataPtr3->invProj = invProjection;
+//	dataPtr3->invProj = invProjection;
 
 	// Unlock the camera constant buffer.
 	deviceContext->Unmap(m_cameraBuffer, 0);
