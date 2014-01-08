@@ -76,7 +76,7 @@ bool Application::Initialize()
 	GameObject::AddComponent<FirstPersonController>(camera);
 //	GameObject::AddComponent<PointLight>(camera);
 
-	GameObject::GetComponent<Position>(camera).SetPosition(0,0,-5);
+	GameObject::GetComponent<Position>(camera).SetPosition(0,0,0);
 	GameObject::GetComponent<Camera>(camera).Initialise(true, 45, window.GetWidth(), window.GetHeight(), 1.0f, 100.0f);
 	GameObject::GetComponent<FirstPersonController>(camera).SetSensitivity(5.0f);
 //	GameObject::GetComponent<PointLight>(camera).SetColour(1.0f, 0.0f, 0.0f, 1.0f);
@@ -161,6 +161,11 @@ void Application::TestUpdate()
 
 	if (m_Input->Pressed('P')) {
 		deferred = !deferred;
+		if (deferred == true) {
+			std::cout << "Now Rendering Using Deferred Shading" << std::endl;
+		} else {
+			std::cout << "Now Rendering Using Forward Shading" << std::endl;
+		}
 	}
 
 	if (m_Input->Pressed('M')) {

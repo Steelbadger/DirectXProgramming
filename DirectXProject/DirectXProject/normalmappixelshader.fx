@@ -86,6 +86,7 @@ float4 NormalMapPixelShader(PixelInputType input) : SV_TARGET
 	diffuse = diffuse + (textureColor * diffuseColor * diffuseContribution * attenuation);
 
 	float3 lightReflection = reflect(fragToLight, bumpNormal);
+	bumpNormal = normalize(bumpNormal);
 
 	float specularContribution = max(0.0, dot(-lightReflection, fragToView));
 
@@ -94,6 +95,21 @@ float4 NormalMapPixelShader(PixelInputType input) : SV_TARGET
 	specular = specular + (textureColor * diffuseColor * specularContribution * attenuation);
 
 	color = ambient + diffuse + specular;
+
+	float cdepth = length(cameraPosition - input.worldPosition)/100;
+	float3 vect = normalize(input.worldPosition);
+
+//	color = float4(diffuseContribution, diffuseContribution, diffuseContribution, 1.0f);
+	color = float4(bumpNormal, 1.0f);
+//	color = float4(specularContribution, specularContribution, specularContribution, 1.0f);
+//	color = float4(specularity, specularity, specularity, 1.0f);
+//	color = float4(lightReflection.x, lightReflection.x, lightReflection.x, 1.0f);
+//	color = float4(lightReflection, 1.0f);
+//	color = float4(fragToLight, 1.0f);
+//	color = float4(fragToView, 1.0f);
+//	color = float4(cdepth, cdepth, cdepth, 1.0f);
+//	color = float4(input.worldPosition, 1.0f);
+//	color = float4(vect, 1.0f);
 
     return color;
 }

@@ -43,7 +43,7 @@ void World::CreateScene()
 	GameObject::GetComponent<Material>(quad).AddTexture<NormalMap>("crateNormal.jpg");
 	GameObject::GetComponent<Material>(quad).AddTexture<SpecularMap>("crateSpec.jpg");
 	GameObject::GetComponent<Material>(quad).SetShader(ShaderLibrary::Shaders::NORMAL);
-	GameObject::GetComponent<SpinController>(quad).SetSpinSpeed(0, 0.3f, 0);
+	GameObject::GetComponent<SpinController>(quad).SetSpinSpeed(0.0f, 0.3f, 0);
 
 
 	ObjectID test= GameObject::New();
@@ -115,8 +115,8 @@ void World::CreateScene()
 	GameObject::AddComponent<DirectionalLight>(light);
 	GameObject::AddComponent<SpinController>(light);
 	GameObject::GetComponent<DirectionalLight>(light).SetColour(1.0f, 1.0f, 1.0f, 1.0f);
-	GameObject::GetComponent<DirectionalLight>(light).SetDirection(1.0f, 0.0f, 0.0f);
-	GameObject::GetComponent<DirectionalLight>(light).SetSpecularPower(200.0f);
+	GameObject::GetComponent<DirectionalLight>(light).SetDirection(-1.0f, 0.0f, 0.0f);
+	GameObject::GetComponent<DirectionalLight>(light).SetSpecularPower(10.0f);
 	GameObject::GetComponent<SpinController>(light).SetSpinSpeed(0.0, 0.0, -0.0f);
 
 	ObjectID light2 = GameObject::New();
@@ -126,7 +126,7 @@ void World::CreateScene()
 	GameObject::GetComponent<PointLight>(light2).SetColour(0.0f, 1.0f, 0.0f, 1.0f);
 	GameObject::GetComponent<PointLight>(light2).SetSpecularPower(100.0f);
 	GameObject::GetComponent<Position>(light2).SetPosition(-10,0.5,0);
-	AddToScene(light2);
+//	AddToScene(light2);
 
 	//light2 = GameObject::New();
 	//GameObject::AddComponent<Position>(light2);
@@ -147,7 +147,7 @@ void World::CreateScene()
 	//AddToScene(light2);
 
 
-	//AddToScene(light);
+	AddToScene(light);
 }
 
 void World::SetCameraObject(ObjectID id)

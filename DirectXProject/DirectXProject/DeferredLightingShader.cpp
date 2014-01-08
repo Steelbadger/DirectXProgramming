@@ -341,12 +341,15 @@ bool DeferredLightingShader::SetShaderParameters(ID3D11DeviceContext* deviceCont
 
 //  This is bizarre, 4 float4s apparently get treated as a matrix and thus need to be transposed for use in the shader?  Wat?
 	D3DXVec4TransformArray(frustumCorners, 16, frustumCorners, 16, &invProjection, 8);
-	dataPtr3->topLeft = (frustumCorners[0]/frustumCorners[0].w) - (frustumCorners[4]/frustumCorners[4].w);
-	dataPtr3->topRight = (frustumCorners[1]/frustumCorners[1].w) - (frustumCorners[5]/frustumCorners[5].w);
-	dataPtr3->bottomLeft = (frustumCorners[3]/frustumCorners[3].w) - (frustumCorners[7]/frustumCorners[7].w);
-	dataPtr3->bottomRight = (frustumCorners[2]/frustumCorners[2].w) - (frustumCorners[6]/frustumCorners[6].w);
+	dataPtr3->topLeft = (frustumCorners[4]/frustumCorners[4].w) - (frustumCorners[0]/frustumCorners[0].w);
+	dataPtr3->topRight = (frustumCorners[5]/frustumCorners[5].w) - (frustumCorners[1]/frustumCorners[1].w);
+	dataPtr3->bottomLeft = (frustumCorners[7]/frustumCorners[7].w) - (frustumCorners[3]/frustumCorners[3].w);
+	dataPtr3->bottomRight = (frustumCorners[6]/frustumCorners[6].w) - (frustumCorners[2]/frustumCorners[2].w);
 
-
+	dataPtr3->topLeft.w = 1.0f;
+	dataPtr3->topRight.w = 1.0f;
+	dataPtr3->bottomLeft.w = 1.0f;
+	dataPtr3->bottomRight.w = 1.0f;
 
 //	dataPtr3->topLeft = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
 
