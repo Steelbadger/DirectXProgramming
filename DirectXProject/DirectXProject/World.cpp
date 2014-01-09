@@ -65,7 +65,7 @@ void World::CreateScene()
 	AddToScene(quad);
 	AddToScene(test);
 
-	for (int i = 0 ; i < 1000; i++) {
+	for (int i = 0 ; i < 500; i++) {
 		test= GameObject::New();
 		GameObject::AddComponent<Position>(test);
 		GameObject::AddComponent<Orientation>(test);
@@ -73,7 +73,7 @@ void World::CreateScene()
 		GameObject::AddComponent<Material>(test);
 		GameObject::AddComponent<SpinController>(test);
 
-		GameObject::GetComponent<Position>(test).SetPosition(rand()%40-20,0,rand()%40-20);
+		GameObject::GetComponent<Position>(test).SetPosition(rand()%80-20,0,rand()%80-20);
 		GameObject::GetComponent<Mesh>(test).SetMeshData(meshFactory->CreateMeshBuffersFromFile("outwardCube.obj", Mesh::NORMALMAPPED));
 		GameObject::GetComponent<Material>(test).AddTexture<AmbientTexture>("brick1.dds");
 		GameObject::GetComponent<Material>(test).AddTexture<NormalMap>("brick1norm.jpg");
