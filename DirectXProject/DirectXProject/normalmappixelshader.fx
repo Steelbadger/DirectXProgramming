@@ -100,7 +100,7 @@ float4 NormalMapPixelShader(PixelInputType input) : SV_TARGET
 	float3 vect = normalize(input.worldPosition);
 
 //	color = float4(diffuseContribution, diffuseContribution, diffuseContribution, 1.0f);
-	color = float4(bumpNormal, 1.0f);
+//	color = float4(bumpNormal, 1.0f);
 //	color = float4(specularContribution, specularContribution, specularContribution, 1.0f);
 //	color = float4(specularity, specularity, specularity, 1.0f);
 //	color = float4(lightReflection.x, lightReflection.x, lightReflection.x, 1.0f);

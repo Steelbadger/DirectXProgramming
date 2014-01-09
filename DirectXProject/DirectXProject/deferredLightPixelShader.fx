@@ -121,7 +121,7 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 //	color = float4(lightReflection.x, lightReflection.x, lightReflection.x, 1.0f);
 //	color = float4(lightReflection, 1.0f);
 //	color = textureColor;
-	color = float4(normal.xyz, 1.0f);
+//	color = float4(normal.xyz, 1.0f);
 //	color = float4(normalMap.xyz, 1.0f);
 //	color = float4(horiz1, 1.0f);
 //	color = float4(lightDirection.xyz, 1.0f);
