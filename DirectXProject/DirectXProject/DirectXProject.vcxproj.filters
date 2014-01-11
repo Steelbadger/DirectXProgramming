@@ -302,6 +302,9 @@
     <ClInclude Include="lightshaderclass.h">
       <Filter>Header Files\Graphics\Shaders</Filter>
     </ClInclude>
+    <ClInclude Include="SyncToServer.h">
+      <Filter>Header Files\World\Objects and Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="brick1.dds">

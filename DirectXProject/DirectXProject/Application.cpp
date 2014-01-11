@@ -163,6 +163,11 @@ void Application::TestUpdate()
 		deferred = !deferred;
 	}
 
+	if (m_Input->Pressed('L')) {
+		std::cout << "Number of Lights: " << world.GetLightList().size()+1 << std::endl;
+	}
+
+
 	if (m_Input->Pressed('M')) {
 		wireframe = !wireframe;
 		if (wireframe) {
