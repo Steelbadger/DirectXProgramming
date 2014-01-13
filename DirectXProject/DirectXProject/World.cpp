@@ -201,7 +201,7 @@ void World::AddToScene(ObjectID id)
 	if (GameObject::HasComponent<Mesh>(id)) {
 		drawList.push_back(id);
 	} else {
-		Warning("Object has no mesh component and was not added to draw List");
+//		Warning("Object has no mesh component and was not added to draw List");
 	}
 
 	if (GameObject::HasComponent<SpinController>(id)) {

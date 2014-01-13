@@ -10,7 +10,7 @@
 
 #include <functional>
 
-Application::Application(): window(this)
+Application::Application()
 {
 	m_Input = 0;
 	m_Graphics = 0;
@@ -84,6 +84,9 @@ bool Application::Initialize()
 
 	world.SetCameraObject(camera);
 
+
+	networking.Initialise(m_hinstance);
+	networking.SetServer("127.0.0.1", 4444);
 	return true;
 }
 
@@ -166,6 +169,19 @@ void Application::TestUpdate()
 	if (m_Input->Pressed('L')) {
 		std::cout << "Number of Lights: " << world.GetLightList().size()+1 << std::endl;
 	}
+
+	if (m_Input->Pressed('F')) {
+		networking.SEND_OBJECT_DATA();
+	}
+
+	if (m_Input->Pressed('G')) {
+		networking.TEST_SEND();
+	}
+
+	if (m_Input->Pressed('H')) {
+		networking.TEST_RECIEVE();
+	}
+
 
 
 	if (m_Input->Pressed('M')) {

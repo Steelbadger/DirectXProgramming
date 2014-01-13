@@ -1,6 +1,5 @@
 #include "Application.h"
 
-
 int main(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline, int iCmdshow)
 {
 	Application program;

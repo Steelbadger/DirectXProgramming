@@ -7,7 +7,7 @@
 
 std::map<HWND, Window*> Window::WindowMap;
 
-Window::Window(Application* p): parent(p)
+Window::Window()
 {
 }
 
@@ -183,6 +183,7 @@ LRESULT CALLBACK Window::WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 				case WM_KEYDOWN:
 				case WM_KEYUP:
 				case WM_DESTROY:
+				case (WM_USER+1):
 					(*pWindow->messageHandler)(pWindow, message, wParam, lParam);
 					return 0;
 			}

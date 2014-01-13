@@ -5,6 +5,8 @@
 #define WIN32_LEAN_AND_MEAN
 
 // INCLUDES //
+
+#include "NetworkManager.h"
 #include <windows.h>
 // MY CLASS INCLUDES //
 #include "Hardware.h"
@@ -14,6 +16,7 @@
 #include "World.h"
 #include "MeshFactory.h"
 #include "d3dclass.h"
+
 
 // Class name: Application
 class Application
@@ -47,6 +50,8 @@ private:
 	bool fullscreen, vSyncEnabled;
 	bool deferred;
 	bool wireframe;
+
+	NetworkManager networking;
 
 	bool running;
 };

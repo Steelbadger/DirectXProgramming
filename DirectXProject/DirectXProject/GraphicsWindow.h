@@ -1,4 +1,6 @@
 #pragma once
+// PRE-PROCESSING DIRECTIVES //
+#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <map>
 #include <functional>
@@ -9,7 +11,7 @@ class Application;
 class Window
 {
 public:
-	Window(Application* parent);
+	Window();
 	void Create(LPSTR strWindowName, int width, int height, HINSTANCE hInstance, bool bFullScreen = false, DWORD dwStyle = (WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP));
 //	void CreateFullScreen(LPSTR strWindowName, HINSTANCE hInstance);
 //	void CreateWindowed(LPSTR strWindowName, int width, int height, HINSTANCE hInstance);
@@ -46,7 +48,7 @@ private:
 	RECT graphicsRect;
 	RECT windowRect;
 
-	Application* parent;
+//	Application* parent;
 	MessagePasserInterface* messageHandler;
 
 	int gWidth, gHeight;
