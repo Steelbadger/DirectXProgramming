@@ -7,6 +7,7 @@
 #include "Material.h"
 #include "SpinController.h"
 #include "PointLight.h"
+#include "../../Common/NetworkMessage.h"
 
 #include <functional>
 
@@ -171,17 +172,12 @@ void Application::TestUpdate()
 	}
 
 	if (m_Input->Pressed('F')) {
-		networking.SEND_OBJECT_DATA();
+		networking.Connect();
 	}
-
-	if (m_Input->Pressed('G')) {
-		networking.TEST_SEND();
+	MessageType message;
+	if (networking.Recieve(message)) {
+		std::cout << "Recieved Message" << std::cout;
 	}
-
-	if (m_Input->Pressed('H')) {
-		networking.TEST_RECIEVE();
-	}
-
 
 
 	if (m_Input->Pressed('M')) {

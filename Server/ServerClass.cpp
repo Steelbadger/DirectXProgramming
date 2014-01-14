@@ -1,10 +1,13 @@
 #include "ServerClass.h"
 #include <WinSock2.h>
 #include <iostream>
+#include <time.h>
+
 
 Server::Server()
 {
-
+	clientIDCounter = 1;
+	messageCounter = 0;
 }
 
 Server::~Server()
@@ -28,7 +31,10 @@ void Server::Initialise(const char* ipAddr, unsigned short port)
 	}
 
 	// Create a UDP socket.
-	SOCKET sock = socket(AF_INET, SOCK_DGRAM, 0);
+	sock = socket(AF_INET, SOCK_DGRAM, 0);
+	if (sock == INVALID_SOCKET) {
+		std::cout << "Invalid Socket, Error: " << WSAGetLastError() << std::endl;
+	}
 	// FIXME: we should test for error here
 
 	// Fill out a sockaddr_in structure to describe the address we'll listen on.
@@ -48,16 +54,112 @@ void Server::Initialise(const char* ipAddr, unsigned short port)
 
 void Server::Run()
 {
+	sockaddr_in fromAddr;
+	MessageType message;
+	int fromAddrSize = sizeof(fromAddr);
+	int count = recvfrom(sock, (char*)&message, sizeof(MessageType), 0,
+			                (sockaddr *) &fromAddr, &fromAddrSize);
+
+	if (count == SOCKET_ERROR) {
+		std::cout << "Socket Error: " << WSAGetLastError() << std::endl;
+	}
+
+	NetworkByte<MessageType>(message);
+
+	switch(message.type) {
+		case CONNECT:
+			NewConnection(message, fromAddr);
+			BounceToClients(message);
+			break;
+		case UPDATE:
+			SendConfirmation(message);
+			BounceToClients(message);
+			break;
+		case CONFIRM:
+			RecieveConfirmation(message);
+			break;
+		case RESEND:
+			break;
+		case CLOSE:
+			break;
+	}
 
 }
 
-
-void Server::NewConnection()
+void Server::SendConfirmation(MessageType message)
 {
+	if (clientAddresses.count(message.clientID)) {
+		sockaddr_in address = clientAddresses[message.clientID];
+		message.type = CONFIRM;
+		NetworkByte<MessageType>(message);
 
+		// Send the message to the server.
+		int count = sendto(sock, (char*)&message, sizeof(MessageType), 0, (const sockaddr *) &address, sizeof(address));
+		if (count == SOCKET_ERROR) {
+			std::cout << "Unable To Send, Error: " << WSAGetLastError() << std::endl;
+		}
+
+	} else {
+		std::cout << "Message Recieved from unrecognised client" << std::endl;
+	}
 }
 
-void Server::RecievedUpdate()
+void Server::RecieveConfirmation(MessageType message)
 {
+	if (sentMessages.count(message.messageNumber)) {
+		sentMessages.erase(message.messageNumber);
+	} else {
+		std::cout << "Unrecognised Confirmation Recieved" << std::endl;
+	}
+}
 
+
+void Server::NewConnection(MessageType &message, sockaddr_in address)
+{
+	if (message.clientID == 0) {
+		message.clientID = clientIDCounter++;
+		clientAddresses[message.clientID] = address;
+		std::cout << "New Client Connected, assigned ID: " << message.clientID << std::endl;
+		SendConfirmation(message);
+		SendClientList(message);
+	} else {
+		std::cout << "Attempting to connect to an illegal client" << std::endl;
+	}
+}
+
+void Server::BounceToClients(MessageType message)
+{
+	std::map<unsigned int, sockaddr_in>::iterator it;
+	unsigned int sourceClient = message.clientID;
+	message.updateClientID = sourceClient;
+	for(it = clientAddresses.begin(); it != clientAddresses.end(); it++) {
+		if (sourceClient != (*it).first) {
+			message.clientID = (*it).first;
+			Send(message);
+		}
+	}
+}
+
+void Server::SendClientList(MessageType message)
+{
+	std::map<unsigned int, sockaddr_in>::iterator it;
+	message.type = CONNECT;
+	for(it = clientAddresses.begin(); it != clientAddresses.end(); it++) {
+		if (message.clientID != (*it).first) {
+			message.updateClientID = (*it).first;
+			Send(message);
+		}
+	}
+}
+
+void Server::Send(MessageType message)
+{
+	message.messageNumber = messageCounter++;
+	message.timestamp = clock();
+	sockaddr_in address = clientAddresses[message.clientID];
+	NetworkByte<MessageType>(message);
+
+	// Send the message to the server.
+	sendto(sock, (char*)&message, sizeof(MessageType), 0, (const sockaddr *) &address, sizeof(address));
+	sentMessages[message.messageNumber] = message;
 }

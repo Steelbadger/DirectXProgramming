@@ -85,6 +85,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Common\NetworkMessage.cpp" />
     <ClCompile Include="AmbientNormalDeferredShader.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -119,6 +120,7 @@
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Common\NetworkMessage.h" />
     <ClInclude Include="AmbientNormalDeferredShader.h" />
     <ClInclude Include="ControllerUpdateInterface.h" />
     <ClInclude Include="DeferredLightingShader.h" />

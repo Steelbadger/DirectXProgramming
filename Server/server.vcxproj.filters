@@ -21,9 +21,15 @@
     <ClCompile Include="ServerClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Common\NetworkMessage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServerClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\NetworkMessage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

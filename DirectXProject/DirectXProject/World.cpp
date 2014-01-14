@@ -65,7 +65,7 @@ void World::CreateScene()
 	AddToScene(quad);
 	AddToScene(test);
 
-	for (int i = 0 ; i < 1000; i++) {
+	for (int i = 0 ; i < 100; i++) {
 		test= GameObject::New();
 		GameObject::AddComponent<Position>(test);
 		GameObject::AddComponent<Orientation>(test);

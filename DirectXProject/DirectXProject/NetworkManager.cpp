@@ -1,16 +1,24 @@
 #include "NetworkManager.h"
 #include <iostream>
+#include "Hardware.h"
 
 NetworkManager::NetworkManager()
 {
 	connected = false;
+	connecting = false;
 	readable = false;
 	writable = true;
+	uniqueID = 0;
 }
 
 NetworkManager::~NetworkManager()
 {
 
+}
+
+void NetworkManager::Disconnect()
+{
+	
 }
 
 void NetworkManager::Initialise(HINSTANCE hInstance)
@@ -55,6 +63,121 @@ void NetworkManager::SetServer(const char * serverAddress, unsigned short portNu
 		address.sin_port = htons(portNumber);
 		address.sin_addr.s_addr = inet_addr(serverAddress);	
 }
+
+void NetworkManager::Connect()
+{
+	if (connecting == false && connected == false) {
+		connecting = true;
+		MessageType message;
+		messageNumber = 0;
+		std::cout << "Attempting to Connect..." << std::endl;
+		message.type = CONNECT;
+		Send(message);
+	}
+}
+
+void NetworkManager::Send(MessageType message)
+{
+	message.messageNumber = messageNumber++;
+	message.timestamp = clock();
+	message.clientID = uniqueID;
+	NetworkByte<MessageType>(message);
+
+	// Send the message to the server.
+	sendto(sock, (char*)&message, sizeof(MessageType), 0, (const sockaddr *) &address, sizeof(address));
+	sentMessages[message.messageNumber] = message;
+}
+
+bool NetworkManager::Recieve(MessageType &output)
+{
+	if (readable) {
+		// Read a response back from the server (or from anyone, in fact).
+		sockaddr_in fromAddr;
+		int fromAddrSize = sizeof(fromAddr);
+		int count = recvfrom(sock, (char*)&output, sizeof(MessageType), 0,
+								(sockaddr *) &fromAddr, &fromAddrSize);
+		// FIXME: check for error from recvfrom
+
+		if (count == SOCKET_ERROR) {
+
+			if (WSAGetLastError() == WSAEWOULDBLOCK)
+			{
+				std::cout << "Could Not Read" << std::endl;
+				readable = false;
+				return false;
+			}
+			else
+			{
+				// Something went wrong.
+				std::cout << "RECIEVE FAILED" << std::endl;
+				return false;
+			}
+
+		}
+
+		std::cout << "Received Message" << std::endl;
+		NetworkByte<MessageType>(output);
+
+		switch(output.type) {
+			case CONNECT:
+				NewConnection(output);
+				break;
+			case UPDATE:
+				SendConfirmation(output);
+				break;
+			case CONFIRM:
+				RecieveConfirmation(output);
+				break;
+			case RESEND:
+				break;
+			case CLOSE:
+				break;
+		}
+
+		return true;
+	}
+	return false;
+}
+
+bool NetworkManager::IsConnected()
+{
+	return connected;
+}
+
+void NetworkManager::SendConfirmation(MessageType message)
+{
+	message.type = CONFIRM;
+	NetworkByte<MessageType>(message);
+
+	// Send the message to the server.
+	sendto(sock, (char*)&message, sizeof(MessageType), 0, (const sockaddr *) &address, sizeof(address));
+}
+
+void NetworkManager::RecieveConfirmation(MessageType message)
+{
+	if (sentMessages.count(message.messageNumber)) {
+		if (sentMessages[message.messageNumber].type == CONNECT) {
+			uniqueID = message.clientID;
+			std::cout << "CONNECTED.  Client ID Assigned: " << uniqueID << std::endl;
+			connecting = false;
+			connected = true;
+		}
+		sentMessages.erase(message.messageNumber);
+	} else {
+		std::cout << "Unrecognised Confirmation Recieved" << std::endl;
+	}
+}
+
+
+void NetworkManager::NewConnection(MessageType message)
+{
+	if (message.clientID == 0) {
+		std::cout << "Illegal Client Connection Notification" << std::endl;	
+	} else {
+		std::cout << "Make a new client object!  Client: " << message.updateClientID << std::endl;
+	}
+}
+
 
 void NetworkManager::TEST_SEND()
 {
@@ -108,28 +231,28 @@ void NetworkManager::SEND_OBJECT_DATA()
 {
 	// We'll use this buffer to hold the messages we exchange with the server.
 	MessageType message;
-	message.x_pos = 13.2f;
-	message.y_pos = 0.3f;
-	message.z_pos = 5.2f;
-	message.flags = 0;
-	message.time = 0;
+	message.xpos = 13.2f;
+	message.ypos = 0.3f;
+	message.zpos = 5.2f;
+	message.type = 0;
+	message.timestamp = 0;
 	int thingy;
-	thingy = htonl(*(unsigned int*)&message.x_pos);
-	message.x_pos = *(float*)&thingy;
+	thingy = htonl(*(unsigned int*)&message.xpos);
+	message.xpos = *(float*)&thingy;
 
 	thingy = htonl(*(unsigned int*)&thingy);
 
-	message.x_pos = *(float*)&thingy;
+	message.xpos = *(float*)&thingy;
 
-	SwapByteOrder<float>(message.y_pos);
-	SwapByteOrder<float>(message.y_pos);
+	SwapByteOrder<float>(message.ypos);
+	SwapByteOrder<float>(message.ypos);
 
 	SwapByteOrder<MessageType>(message);
 	SwapByteOrder<MessageType>(message);
 
-	NetworkByte<float>(message.z_pos);
+	NetworkByte<float>(message.zpos);
 
-	NetworkByte<float>(message.z_pos);
+	NetworkByte<float>(message.zpos);
 
 	// Send the message to the server.
 	sendto(sock, (char*)&message, sizeof(MessageType), 0,
@@ -153,6 +276,7 @@ void NetworkManager::MessageHandler(Window* window, UINT message, WPARAM wParam,
 		case FD_READ:
 			// It may be possible to receive.
 			std::cout << "FD_READ" << std::endl;
+			readable = true;
 			break;
 
 		case FD_WRITE:

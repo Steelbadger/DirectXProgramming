@@ -119,6 +119,7 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Common\NetworkMessage.cpp" />
     <ClCompile Include="server.cpp">
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -126,6 +127,7 @@
     <ClCompile Include="ServerClass.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Common\NetworkMessage.h" />
     <ClInclude Include="ServerClass.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

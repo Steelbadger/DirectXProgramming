@@ -180,6 +180,9 @@
     <ClCompile Include="NetworkManager.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Common\NetworkMessage.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vector2.h">
@@ -309,6 +312,9 @@
       <Filter>Header Files\World\Objects and Components</Filter>
     </ClInclude>
     <ClInclude Include="NetworkManager.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\NetworkMessage.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
