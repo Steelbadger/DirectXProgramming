@@ -84,7 +84,22 @@ void NetworkManager::Send(MessageType message)
 	NetworkByte<MessageType>(message);
 
 	// Send the message to the server.
-	sendto(sock, (char*)&message, sizeof(MessageType), 0, (const sockaddr *) &address, sizeof(address));
+	int count = sendto(sock, (char*)&message, sizeof(MessageType), 0, (const sockaddr *) &address, sizeof(address));
+
+	if (count == SOCKET_ERROR) {
+		int error = WSAGetLastError();
+		if (error == WSAEWOULDBLOCK)
+		{
+			std::cout << "Could Not Write" << std::endl;
+			writable = false;
+		}
+		else
+		{
+			// Something went wrong.
+			std::cout << "WRITE FAILED: " << error << std::endl;
+		}
+
+	}
 	sentMessages[message.messageNumber] = message;
 }
 
@@ -94,9 +109,7 @@ bool NetworkManager::Recieve(MessageType &output)
 		// Read a response back from the server (or from anyone, in fact).
 		sockaddr_in fromAddr;
 		int fromAddrSize = sizeof(fromAddr);
-		int count = recvfrom(sock, (char*)&output, sizeof(MessageType), 0,
-								(sockaddr *) &fromAddr, &fromAddrSize);
-		// FIXME: check for error from recvfrom
+		int count = recvfrom(sock, (char*)&output, sizeof(MessageType), 0, (sockaddr *) &fromAddr, &fromAddrSize);
 
 		if (count == SOCKET_ERROR) {
 
@@ -123,7 +136,8 @@ bool NetworkManager::Recieve(MessageType &output)
 				NewConnection(output);
 				break;
 			case UPDATE:
-				SendConfirmation(output);
+//				SendConfirmation(output);
+				lastUpdate[output.updateClientID] = output;
 				break;
 			case CONFIRM:
 				RecieveConfirmation(output);
@@ -142,6 +156,11 @@ bool NetworkManager::Recieve(MessageType &output)
 bool NetworkManager::IsConnected()
 {
 	return connected;
+}
+
+unsigned int NetworkManager::GetID()
+{
+	return uniqueID;
 }
 
 void NetworkManager::SendConfirmation(MessageType message)
@@ -175,6 +194,7 @@ void NetworkManager::NewConnection(MessageType message)
 		std::cout << "Illegal Client Connection Notification" << std::endl;	
 	} else {
 		std::cout << "Make a new client object!  Client: " << message.updateClientID << std::endl;
+		newClients.push_back(message);
 	}
 }
 
@@ -284,7 +304,29 @@ void NetworkManager::MessageHandler(Window* window, UINT message, WPARAM wParam,
 			// We will only get this notification if we've already tried to send
 			// and been told that it would block (which is different from select's behaviour).
 			std::cout << "FD_WRITE" << std::endl;
+			writable = true;
 			break;
 		}
 	}
+}
+
+std::vector<MessageType> NetworkManager::GetNewClients()
+{
+	std::vector<MessageType> output = newClients;
+	newClients.clear();
+	return output;
+}
+
+bool NetworkManager::NewClientsWaiting()
+{
+	if (newClients.size() > 0) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+MessageType NetworkManager::GetLastUpdate(unsigned int client)
+{
+	return lastUpdate[client];
 }

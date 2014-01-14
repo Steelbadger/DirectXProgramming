@@ -47,6 +47,8 @@ private:
 	World world;
 	MeshFactory factory;
 
+	ObjectID TESTCLIENT;
+
 	bool fullscreen, vSyncEnabled;
 	bool deferred;
 	bool wireframe;

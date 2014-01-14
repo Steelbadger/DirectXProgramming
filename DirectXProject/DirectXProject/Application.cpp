@@ -7,6 +7,8 @@
 #include "Material.h"
 #include "SpinController.h"
 #include "PointLight.h"
+#include "SyncToServer.h"
+#include "SyncFromServer.h"
 #include "../../Common/NetworkMessage.h"
 
 #include <functional>
@@ -76,15 +78,18 @@ bool Application::Initialize()
 	GameObject::AddComponent<Camera>(camera);
 	GameObject::AddComponent<FirstPersonController>(camera);
 	GameObject::AddComponent<PointLight>(camera);
+	GameObject::AddComponent<SyncToServer>(camera);
 
 	GameObject::GetComponent<Position>(camera).SetPosition(0,0,-5);
 	GameObject::GetComponent<Camera>(camera).Initialise(true, 45, window.GetWidth(), window.GetHeight(), 0.01f, 1000.0f);
 	GameObject::GetComponent<FirstPersonController>(camera).SetSensitivity(5.0f);
 	GameObject::GetComponent<PointLight>(camera).SetColour(1.0f, 0.0f, 0.0f, 1.0f);
 	GameObject::GetComponent<PointLight>(camera).SetSpecularPower(100);
+	GameObject::GetComponent<SyncToServer>(camera).SetObjectToBeSynced();
+	SyncToServer::SetNetworkManager(networking);
+	SyncFromServer::SetNetworkManager(networking);
 
 	world.SetCameraObject(camera);
-
 
 	networking.Initialise(m_hinstance);
 	networking.SetServer("127.0.0.1", 4444);
@@ -158,6 +163,22 @@ void Application::TestUpdate()
 		}
 	}
 
+	if (networking.IsConnected()) {
+		for (int i = 0; i < SyncToServer::GetList().Size(); i++) {
+			if (SyncToServer::GetList().Exists(i)) {
+				if (SyncToServer::GetList().Get(i).ToBeSynced()) {
+					SyncToServer::GetList().Get(i).Update();
+				}
+			}
+		}
+
+		for (int i = 0; i < SyncFromServer::GetList().Size(); i++) {
+			if (SyncFromServer::GetList().Exists(i)) {
+				SyncFromServer::GetList().Get(i).Update();
+			}
+		}
+	}
+
 	if (m_Input->Pressed(VK_RETURN)) {
 		std::cout << "FrameRate: " << (1/m_Input->GetTimeForLastFrameHighResolution()) << std::endl;
 		std::cout << "HighResTimer: " << m_Input->GetTimeForLastFrameHighResolution() << std::endl;
@@ -176,7 +197,46 @@ void Application::TestUpdate()
 	}
 	MessageType message;
 	if (networking.Recieve(message)) {
-		std::cout << "Recieved Message" << std::cout;
+		std::cout << "Recieved Message" << std::endl;
+		if (message.type == UPDATE) {
+			std::cout << "Client Update: " << message.updateClientID << std::endl;
+			std::cout << "Position: (" << message.xpos << ", " << message.ypos << ", " << message.zpos << ")" << std::endl;
+			std::cout << "Orientation: (" << message.s << ", (" << message.xorient << ", " << message.yorient << ", " << message.zorient << "))" << std::endl;
+			std::cout << "Timestamp: " << message.timestamp << std::endl;
+		} else if (message.type == CONNECT) {
+			ObjectID camera = GameObject::New();
+			GameObject::AddComponent<Position>(camera);
+			GameObject::AddComponent<Orientation>(camera);
+			GameObject::AddComponent<SyncFromServer>(camera);
+			GameObject::GetComponent<Position>(camera).SetPosition(0,0,0);
+			GameObject::GetComponent<SyncFromServer>(camera).SetLinkedClient(message.updateClientID);
+			world.AddToScene(camera);
+			TESTCLIENT = camera;
+		}
+	}
+
+
+
+	if (m_Input->Pressed('G')) {
+		Position* pos = &GameObject::GetComponent<Position>(TESTCLIENT);
+		Orientation* orient = &GameObject::GetComponent<Orientation>(TESTCLIENT);
+		std::cout << "=====OTHER CLIENT INFO======" << std::endl;
+		std::cout << "Position: (" << pos->GetPosition().x << ", " << pos->GetPosition().y << ", " << pos->GetPosition().z << ")" << std::endl;
+		std::cout << "Orientation: (" << orient->GetOrientation().w << ", (" << orient->GetOrientation().x << ", " << orient->GetOrientation().y << ", " << orient->GetOrientation().z << "))" << std::endl;
+		std::cout << "=============END============" << std::endl;
+		//MessageType message;
+		//message.type = UPDATE;
+		//message.updateClientID = networking.GetID();
+		//message.xpos = GameObject::GetComponent<Position>(world.GetCameraObject()).GetPosition().x;
+		//message.ypos = GameObject::GetComponent<Position>(world.GetCameraObject()).GetPosition().y;
+		//message.zpos = GameObject::GetComponent<Position>(world.GetCameraObject()).GetPosition().z;
+
+		//message.xorient = GameObject::GetComponent<Orientation>(world.GetCameraObject()).GetOrientation().x;
+		//message.yorient = GameObject::GetComponent<Orientation>(world.GetCameraObject()).GetOrientation().y;
+		//message.zorient = GameObject::GetComponent<Orientation>(world.GetCameraObject()).GetOrientation().z;
+		//message.s = GameObject::GetComponent<Orientation>(world.GetCameraObject()).GetOrientation().w;
+
+		//networking.Send(message);
 	}
 
 

@@ -21,6 +21,10 @@ public:
 	void Send(MessageType message);
 	void Update();
 	bool IsConnected();
+	unsigned int GetID();
+	MessageType GetLastUpdate(unsigned int clientID);
+	std::vector<MessageType> GetNewClients();
+	bool NewClientsWaiting();
 
 	void TEST_SEND();
 	void TEST_RECIEVE();
@@ -50,6 +54,8 @@ private:
 
 	std::map<unsigned int, MessageType> sentMessages;
 	std::queue<MessageType> recievedMessages;
+	std::map<unsigned int, MessageType> lastUpdate;
+	std::vector<MessageType> newClients;
 
 	static const int WM_SOCKET = WM_USER+1;
 };

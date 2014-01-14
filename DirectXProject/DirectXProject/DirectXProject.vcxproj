@@ -111,6 +111,8 @@
     <ClCompile Include="ShaderLibrary.cpp" />
     <ClCompile Include="simd.cpp" />
     <ClCompile Include="SpinController.cpp" />
+    <ClCompile Include="SyncFromServer.cpp" />
+    <ClCompile Include="SyncToServer.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureToScreenShader.cpp" />
     <ClCompile Include="UtilityFunctions.cpp" />
@@ -133,6 +135,7 @@
     <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="ShaderLibrary.h" />
     <ClInclude Include="SpinController.h" />
+    <ClInclude Include="SyncFromServer.h" />
     <ClInclude Include="SyncToServer.h" />
     <ClInclude Include="TextureToScreenShader.h" />
     <ClInclude Include="TextureTypes.h" />

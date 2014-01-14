@@ -69,3 +69,8 @@ D3DXVECTOR3 Orientation::GetRotatedPoint(float x, float y, float z)
 	D3DXVec3TransformCoord(&point, &point, &orientationMatrix);
 	return point;
 }
+
+D3DXQUATERNION Orientation::GetOrientation()
+{
+	return orientation;
+}

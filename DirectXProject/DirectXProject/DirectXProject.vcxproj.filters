@@ -183,6 +183,12 @@
     <ClCompile Include="..\..\Common\NetworkMessage.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
+    <ClCompile Include="SyncToServer.cpp">
+      <Filter>Source Files\World\Objects and Components</Filter>
+    </ClCompile>
+    <ClCompile Include="SyncFromServer.cpp">
+      <Filter>Source Files\World\Objects and Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vector2.h">
@@ -316,6 +322,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Common\NetworkMessage.h">
       <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="SyncFromServer.h">
+      <Filter>Header Files\World\Objects and Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

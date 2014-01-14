@@ -27,7 +27,5 @@ private:
 
 	std::map<unsigned int, double> clientUpdates;
 	std::map<unsigned int, sockaddr_in> clientAddresses;
-
 	std::map<unsigned int, MessageType> sentMessages;
-
 };

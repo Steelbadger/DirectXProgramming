@@ -64,6 +64,15 @@ void Server::Run()
 		std::cout << "Socket Error: " << WSAGetLastError() << std::endl;
 	}
 
+	std::map<unsigned int, double>::iterator it;
+	for (it = clientUpdates.begin(); it != clientUpdates.end(); it++) {
+		if ((*it).second > clock()-CLOCKS_PER_SEC) {
+			clientAddresses.erase((*it).first);
+			clientUpdates.erase((*it).first);
+			break;
+		}
+	}
+
 	NetworkByte<MessageType>(message);
 
 	switch(message.type) {
@@ -72,7 +81,7 @@ void Server::Run()
 			BounceToClients(message);
 			break;
 		case UPDATE:
-			SendConfirmation(message);
+//			SendConfirmation(message);
 			BounceToClients(message);
 			break;
 		case CONFIRM:
@@ -130,6 +139,7 @@ void Server::NewConnection(MessageType &message, sockaddr_in address)
 void Server::BounceToClients(MessageType message)
 {
 	std::map<unsigned int, sockaddr_in>::iterator it;
+	clientUpdates[message.clientID] = clock();
 	unsigned int sourceClient = message.clientID;
 	message.updateClientID = sourceClient;
 	for(it = clientAddresses.begin(); it != clientAddresses.end(); it++) {

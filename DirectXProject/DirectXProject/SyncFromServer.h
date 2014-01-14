@@ -8,17 +8,17 @@
 #include "NetworkManager.h"
 
 
-class SyncToServer : public Component<SyncToServer>
+class SyncFromServer : public Component<SyncFromServer>
 {
 public:
-	SyncToServer();
-	~SyncToServer();
+	SyncFromServer();
+	~SyncFromServer();
 	void Update();
-	void SetObjectToBeSynced();
 	static void SetNetworkManager(NetworkManager &manager);
-	bool ToBeSynced();
+	void SetLinkedClient(unsigned int);
 private:
-	bool toBeSynced;
 	static NetworkManager* network;
-	double lastSync;
+	MessageType previous;
+	MessageType secondLast;
+	unsigned int linkedClientID;
 };

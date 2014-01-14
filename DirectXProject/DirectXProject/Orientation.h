@@ -18,6 +18,7 @@ public:
 	D3DXVECTOR3 GetTransformedY();
 	D3DXVECTOR3 GetTransformedZ();
 	D3DXVECTOR3 GetRotatedPoint(float x, float y, float z);
+	D3DXQUATERNION GetOrientation();
 private:
 	D3DXQUATERNION orientation;
 };
