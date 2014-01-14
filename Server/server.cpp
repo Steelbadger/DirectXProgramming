@@ -11,6 +11,7 @@
 #include <winsock2.h>
 #include <iostream>
 #include <vector>
+#include "ServerClass.h"
 
 #pragma comment(lib, "ws2_32.lib")
 
