@@ -151,6 +151,30 @@ void Application::TestUpdate()
 	m_Input->Update();
 
 	float timestep = m_Input->GetTimeForLastFrameHighResolution();
+
+	MessageType message;
+	while (networking.Recieve(message)) {
+		std::cout << "Recieved Message" << std::endl;
+		if (message.type == UPDATE) {
+			std::cout << "Client Update: " << message.updateClientID << std::endl;
+			std::cout << "Position: (" << message.xpos << ", " << message.ypos << ", " << message.zpos << ")" << std::endl;
+			std::cout << "Orientation: (" << message.s << ", (" << message.xorient << ", " << message.yorient << ", " << message.zorient << "))" << std::endl;
+			std::cout << "Timestamp: " << message.timestamp << std::endl;
+		} else if (message.type == CONNECT) {
+			ObjectID camera = GameObject::New();
+			GameObject::AddComponent<Position>(camera);
+			GameObject::AddComponent<Orientation>(camera);
+			GameObject::AddComponent<SyncFromServer>(camera);
+			GameObject::GetComponent<Position>(camera).SetPosition(0,0,0);
+			GameObject::GetComponent<SyncFromServer>(camera).SetLinkedClient(message.updateClientID);
+			world.AddToScene(camera);
+			TESTCLIENT = camera;
+		}
+	}
+
+
+
+
 	for (int i = 0; i < FirstPersonController::GetList().Size(); i++) {
 		if (FirstPersonController::GetList().Exists(i)) {
 			FirstPersonController::GetList().Get(i).Update();
@@ -195,26 +219,6 @@ void Application::TestUpdate()
 	if (m_Input->Pressed('F')) {
 		networking.Connect();
 	}
-	MessageType message;
-	if (networking.Recieve(message)) {
-		std::cout << "Recieved Message" << std::endl;
-		if (message.type == UPDATE) {
-			std::cout << "Client Update: " << message.updateClientID << std::endl;
-			std::cout << "Position: (" << message.xpos << ", " << message.ypos << ", " << message.zpos << ")" << std::endl;
-			std::cout << "Orientation: (" << message.s << ", (" << message.xorient << ", " << message.yorient << ", " << message.zorient << "))" << std::endl;
-			std::cout << "Timestamp: " << message.timestamp << std::endl;
-		} else if (message.type == CONNECT) {
-			ObjectID camera = GameObject::New();
-			GameObject::AddComponent<Position>(camera);
-			GameObject::AddComponent<Orientation>(camera);
-			GameObject::AddComponent<SyncFromServer>(camera);
-			GameObject::GetComponent<Position>(camera).SetPosition(0,0,0);
-			GameObject::GetComponent<SyncFromServer>(camera).SetLinkedClient(message.updateClientID);
-			world.AddToScene(camera);
-			TESTCLIENT = camera;
-		}
-	}
-
 
 
 	if (m_Input->Pressed('G')) {
