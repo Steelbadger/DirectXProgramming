@@ -54,8 +54,16 @@ std::vector<in_addr> GetIPAddress()
 int main()
 {
 	Server server;
-	printf("Echo Server\n");
+	printf("Initializing Server\n");
 	server.Initialise(SERVERIP, SERVERPORT);
+
+	std::vector<in_addr> addresses = GetIPAddress();
+	for (std::vector<in_addr>::iterator it = addresses.begin(); it != addresses.end(); it++) {
+		std::cout << "Address: " << inet_ntoa((*it)) << std::endl;
+	}
+
+	server.Initialise(SERVERIP, SERVERPORT);
+//	server.Initialise(inet_ntoa(addresses[0]), SERVERPORT);
 
 	while (true)
 	{
