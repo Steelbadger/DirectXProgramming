@@ -67,8 +67,8 @@ void Server::Run()
 
 	std::map<unsigned int, double>::iterator it;
 	for (it = clientUpdates.begin(); it != clientUpdates.end(); it++) {
-		if ((clock()/CLOCKS_PER_SEC - (*it).second) > 5.0) {
-			std::cout << "Client Timeout [" << (*it).first << "] Last Message " << (clock()/CLOCKS_PER_SEC - (*it).second) << " seconds ago." << std::endl;
+		if ((float(clock())/CLOCKS_PER_SEC - (*it).second) > 5.0) {
+			std::cout << "Client Timeout [" << (*it).first << "] Last Message " << (float(clock())/CLOCKS_PER_SEC - (*it).second) << " seconds ago." << std::endl;
 			clientAddresses.erase((*it).first);
 			clientUpdates.erase((*it).first);
 			break;
@@ -137,9 +137,9 @@ void Server::NewConnection(MessageType &message, sockaddr_in address)
 {
 	if (message.clientID == 0) {
 		message.clientID = clientIDCounter++;
-		message.secondTime = clock()/CLOCKS_PER_SEC;
+		message.secondTime = float(clock())/CLOCKS_PER_SEC;
 		clientAddresses[message.clientID] = address;
-		std::cout << "New Client Connected, assigned ID: " << message.clientID << "\t Total Clients: " << clientAddresses.size() << std::endl;
+		std::cout << "New Client Connected at time " << message.secondTime << ", assigned ID: " << message.clientID << "\t Total Clients: " << clientAddresses.size() << std::endl;
 		SendConfirmation(message);
 		SendClientList(message);
 	} else {
@@ -150,7 +150,7 @@ void Server::NewConnection(MessageType &message, sockaddr_in address)
 void Server::BounceToClients(MessageType message)
 {
 	std::map<unsigned int, sockaddr_in>::iterator it;
-	clientUpdates[message.clientID] = clock()/CLOCKS_PER_SEC;
+	clientUpdates[message.clientID] = float(clock())/CLOCKS_PER_SEC;
 	unsigned int sourceClient = message.clientID;
 	message.updateClientID = sourceClient;
 	for(it = clientAddresses.begin(); it != clientAddresses.end(); it++) {
@@ -182,7 +182,7 @@ void Server::SendClientList(MessageType message)
 void Server::Send(MessageType message)
 {
 	message.messageNumber = messageCounter++;
-	message.timestamp = clock()/CLOCKS_PER_SEC;
+	message.timestamp = float(clock())/CLOCKS_PER_SEC;
 	sockaddr_in address = clientAddresses[message.clientID];
 	if (message.type != UPDATE) {
 		std::cout << "Sending Message: ";

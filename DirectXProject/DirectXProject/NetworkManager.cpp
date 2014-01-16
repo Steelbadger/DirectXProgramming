@@ -80,7 +80,7 @@ void NetworkManager::Connect()
 void NetworkManager::Send(MessageType message)
 {
 	message.messageNumber = messageNumber++;
-	message.timestamp = clock()/CLOCKS_PER_SEC;
+	message.timestamp = float(clock())/CLOCKS_PER_SEC;
 	message.clientID = uniqueID;
 	if (message.type != UPDATE) {
 		std::cout << "Sending Message: ";
@@ -218,7 +218,7 @@ void NetworkManager::RecieveConfirmation(MessageType message)
 			std::cout << std::endl << "Client ID Assigned: " << uniqueID << std::endl;
 			connecting = false;
 			connected = true;
-			latency = ((clock()/CLOCKS_PER_SEC - message.timestamp)/2);
+			latency = ((float(clock())/CLOCKS_PER_SEC - message.timestamp)/2);
 			std::cout << "Client Latency: " << latency << "s" << std::endl;
 			clockOffset = message.secondTime + latency;
 			std::cout << "Clock Offset from Server by: " << clockOffset << "s" << std::endl;

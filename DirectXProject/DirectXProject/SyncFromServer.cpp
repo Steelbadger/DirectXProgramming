@@ -19,7 +19,7 @@ SyncFromServer::~SyncFromServer()
 void SyncFromServer::Update()
 {
 	MessageType current = network->GetLastUpdate(linkedClientID);
-	double currentTime = clock()/CLOCKS_PER_SEC;
+	double currentTime = float(clock())/CLOCKS_PER_SEC;
 	if (current.timestamp > previous.timestamp) {
 		secondLast = previous;
 		secondLastTime = previousTime;
