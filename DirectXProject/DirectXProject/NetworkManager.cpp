@@ -104,7 +104,7 @@ void NetworkManager::Send(MessageType message)
 		default:
 			std::cout << "UNKNOWN - " << message.type << std::endl;
 	}
-	std::cout << std::endl;
+	//std::cout << std::endl;
 	NetworkByte<MessageType>(message);
 
 	// Send the message to the server.
@@ -140,7 +140,7 @@ bool NetworkManager::Recieve(MessageType &output)
 			if (WSAGetLastError() == WSAEWOULDBLOCK)
 			{
 				if (readable == true) {
-					std::cout << "Could Not Read" << std::endl;
+					//std::cout << "Could Not Read" << std::endl;
 					readable = false;
 				}
 				return false;
@@ -220,7 +220,7 @@ void NetworkManager::RecieveConfirmation(MessageType message)
 			connected = true;
 			latency = ((float(clock())/CLOCKS_PER_SEC - message.timestamp)/2);
 			std::cout << "Client Latency: " << latency << "s" << std::endl;
-			clockOffset = message.secondTime + latency;
+			clockOffset = (message.secondTime + latency) - float(clock())/CLOCKS_PER_SEC;
 			std::cout << "Clock Offset from Server by: " << clockOffset << "s" << std::endl;
 			OffsetClock();
 		}
@@ -275,7 +275,7 @@ void NetworkManager::TEST_RECIEVE()
 
 		if (WSAGetLastError() == WSAEWOULDBLOCK)
 		{
-			std::cout << "Could Not Read" << std::endl;
+			//std::cout << "Could Not Read" << std::endl;
 			readable = false;
 			return;
 		}
