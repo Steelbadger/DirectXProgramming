@@ -244,3 +244,28 @@ void World::CreateNewPlayer(unsigned int id)
 	//GameObject::GetComponent<Material>(camera).AddTexture<SpecularMap>("playerspec.jpg");
 	//GameObject::GetComponent<Material>(camera).SetShader(ShaderLibrary::Shaders::NORMAL);
 }
+
+void World::RemoveFromWorld(ObjectID object)
+{
+	std::list<ObjectID>::iterator it;
+	for (it = drawList.begin(); it != drawList.end(); it++) {
+		if ((*it) == object) {
+			drawList.erase(it);
+			break;
+		}
+	}
+
+	for (it = updateList.begin(); it != updateList.end(); it++) {
+		if ((*it) == object) {
+			updateList.erase(it);
+			break;
+		}
+	}
+
+	for (it = lightList.begin(); it != lightList.end(); it++) {
+		if ((*it) == object) {
+			lightList.erase(it);
+			break;
+		}
+	}
+}

@@ -19,6 +19,7 @@ public:
 	void AddToScene(ObjectID id);
 	void PassMeshFactory(MeshFactory* factory);
 	void CreateNewPlayer(unsigned int clientID);
+	void RemoveFromWorld(ObjectID object);
 private:
 	ObjectID currentCamera;
 	ObjectID light;

@@ -62,7 +62,7 @@ int main()
 		std::cout << "Address: " << inet_ntoa((*it)) << std::endl;
 	}
 
-	server.Initialise(SERVERIP, SERVERPORT);
+//	server.Initialise(SERVERIP, SERVERPORT);
 //	server.Initialise(inet_ntoa(addresses[0]), SERVERPORT);
 
 	while (true)

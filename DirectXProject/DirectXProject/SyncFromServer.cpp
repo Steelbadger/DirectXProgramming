@@ -9,6 +9,7 @@ NetworkManager* SyncFromServer::network;
 SyncFromServer::SyncFromServer()
 {
 	previous.timestamp = 0;
+	markForDelete = false;
 }
 
 SyncFromServer::~SyncFromServer()
@@ -20,6 +21,9 @@ void SyncFromServer::Update()
 {
 	MessageType current = network->GetLastUpdate(linkedClientID);
 	double currentTime = float(clock())/CLOCKS_PER_SEC;
+	if (current.type == CLOSE) {
+		markForDelete = true;
+	}
 	if (current.timestamp > previous.timestamp) {
 		secondLast = previous;
 		secondLastTime = previousTime;
@@ -40,7 +44,6 @@ void SyncFromServer::Update()
 
 		GameObject::Get(GetParentID()).GetComponent<Position>().SetPosition(interpp.x, interpp.y, interpp.z);
 		GameObject::Get(GetParentID()).GetComponent<Orientation>().SetOrientation(interp);
-
 	}
 }
 
@@ -52,4 +55,9 @@ void SyncFromServer::SetNetworkManager(NetworkManager &manager)
 void SyncFromServer::SetLinkedClient(unsigned int client)
 {
 	linkedClientID = client;
+}
+
+bool SyncFromServer::MarkedForDelete()
+{
+	return markForDelete;
 }

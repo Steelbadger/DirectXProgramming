@@ -66,14 +66,22 @@ void Server::Run()
 	}
 
 	std::map<unsigned int, double>::iterator it;
-	for (it = clientUpdates.begin(); it != clientUpdates.end(); it++) {
-		if ((float(clock())/CLOCKS_PER_SEC - (*it).second) > 5.0) {
-			std::cout << "Client Timeout [" << (*it).first << "] Last Message " << (float(clock())/CLOCKS_PER_SEC - (*it).second) << " seconds ago." << std::endl;
-			clientAddresses.erase((*it).first);
-			clientUpdates.erase((*it).first);
-			break;
+//	if (clientUpdates.size() > 0) {
+		for (it = clientUpdates.begin(); it != clientUpdates.end(); it++) {
+			if ((float(clock())/CLOCKS_PER_SEC - (*it).second) > 2.0) {
+				std::cout << "Client Timeout [" << (*it).first << "] Last Message " << (float(clock())/CLOCKS_PER_SEC - (*it).second) << " seconds ago." << std::endl;
+				MessageType message;
+				message.clientID = (*it).first;
+				message.type = CLOSE;
+				message.updateClientID = message.clientID;
+				Send(message);
+				BounceToClients(message);
+				clientAddresses.erase((*it).first);
+				clientUpdates.erase((*it).first);
+				break;
+			}
 		}
-	}
+//	}
 
 	NetworkByte<MessageType>(message);
 //	std::cout << "Received Message from Client[" << message.clientID << "]: ";

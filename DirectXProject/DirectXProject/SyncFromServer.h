@@ -15,6 +15,7 @@ public:
 	~SyncFromServer();
 	void Update();
 	static void SetNetworkManager(NetworkManager &manager);
+	bool MarkedForDelete();
 	void SetLinkedClient(unsigned int);
 private:
 	static NetworkManager* network;
@@ -23,4 +24,5 @@ private:
 	double previousTime;
 	double secondLastTime;
 	unsigned int linkedClientID;
+	bool markForDelete;
 };

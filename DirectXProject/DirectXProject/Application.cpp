@@ -214,6 +214,17 @@ void Application::TestUpdate()
 		for (int i = 0; i < SyncFromServer::GetList().Size(); i++) {
 			if (SyncFromServer::GetList().Exists(i)) {
 				SyncFromServer::GetList().Get(i).Update();
+				if (SyncFromServer::GetList().Get(i).MarkedForDelete()) {
+					world.RemoveFromWorld(SyncFromServer::GetList().Get(i).GetParentID());
+					SyncFromServer::GetList().Get(i).DeleteFromStorage();
+				}
+			}
+		}
+	} else {
+		for (int i = 0; i < SyncFromServer::GetList().Size(); i++) {
+			if (SyncFromServer::GetList().Exists(i)) {
+				world.RemoveFromWorld(SyncFromServer::GetList().Get(i).GetParentID());
+				SyncFromServer::GetList().Get(i).DeleteFromStorage();			
 			}
 		}
 	}

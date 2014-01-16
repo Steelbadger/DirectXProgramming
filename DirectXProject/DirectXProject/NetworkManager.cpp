@@ -181,6 +181,17 @@ bool NetworkManager::Recieve(MessageType &output)
 				break;
 			case CLOSE:
 				std::cout << "CLOSE" << std::endl;
+				if (output.updateClientID == uniqueID) {
+					connected = false;
+					connecting = false;
+					readable = false;
+					writable = true;
+					uniqueID = 0;
+					clockOffset = 0;
+					std::cout << "Disconnecting, Removing Other Clients from World..." << std::endl;
+				} else {
+					lastUpdate[output.updateClientID] = output;
+				}
 				break;
 			default:
 				std::cout << "UNKNOWN - " << output.type << std::endl;
