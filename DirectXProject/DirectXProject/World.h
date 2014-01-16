@@ -18,6 +18,7 @@ public:
 	std::list<ObjectID> GetLightList();
 	void AddToScene(ObjectID id);
 	void PassMeshFactory(MeshFactory* factory);
+	void CreateNewPlayer(unsigned int clientID);
 private:
 	ObjectID currentCamera;
 	ObjectID light;

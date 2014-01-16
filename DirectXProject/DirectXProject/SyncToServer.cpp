@@ -18,9 +18,9 @@ SyncToServer::~SyncToServer()
 
 void SyncToServer::Update()
 {
-	double current = clock() - CLOCKS_PER_SEC;
-	if (lastSync < clock() - CLOCKS_PER_SEC) {
-		lastSync = clock();
+	double current = clock()/CLOCKS_PER_SEC;
+	if (current - lastSync > (1/5.0)) {
+		lastSync = clock()/CLOCKS_PER_SEC;
 		MessageType message;
 		message.type = UPDATE;
 		message.updateClientID = network->GetID();

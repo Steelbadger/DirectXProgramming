@@ -40,6 +40,7 @@ public:
 
 	void EnableAveragedFrameRate(int averageLength = 60){enableFrameRate = true; loopMax = averageLength;}
 	void DisableAveragedFrameRate(){enableFrameRate = false;}
+	void OffsetTimer(double seconds);
 	double Framerate(){return (1/GetTimeForLastFrame());}
 
 	int GetScreenWidth(){return screenWidth;}
@@ -60,6 +61,8 @@ private:
 	bool enableFrameRate;
 	int loopCount;
 	int loopMax;
+
+	double timerOffset;
 
 	long long int frameTimeOld;
 	double highResTimer;

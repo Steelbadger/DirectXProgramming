@@ -54,6 +54,7 @@ void Server::Initialise(const char* ipAddr, unsigned short port)
 
 void Server::Run()
 {
+	time = clock();
 	sockaddr_in fromAddr;
 	MessageType message;
 	int fromAddrSize = sizeof(fromAddr);
@@ -66,7 +67,8 @@ void Server::Run()
 
 	std::map<unsigned int, double>::iterator it;
 	for (it = clientUpdates.begin(); it != clientUpdates.end(); it++) {
-		if ((*it).second > clock()-CLOCKS_PER_SEC) {
+		if ((clock()/CLOCKS_PER_SEC - (*it).second) > 5.0) {
+			std::cout << "Client Timeout [" << (*it).first << "] Last Message " << (clock()/CLOCKS_PER_SEC - (*it).second) << " seconds ago." << std::endl;
 			clientAddresses.erase((*it).first);
 			clientUpdates.erase((*it).first);
 			break;
@@ -74,32 +76,32 @@ void Server::Run()
 	}
 
 	NetworkByte<MessageType>(message);
-	std::cout << "Received Message from Client[" << message.clientID << "]: ";
+//	std::cout << "Received Message from Client[" << message.clientID << "]: ";
 	switch(message.type) {
 		case CONNECT:
-			std::cout << "CONNECT";
+			std::cout << "CONNECT" << std::endl;;
 			NewConnection(message, fromAddr);
 			BounceToClients(message);
 			break;
 		case UPDATE:
-			std::cout << "UPDATE";
+//			std::cout << "UPDATE" << std::endl;;
 //			SendConfirmation(message);
 			BounceToClients(message);
 			break;
 		case CONFIRM:
-			std::cout << "CONFIRM";
+			std::cout << "CONFIRM" << std::endl;;
 			RecieveConfirmation(message);
 			break;
 		case RESEND:
-			std::cout << "RESEND";
+			std::cout << "RESEND" << std::endl;;
 			break;
 		case CLOSE:
-			std::cout << "CLOSE";
+			std::cout << "CLOSE" << std::endl;;
 			break;
 		default:
-			std::cout << "UNKNOWN - " << message.type;
+			std::cout << "UNKNOWN - " << message.type << std::endl;;
 	}
-	std::cout << std::endl;
+
 
 }
 
@@ -113,7 +115,7 @@ void Server::SendConfirmation(MessageType message)
 		// Send the message to the server.
 		int count = sendto(sock, (char*)&message, sizeof(MessageType), 0, (const sockaddr *) &address, sizeof(address));
 		if (count == SOCKET_ERROR) {
-			std::cout << "Unable To Send, Error: " << WSAGetLastError() << std::endl;
+			std::cout << "Unable To Send Confirmation, Error: " << WSAGetLastError() << std::endl;
 		}
 
 	} else {
@@ -135,8 +137,9 @@ void Server::NewConnection(MessageType &message, sockaddr_in address)
 {
 	if (message.clientID == 0) {
 		message.clientID = clientIDCounter++;
+		message.secondTime = clock()/CLOCKS_PER_SEC;
 		clientAddresses[message.clientID] = address;
-		std::cout << "New Client Connected, assigned ID: " << message.clientID << std::endl;
+		std::cout << "New Client Connected, assigned ID: " << message.clientID << "\t Total Clients: " << clientAddresses.size() << std::endl;
 		SendConfirmation(message);
 		SendClientList(message);
 	} else {
@@ -147,7 +150,7 @@ void Server::NewConnection(MessageType &message, sockaddr_in address)
 void Server::BounceToClients(MessageType message)
 {
 	std::map<unsigned int, sockaddr_in>::iterator it;
-	clientUpdates[message.clientID] = clock();
+	clientUpdates[message.clientID] = clock()/CLOCKS_PER_SEC;
 	unsigned int sourceClient = message.clientID;
 	message.updateClientID = sourceClient;
 	for(it = clientAddresses.begin(); it != clientAddresses.end(); it++) {
@@ -160,14 +163,17 @@ void Server::BounceToClients(MessageType message)
 
 void Server::SendClientList(MessageType message)
 {
-	std::map<unsigned int, sockaddr_in>::iterator it;
+	std::map<unsigned int, sockaddr_in>::iterator targetIt;
+	std::map<unsigned int, sockaddr_in>::iterator clientIt;
 	message.type = CONNECT;
 	std::cout << "Sending Client List[" << clientAddresses.size() << "]: ";
-	for(it = clientAddresses.begin(); it != clientAddresses.end(); it++) {
-		if (message.clientID != (*it).first) {
-			message.updateClientID = (*it).first;
-			std::cout << message.updateClientID << ", ";
-			Send(message);
+	for(targetIt = clientAddresses.begin(); targetIt != clientAddresses.end(); targetIt++) {
+		for (clientIt = clientAddresses.begin(); clientIt != clientAddresses.end(); clientIt++) {
+			if (message.clientID != (*targetIt).first && message.clientID != (*clientIt).first) {
+				message.updateClientID = (*clientIt).first;
+				std::cout << message.updateClientID << ", ";
+				Send(message);
+			}
 		}
 	}
 	std::cout << std::endl;
@@ -176,29 +182,30 @@ void Server::SendClientList(MessageType message)
 void Server::Send(MessageType message)
 {
 	message.messageNumber = messageCounter++;
-	message.timestamp = clock();
+	message.timestamp = clock()/CLOCKS_PER_SEC;
 	sockaddr_in address = clientAddresses[message.clientID];
-	std::cout << "Sending Message: ";
+	if (message.type != UPDATE) {
+		std::cout << "Sending Message: ";
+	}
 	switch(message.type) {
 		case CONNECT:
-			std::cout << "CONNECT";
+			std::cout << "CONNECT" << std::endl;
 			break;
 		case UPDATE:
-			std::cout << "UPDATE";
+//			std::cout << "UPDATE" << std::endl;
 			break;
 		case CONFIRM:
-			std::cout << "CONFIRM";
+			std::cout << "CONFIRM" << std::endl;
 			break;
 		case RESEND:
-			std::cout << "RESEND";
+			std::cout << "RESEND" << std::endl;
 			break;
 		case CLOSE:
-			std::cout << "CLOSE";
+			std::cout << "CLOSE" << std::endl;
 			break;
 		default:
-			std::cout << "UNKNOWN - " << message.type;
+			std::cout << "UNKNOWN - " << message.type << std::endl;
 	}
-	std::cout << std::endl;
 	NetworkByte<MessageType>(message);
 
 	// Send the message to the server.

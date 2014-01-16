@@ -25,6 +25,7 @@ public:
 	MessageType GetLastUpdate(unsigned int clientID);
 	std::vector<MessageType> GetNewClients();
 	bool NewClientsWaiting();
+	void OffsetClock();
 
 	void TEST_SEND();
 	void TEST_RECIEVE();
@@ -51,6 +52,8 @@ private:
 	sockaddr_in address;
 	unsigned int uniqueID;
 	unsigned int messageNumber;
+	double clockOffset;
+	double latency;
 
 	std::map<unsigned int, MessageType> sentMessages;
 	std::queue<MessageType> recievedMessages;

@@ -20,5 +20,7 @@ private:
 	static NetworkManager* network;
 	MessageType previous;
 	MessageType secondLast;
+	double previousTime;
+	double secondLastTime;
 	unsigned int linkedClientID;
 };

@@ -10,6 +10,10 @@
 #include "SyncToServer.h"
 #include "SyncFromServer.h"
 #include "../../Common/NetworkMessage.h"
+#include "Mesh.h"
+#include "MeshFactory.h"
+#include "Material.h"
+#include "TextureTypes.h"
 
 #include <functional>
 
@@ -154,21 +158,32 @@ void Application::TestUpdate()
 
 	MessageType message;
 	while (networking.Recieve(message)) {
-		std::cout << "Recieved Message" << std::endl;
-		if (message.type == UPDATE) {
-			std::cout << "Client Update: " << message.updateClientID << std::endl;
-			std::cout << "Position: (" << message.xpos << ", " << message.ypos << ", " << message.zpos << ")" << std::endl;
-			std::cout << "Orientation: (" << message.s << ", (" << message.xorient << ", " << message.yorient << ", " << message.zorient << "))" << std::endl;
-			std::cout << "Timestamp: " << message.timestamp << std::endl;
-		} else if (message.type == CONNECT) {
+		//std::cout << "Recieved Message" << std::endl;
+		//if (message.type == UPDATE) {
+		//	std::cout << "Client Update: " << message.updateClientID << std::endl;
+		//	std::cout << "Position: (" << message.xpos << ", " << message.ypos << ", " << message.zpos << ")" << std::endl;
+		//	std::cout << "Orientation: (" << message.s << ", (" << message.xorient << ", " << message.yorient << ", " << message.zorient << "))" << std::endl;
+		//	std::cout << "Timestamp: " << message.timestamp << std::endl;
+		//} else 
+		if (message.type == CONNECT) {
 			ObjectID camera = GameObject::New();
 			GameObject::AddComponent<Position>(camera);
 			GameObject::AddComponent<Orientation>(camera);
 			GameObject::AddComponent<SyncFromServer>(camera);
+			GameObject::AddComponent<Mesh>(camera);
+			GameObject::AddComponent<Material>(camera);
 			GameObject::GetComponent<Position>(camera).SetPosition(0,0,0);
 			GameObject::GetComponent<SyncFromServer>(camera).SetLinkedClient(message.updateClientID);
+			GameObject::GetComponent<Mesh>(camera).SetMeshData(factory.CreateMeshBuffersFromFile("player.obj", Mesh::NORMALMAPPED));
+			GameObject::GetComponent<Material>(camera).AddTexture<AmbientTexture>("playerambient.jpg");
+			GameObject::GetComponent<Material>(camera).AddTexture<NormalMap>("playerbump.jpg");
+			GameObject::GetComponent<Material>(camera).AddTexture<SpecularMap>("playerspec.jpg");
+			GameObject::GetComponent<Material>(camera).SetShader(ShaderLibrary::Shaders::NORMAL);
+
 			world.AddToScene(camera);
 			TESTCLIENT = camera;
+//			world.CreateNewPlayer(message.updateClientID);
+			std::cout << "Creating New Player" << std::endl;
 		}
 	}
 

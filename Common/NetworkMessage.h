@@ -1,6 +1,9 @@
 #pragma once
 
+#ifndef _WINSOCK_DEFINED_
+#define _WINSOCK_DEFINED_
 #include <WinSock2.h>
+#endif
 
 #define CONNECT		1
 #define UPDATE		2
@@ -27,6 +30,7 @@ struct MessageType
 		};
 	};
 	double timestamp;
+	double secondTime;
 };
 #pragma pack(pop)
 

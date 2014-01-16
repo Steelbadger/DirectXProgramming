@@ -9,6 +9,7 @@ NetworkManager::NetworkManager()
 	readable = false;
 	writable = true;
 	uniqueID = 0;
+	clockOffset = 0;
 }
 
 NetworkManager::~NetworkManager()
@@ -79,27 +80,29 @@ void NetworkManager::Connect()
 void NetworkManager::Send(MessageType message)
 {
 	message.messageNumber = messageNumber++;
-	message.timestamp = clock();
+	message.timestamp = clock()/CLOCKS_PER_SEC;
 	message.clientID = uniqueID;
-	std::cout << "Sending Message: ";
+	if (message.type != UPDATE) {
+		std::cout << "Sending Message: ";
+	}
 	switch(message.type) {
 		case CONNECT:
-			std::cout << "CONNECT";
+			std::cout << "CONNECT" << std::endl;
 			break;
 		case UPDATE:
-			std::cout << "UPDATE";
+//			std::cout << "UPDATE" << std::endl;
 			break;
 		case CONFIRM:
-			std::cout << "CONFIRM";
+			std::cout << "CONFIRM" << std::endl;
 			break;
 		case RESEND:
-			std::cout << "RESEND";
+			std::cout << "RESEND" << std::endl;
 			break;
 		case CLOSE:
-			std::cout << "CLOSE";
+			std::cout << "CLOSE" << std::endl;
 			break;
 		default:
-			std::cout << "UNKNOWN - " << message.type;
+			std::cout << "UNKNOWN - " << message.type << std::endl;
 	}
 	std::cout << std::endl;
 	NetworkByte<MessageType>(message);
@@ -153,34 +156,35 @@ bool NetworkManager::Recieve(MessageType &output)
 
 		}
 
-		std::cout << "Received Message: ";
 		NetworkByte<MessageType>(output);
 
+
+		if (output.type != UPDATE) {
+			std::cout << "Received Message: ";
+		}
 		switch(output.type) {
 			case CONNECT:
-				std::cout << "CONNECT";
+				std::cout << "CONNECT" << std::endl;
 				NewConnection(output);
 				break;
 			case UPDATE:
-				std::cout << "UPDATE";
+//				std::cout << "UPDATE" << std::endl;
 //				SendConfirmation(output);
 				lastUpdate[output.updateClientID] = output;
 				break;
 			case CONFIRM:
-				std::cout << "CONFIRM";
+				std::cout << "CONFIRM" << std::endl;
 				RecieveConfirmation(output);
 				break;
 			case RESEND:
-				std::cout << "RESEND";
+				std::cout << "RESEND" << std::endl;
 				break;
 			case CLOSE:
-				std::cout << "CLOSE";
+				std::cout << "CLOSE" << std::endl;
 				break;
 			default:
-				std::cout << "UNKNOWN - " << output.type;
+				std::cout << "UNKNOWN - " << output.type << std::endl;
 		}
-
-		std::cout << std::endl;
 
 		return true;
 	}
@@ -214,6 +218,11 @@ void NetworkManager::RecieveConfirmation(MessageType message)
 			std::cout << std::endl << "Client ID Assigned: " << uniqueID << std::endl;
 			connecting = false;
 			connected = true;
+			latency = ((clock()/CLOCKS_PER_SEC - message.timestamp)/2);
+			std::cout << "Client Latency: " << latency << "s" << std::endl;
+			clockOffset = message.secondTime + latency;
+			std::cout << "Clock Offset from Server by: " << clockOffset << "s" << std::endl;
+			OffsetClock();
 		}
 		sentMessages.erase(message.messageNumber);
 	} else {
@@ -316,20 +325,20 @@ void NetworkManager::SEND_OBJECT_DATA()
 void NetworkManager::MessageHandler(Window* window, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	if (message == WM_SOCKET) {
-		std::cout << "Windows Message Socket: ";
+//		std::cout << "Windows Message Socket: ";
 
 		// What kind of event was it?
 		switch (WSAGETSELECTEVENT(lParam))
 		{
 		case FD_CONNECT:
 			// connect() completed.
-			std::cout << "FD_CONNECT" << std::endl;
+//			std::cout << "FD_CONNECT" << std::endl;
 			connected = true;
 			break;
 
 		case FD_READ:
 			// It may be possible to receive.
-			std::cout << "FD_READ" << std::endl;
+//			std::cout << "FD_READ" << std::endl;
 			readable = true;
 			break;
 
@@ -337,7 +346,7 @@ void NetworkManager::MessageHandler(Window* window, UINT message, WPARAM wParam,
 			// It may be possible to send.
 			// We will only get this notification if we've already tried to send
 			// and been told that it would block (which is different from select's behaviour).
-			std::cout << "FD_WRITE" << std::endl;
+//			std::cout << "FD_WRITE" << std::endl;
 			writable = true;
 			break;
 		}
@@ -363,4 +372,9 @@ bool NetworkManager::NewClientsWaiting()
 MessageType NetworkManager::GetLastUpdate(unsigned int client)
 {
 	return lastUpdate[client];
+}
+
+void NetworkManager::OffsetClock()
+{
+	HardwareState::GetInstance().OffsetTimer(clockOffset);
 }

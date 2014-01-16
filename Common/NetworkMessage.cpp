@@ -12,4 +12,5 @@ template<> void NetworkByte<MessageType>(MessageType &message)
 	NetworkByte<float>(message.yorient);
 	NetworkByte<float>(message.zorient);
 	NetworkByte<double>(message.timestamp);
+	NetworkByte<double>(message.secondTime);
 }

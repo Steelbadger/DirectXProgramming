@@ -28,6 +28,7 @@ HardwareState::HardwareState(void)
 	screenWidth =  GetSystemMetrics(SM_CXSCREEN);
 	screenHeight = GetSystemMetrics(SM_CYSCREEN);
 	loopCount = 0;
+	timerOffset = 0;
 }
 
 
@@ -79,14 +80,14 @@ void HardwareState::Update()
 		loopCount++;
 		if (loopCount > loopMax) {
 			lastTime = currentTime;
-			currentTime = clock();
+			currentTime = clock()/CLOCKS_PER_SEC;
 			timeForLastFrame = currentTime - lastTime;
 			timeForLastFrame /= loopCount;
 			loopCount = 0;
 		}
 	} else {
 		lastTime = currentTime;
-		currentTime = clock();
+		currentTime = clock()/CLOCKS_PER_SEC + timerOffset;
 		timeForLastFrame = currentTime - lastTime;
 	}
 
@@ -94,9 +95,10 @@ void HardwareState::Update()
 	long long int tickCount, countsPerSecond;
 	QueryPerformanceCounter(&currentTime);
 	QueryPerformanceFrequency(&frequency);
+	countsPerSecond = frequency.QuadPart;
+	currentTime.QuadPart += timerOffset*countsPerSecond;
 	tickCount = currentTime.QuadPart-frameTimeOld;
 	frameTimeOld = currentTime.QuadPart;
-	countsPerSecond = frequency.QuadPart;
 
 	if(tickCount < 0.0f) {
 		tickCount = 0.0f;
@@ -124,4 +126,9 @@ void HardwareState::Update()
 double HardwareState::GetTimeSinceLastFrame()
 {
 	return clock()-currentTime;
+}
+
+void HardwareState::OffsetTimer(double seconds)
+{
+	timerOffset = seconds;
 }

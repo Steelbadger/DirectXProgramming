@@ -21,6 +21,8 @@ private:
 	void RecieveConfirmation(MessageType message);
 	void SendClientList(MessageType message);
 
+	double time;
+
 	unsigned int clientIDCounter;
 	unsigned int messageCounter;
 	SOCKET sock;

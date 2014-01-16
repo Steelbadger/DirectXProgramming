@@ -15,6 +15,7 @@
 #include "DirectionalLight.h"
 #include "ShaderLibrary.h"
 #include "PointLight.h"
+//#include "SyncFromServer.h"
 
 
 World::World()
@@ -38,7 +39,7 @@ void World::CreateScene()
 	GameObject::AddComponent<SpinController>(quad);
 
 	GameObject::GetComponent<Position>(quad).SetPosition(0,0,0);
-	GameObject::GetComponent<Mesh>(quad).SetMeshData(meshFactory->CreateMeshBuffersFromFile("crate.obj", Mesh::NORMALMAPPED));
+	GameObject::GetComponent<Mesh>(quad).SetMeshData(meshFactory->CreateMeshBuffersFromFile("player.obj", Mesh::NORMALMAPPED));
 	GameObject::GetComponent<Material>(quad).AddTexture<AmbientTexture>("crateDiffuse.jpg");
 	GameObject::GetComponent<Material>(quad).AddTexture<NormalMap>("crateNormal.jpg");
 	GameObject::GetComponent<Material>(quad).AddTexture<SpecularMap>("crateSpec.jpg");
@@ -225,4 +226,21 @@ void World::PassMeshFactory(MeshFactory* factory)
 ObjectID World::GetLight()
 {
 	return light;
+}
+
+void World::CreateNewPlayer(unsigned int id)
+{
+	//ObjectID camera = GameObject::New();
+	//GameObject::AddComponent<Position>(camera);
+	//GameObject::AddComponent<Orientation>(camera);
+	//GameObject::AddComponent<SyncFromServer>(camera);
+	//GameObject::AddComponent<Mesh>(camera);
+	//GameObject::AddComponent<Material>(camera);
+	//GameObject::GetComponent<Position>(camera).SetPosition(0,0,0);
+	//GameObject::GetComponent<SyncFromServer>(camera).SetLinkedClient(id);
+	//GameObject::GetComponent<Mesh>(camera).SetMeshData(meshFactory->CreateMeshBuffersFromFile("player.obj", Mesh::NORMALMAPPED));
+	//GameObject::GetComponent<Material>(camera).AddTexture<AmbientTexture>("playerambient.jpg");
+	//GameObject::GetComponent<Material>(camera).AddTexture<NormalMap>("playerbump.jpg");
+	//GameObject::GetComponent<Material>(camera).AddTexture<SpecularMap>("playerspec.jpg");
+	//GameObject::GetComponent<Material>(camera).SetShader(ShaderLibrary::Shaders::NORMAL);
 }
