@@ -81,6 +81,27 @@ void NetworkManager::Send(MessageType message)
 	message.messageNumber = messageNumber++;
 	message.timestamp = clock();
 	message.clientID = uniqueID;
+	std::cout << "Sending Message: ";
+	switch(message.type) {
+		case CONNECT:
+			std::cout << "CONNECT";
+			break;
+		case UPDATE:
+			std::cout << "UPDATE";
+			break;
+		case CONFIRM:
+			std::cout << "CONFIRM";
+			break;
+		case RESEND:
+			std::cout << "RESEND";
+			break;
+		case CLOSE:
+			std::cout << "CLOSE";
+			break;
+		default:
+			std::cout << "UNKNOWN - " << message.type;
+	}
+	std::cout << std::endl;
 	NetworkByte<MessageType>(message);
 
 	// Send the message to the server.
@@ -105,7 +126,7 @@ void NetworkManager::Send(MessageType message)
 
 bool NetworkManager::Recieve(MessageType &output)
 {
-	if (readable) {
+	if (true) {
 		// Read a response back from the server (or from anyone, in fact).
 		sockaddr_in fromAddr;
 		int fromAddrSize = sizeof(fromAddr);
@@ -115,38 +136,51 @@ bool NetworkManager::Recieve(MessageType &output)
 
 			if (WSAGetLastError() == WSAEWOULDBLOCK)
 			{
-				std::cout << "Could Not Read" << std::endl;
-				readable = false;
+				if (readable == true) {
+					std::cout << "Could Not Read" << std::endl;
+					readable = false;
+				}
 				return false;
 			}
 			else
 			{
 				// Something went wrong.
-				std::cout << "RECIEVE FAILED" << std::endl;
+				if (connected == true) {
+					std::cout << "RECIEVE FAILED" << std::endl;
+				}
 				return false;
 			}
 
 		}
 
-		std::cout << "Received Message" << std::endl;
+		std::cout << "Received Message: ";
 		NetworkByte<MessageType>(output);
 
 		switch(output.type) {
 			case CONNECT:
+				std::cout << "CONNECT";
 				NewConnection(output);
 				break;
 			case UPDATE:
+				std::cout << "UPDATE";
 //				SendConfirmation(output);
 				lastUpdate[output.updateClientID] = output;
 				break;
 			case CONFIRM:
+				std::cout << "CONFIRM";
 				RecieveConfirmation(output);
 				break;
 			case RESEND:
+				std::cout << "RESEND";
 				break;
 			case CLOSE:
+				std::cout << "CLOSE";
 				break;
+			default:
+				std::cout << "UNKNOWN - " << output.type;
 		}
+
+		std::cout << std::endl;
 
 		return true;
 	}
@@ -177,7 +211,7 @@ void NetworkManager::RecieveConfirmation(MessageType message)
 	if (sentMessages.count(message.messageNumber)) {
 		if (sentMessages[message.messageNumber].type == CONNECT) {
 			uniqueID = message.clientID;
-			std::cout << "CONNECTED.  Client ID Assigned: " << uniqueID << std::endl;
+			std::cout << std::endl << "Client ID Assigned: " << uniqueID << std::endl;
 			connecting = false;
 			connected = true;
 		}
