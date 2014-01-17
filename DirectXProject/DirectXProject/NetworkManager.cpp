@@ -7,6 +7,7 @@ NetworkManager::NetworkManager()
 	connected = false;
 	connecting = false;
 	readable = false;
+	serverSet = false;
 	writable = true;
 	uniqueID = 0;
 	clockOffset = 0;
@@ -62,16 +63,17 @@ void NetworkManager::SetServer(const char * serverAddress, unsigned short portNu
 		// The address to connect to.
 		address.sin_family = AF_INET;
 		address.sin_port = htons(portNumber);
-		address.sin_addr.s_addr = inet_addr(serverAddress);	
+		address.sin_addr.s_addr = inet_addr(serverAddress);
+		serverSet = true;
 }
 
 void NetworkManager::Connect()
 {
-	if (connecting == false && connected == false) {
+	if (connecting == false && connected == false && serverSet == true) {
 		connecting = true;
 		MessageType message;
 		messageNumber = 0;
-		std::cout << "Attempting to Connect..." << std::endl;
+		std::cout << "Attempting to Connect to " << inet_ntoa(address.sin_addr) << "..." << std::endl;
 		message.type = CONNECT;
 		Send(message);
 	}

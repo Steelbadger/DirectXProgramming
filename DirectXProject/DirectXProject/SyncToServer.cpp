@@ -19,7 +19,7 @@ SyncToServer::~SyncToServer()
 void SyncToServer::Update()
 {
 	double current = float(clock())/CLOCKS_PER_SEC;
-	if (current - lastSync > (1/20.0)) {
+	if (current - lastSync > (1.0f/UPDATES_PER_SEC)) {
 		lastSync = float(clock())/CLOCKS_PER_SEC;
 		MessageType message;
 		message.type = UPDATE;

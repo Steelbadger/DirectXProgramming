@@ -12,14 +12,16 @@
 #include <iostream>
 #include <vector>
 #include "ServerClass.h"
+#include <iostream>
+#include <string>
 
 #pragma comment(lib, "ws2_32.lib")
 
 
 // The IP address for the server
-//#define SERVERIP "127.0.0.1"
+#define LOCALHOST "127.0.0.1"
 //#define SERVERIP "193.60.172.115"
-#define SERVERIP "193.60.172.131"
+//#define SERVERIP "193.60.172.131"
 
 // The UDP port number for the server
 #define SERVERPORT 4444
@@ -55,15 +57,24 @@ int main()
 {
 	Server server;
 	printf("Initializing Server\n");
-	server.Initialise(SERVERIP, SERVERPORT);
+	std::string addr;
+	do {
+		std::cout << "Set Server to localhost?[y/n]: ";
+		std::cin >> addr;
+	} while (addr == "y\n" || addr == "n\n");
 
+	server.Initialise();
 	std::vector<in_addr> addresses = GetIPAddress();
-	for (std::vector<in_addr>::iterator it = addresses.begin(); it != addresses.end(); it++) {
-		std::cout << "Address: " << inet_ntoa((*it)) << std::endl;
+	//for (std::vector<in_addr>::iterator it = addresses.begin(); it != addresses.end(); it++) {
+	//	std::cout << "Address: " << inet_ntoa((*it)) << std::endl;
+	//}
+	if (addr == "y") {
+		server.BindSocket(LOCALHOST, SERVERPORT);
+		std::cout << "Server bound on: " << LOCALHOST << std::endl;
+	} else {
+		server.BindSocket(inet_ntoa(addresses[0]), SERVERPORT);
+		std::cout << "Server bound on: " << inet_ntoa(addresses[0]) << std::endl;
 	}
-
-//	server.Initialise(SERVERIP, SERVERPORT);
-//	server.Initialise(inet_ntoa(addresses[0]), SERVERPORT);
 
 	while (true)
 	{

@@ -21,4 +21,5 @@ private:
 	bool toBeSynced;
 	static NetworkManager* network;
 	double lastSync;
+	static const int UPDATES_PER_SEC = 20;
 };

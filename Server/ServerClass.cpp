@@ -8,6 +8,7 @@ Server::Server()
 {
 	clientIDCounter = 1;
 	messageCounter = 0;
+	bound = false;
 }
 
 Server::~Server()
@@ -15,7 +16,7 @@ Server::~Server()
 
 }
 
-void Server::Initialise(const char* ipAddr, unsigned short port)
+void Server::Initialise()
 {
 	// Initialise the WinSock library -- we want version 2.2.
 	WSADATA w;
@@ -35,20 +36,25 @@ void Server::Initialise(const char* ipAddr, unsigned short port)
 	if (sock == INVALID_SOCKET) {
 		std::cout << "Invalid Socket, Error: " << WSAGetLastError() << std::endl;
 	}
-	// FIXME: we should test for error here
+}
 
-	// Fill out a sockaddr_in structure to describe the address we'll listen on.
-	sockaddr_in serverAddr;
-	serverAddr.sin_family = AF_INET;
-	serverAddr.sin_addr.s_addr = inet_addr(ipAddr);
-	// htons converts the port number to network byte order (big-endian).
-	serverAddr.sin_port = htons(port);
+void Server::BindSocket(const char* ipAddr, unsigned short port)
+{
+	if (!bound) {
+		// Fill out a sockaddr_in structure to describe the address we'll listen on.
+		sockaddr_in serverAddr;
+		serverAddr.sin_family = AF_INET;
+		serverAddr.sin_addr.s_addr = inet_addr(ipAddr);
+		// htons converts the port number to network byte order (big-endian).
+		serverAddr.sin_port = htons(port);
 
-	// Bind the socket to that address.
-	if (bind(sock, (LPSOCKADDR) &serverAddr, sizeof(serverAddr)) != 0)
-	{
-		std::cout << "Bind Failed" << std::endl;
-		return;
+		// Bind the socket to that address.
+		if (bind(sock, (LPSOCKADDR) &serverAddr, sizeof(serverAddr)) != 0)
+		{
+			std::cout << "Bind Failed" << std::endl;
+			return;
+		}
+		bound = true;
 	}
 }
 

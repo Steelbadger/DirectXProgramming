@@ -29,8 +29,6 @@ void SyncFromServer::Update()
 		secondLastTime = previousTime;
 		previous = current;
 		previousTime = currentTime;
-		GameObject::Get(GetParentID()).GetComponent<Position>().SetPosition(current.xpos, current.ypos, current.zpos);
-		GameObject::Get(GetParentID()).GetComponent<Orientation>().SetOrientation(D3DXQUATERNION(current.xorient, current.yorient, current.zorient, current.s));
 	} else {
 		float interpolationFactor = (currentTime-secondLastTime)/(previousTime-secondLastTime);
 		D3DXQUATERNION first(secondLast.xorient, secondLast.yorient, secondLast.zorient, secondLast.s);

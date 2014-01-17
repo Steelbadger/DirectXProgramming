@@ -49,6 +49,7 @@ private:
 	bool connecting;
 	bool readable;
 	bool writable;
+	bool serverSet;
 	sockaddr_in address;
 	unsigned int uniqueID;
 	unsigned int messageNumber;

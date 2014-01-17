@@ -10,7 +10,8 @@ public:
 	Server();
 	~Server();
 
-	void Initialise(const char* ipAddr, unsigned short port);
+	void Initialise();
+	void BindSocket(const char* ipAddr, unsigned short port);
 
 	void Run();
 private:
@@ -26,6 +27,7 @@ private:
 	unsigned int clientIDCounter;
 	unsigned int messageCounter;
 	SOCKET sock;
+	bool bound;
 
 	std::map<unsigned int, double> clientUpdates;
 	std::map<unsigned int, sockaddr_in> clientAddresses;

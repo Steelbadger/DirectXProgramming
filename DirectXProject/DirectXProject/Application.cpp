@@ -96,7 +96,7 @@ bool Application::Initialize()
 	world.SetCameraObject(camera);
 
 	networking.Initialise(m_hinstance);
-	networking.SetServer("193.60.172.131", 4444);
+	networking.SetServer("127.0.0.1", 4444);
 	return true;
 }
 
@@ -158,13 +158,6 @@ void Application::TestUpdate()
 
 	MessageType message;
 	while (networking.Recieve(message)) {
-		//std::cout << "Recieved Message" << std::endl;
-		//if (message.type == UPDATE) {
-		//	std::cout << "Client Update: " << message.updateClientID << std::endl;
-		//	std::cout << "Position: (" << message.xpos << ", " << message.ypos << ", " << message.zpos << ")" << std::endl;
-		//	std::cout << "Orientation: (" << message.s << ", (" << message.xorient << ", " << message.yorient << ", " << message.zorient << "))" << std::endl;
-		//	std::cout << "Timestamp: " << message.timestamp << std::endl;
-		//} else 
 		if (message.type == CONNECT) {
 			ObjectID camera = GameObject::New();
 			GameObject::AddComponent<Position>(camera);
@@ -179,10 +172,7 @@ void Application::TestUpdate()
 			GameObject::GetComponent<Material>(camera).AddTexture<NormalMap>("playerbump.jpg");
 			GameObject::GetComponent<Material>(camera).AddTexture<SpecularMap>("playerspec.jpg");
 			GameObject::GetComponent<Material>(camera).SetShader(ShaderLibrary::Shaders::NORMAL);
-
 			world.AddToScene(camera);
-			TESTCLIENT = camera;
-//			world.CreateNewPlayer(message.updateClientID);
 			std::cout << "Creating New Player" << std::endl;
 		}
 	}
@@ -242,33 +232,16 @@ void Application::TestUpdate()
 		std::cout << "Number of Lights: " << world.GetLightList().size()+1 << std::endl;
 	}
 
-	if (m_Input->Pressed('F')) {
+	if (m_Input->Pressed('V') && !networking.IsConnected()) {
+		std::string addr;
+		std::cout << "Connect To Server: ";
+		std::cin >> addr;
+		networking.SetServer(addr.c_str(), 4444);
+	}
+
+	if (m_Input->Pressed('C')) {
 		networking.Connect();
 	}
-
-
-	if (m_Input->Pressed('G')) {
-		Position* pos = &GameObject::GetComponent<Position>(TESTCLIENT);
-		Orientation* orient = &GameObject::GetComponent<Orientation>(TESTCLIENT);
-		std::cout << "=====OTHER CLIENT INFO======" << std::endl;
-		std::cout << "Position: (" << pos->GetPosition().x << ", " << pos->GetPosition().y << ", " << pos->GetPosition().z << ")" << std::endl;
-		std::cout << "Orientation: (" << orient->GetOrientation().w << ", (" << orient->GetOrientation().x << ", " << orient->GetOrientation().y << ", " << orient->GetOrientation().z << "))" << std::endl;
-		std::cout << "=============END============" << std::endl;
-		//MessageType message;
-		//message.type = UPDATE;
-		//message.updateClientID = networking.GetID();
-		//message.xpos = GameObject::GetComponent<Position>(world.GetCameraObject()).GetPosition().x;
-		//message.ypos = GameObject::GetComponent<Position>(world.GetCameraObject()).GetPosition().y;
-		//message.zpos = GameObject::GetComponent<Position>(world.GetCameraObject()).GetPosition().z;
-
-		//message.xorient = GameObject::GetComponent<Orientation>(world.GetCameraObject()).GetOrientation().x;
-		//message.yorient = GameObject::GetComponent<Orientation>(world.GetCameraObject()).GetOrientation().y;
-		//message.zorient = GameObject::GetComponent<Orientation>(world.GetCameraObject()).GetOrientation().z;
-		//message.s = GameObject::GetComponent<Orientation>(world.GetCameraObject()).GetOrientation().w;
-
-		//networking.Send(message);
-	}
-
 
 	if (m_Input->Pressed('M')) {
 		wireframe = !wireframe;
