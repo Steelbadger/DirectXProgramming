@@ -17,9 +17,9 @@
 
 
 // The IP address for the server
-#define SERVERIP "127.0.0.1"
+//#define SERVERIP "127.0.0.1"
 //#define SERVERIP "193.60.172.115"
-//#define SERVERIP "193.60.172.123"
+#define SERVERIP "193.60.172.131"
 
 // The UDP port number for the server
 #define SERVERPORT 4444

@@ -96,7 +96,7 @@ bool Application::Initialize()
 	world.SetCameraObject(camera);
 
 	networking.Initialise(m_hinstance);
-	networking.SetServer("127.0.0.1", 4444);
+	networking.SetServer("193.60.172.131", 4444);
 	return true;
 }
 
