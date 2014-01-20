@@ -23,7 +23,8 @@ ______________
 Any number of clients may be simultaneously connected.
 clients may be closed, reopened and reconnected.
 If a client times out it may reconnect (hit the 'c' key to reconnect).
-
+Client timeout results in the client disappearing from the world as seen by still connected clients
+Client timeout also results in all other clients disappearing from the point of view of the timedout client
 
 
 ________________________
