@@ -44,7 +44,7 @@ void World::CreateScene()
 	GameObject::GetComponent<Material>(quad).AddTexture<SpecularMap>("crateSpec.jpg");
 	GameObject::GetComponent<Material>(quad).SetShader(ShaderLibrary::Shaders::NORMAL);
 	GameObject::GetComponent<SpinController>(quad).SetSpinSpeed(0.0f, 0.3f, 0);
-
+	TEST = quad;
 
 	ObjectID test= GameObject::New();
 	GameObject::AddComponent<Position>(test);
@@ -221,4 +221,17 @@ void World::PassMeshFactory(MeshFactory* factory)
 ObjectID World::GetLight()
 {
 	return light;
+}
+
+void World::TESTDELETE()
+{
+	Remove(TEST);
+	GameObject::DeleteObjectAndComponents(TEST);
+}
+
+void World::Remove(ObjectID id)
+{
+	drawList.remove(id);
+	lightList.remove(id);
+	updateList.remove(id);
 }

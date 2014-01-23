@@ -135,6 +135,8 @@ public:
 	void HasBeenModified();
 	bool Modified(){return modified;}
 
+	static void DeleteObjectAndComponents(ObjectID);
+
 private:
 	std::map<ComponentType, ObjectID> components;	//  map because lookup is simple unsigned char type, may be sparse
 	std::vector<ObjectID> childGameObjects;		//  array lookup means nothing, just storage

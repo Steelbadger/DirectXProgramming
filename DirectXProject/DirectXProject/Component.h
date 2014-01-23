@@ -17,8 +17,16 @@ public:
 	ComponentBase(){;}
 	~ComponentBase(){;}
 	static ComponentType GetNumberOfComponents(){return componentCount;}
+	static LookupTableInterface* GetComponentStorage(ComponentType componentTypeID) {return (storageInterfaces.size() > componentTypeID ? storageInterfaces[componentTypeID] : NULL);}
 protected:
+	static void SetComponentStorage(ComponentType componentTypeID, LookupTableInterface* dataInterface){storageInterfaces[componentTypeID] = dataInterface;}
+	static ComponentType NewComponentType(LookupTableInterface* data) {
+		ComponentType output = componentCount++;
+		storageInterfaces.push_back(data);
+		return output;
+	}
 	static ComponentType componentCount;
+	static std::vector<LookupTableInterface*> storageInterfaces;
 };
 
 
@@ -73,8 +81,10 @@ public:
 protected:
 	Component(): lookup(-1), parent(-1){
 		if (componentClassCreated == false) {
-			componentTypeID = componentCount++;	
+//			componentTypeID = componentCount++;	
 			componentClassCreated = true;
+			componentTypeID = NewComponentType((LookupTableInterface*)(&componentStorage));
+//			SetComponentStorage(componentTypeID, (LookupTableInterface*)&componentStorage);
 		}
 	}
 private:

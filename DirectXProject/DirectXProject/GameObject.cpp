@@ -116,3 +116,29 @@ void GameObject::SetParentChild(ObjectID p, ObjectID c)
 {
 	Get(p).AddChild(c);
 }
+
+void GameObject::DeleteObjectAndComponents(ObjectID id)
+{
+	GameObject object = Get(id);
+	std::vector<ObjectID> children = object.GetChildren();
+	LookupTableInterface* data = ComponentBase::GetComponentStorage(GetComponentTypeID());
+	for (int i = 0 ; i < children.size(); i++) {
+		if (data->Exists(children[i])) {
+			data->Remove(children[i]);
+		}
+	}
+
+	std::map<ComponentType, ObjectID>::iterator it;
+
+	for (it = object.components.begin(); it != object.components.end(); it++) {
+		data = ComponentBase::GetComponentStorage((*it).first);
+		if (data->Exists((*it).second)) {
+			data->Remove((*it).first);
+		}
+	}
+
+	data = ComponentBase::GetComponentStorage(GetComponentTypeID());
+	if (data->Exists(id)) {
+		data->Remove(id);
+	}
+}
