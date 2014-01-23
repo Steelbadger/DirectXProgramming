@@ -124,7 +124,7 @@ void GameObject::DeleteObjectAndComponents(ObjectID id)
 	LookupTableInterface* data = ComponentBase::GetComponentStorage(GetComponentTypeID());
 	for (int i = 0 ; i < children.size(); i++) {
 		if (data->Exists(children[i])) {
-			data->Remove(children[i]);
+			DeleteObjectAndComponents(children[i]);
 		}
 	}
 

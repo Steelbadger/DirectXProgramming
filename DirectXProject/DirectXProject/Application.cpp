@@ -168,9 +168,9 @@ void Application::TestUpdate()
 		}
 	}
 
-	//if (m_Input->Pressed('N')) {
-	//	world.TESTDELETE();
-	//}
+	if (m_Input->Pressed('N')) {
+		world.TESTDELETE();
+	}
 
 
 	if (m_Input->Pressed('M')) {
