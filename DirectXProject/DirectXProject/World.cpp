@@ -231,6 +231,12 @@ void World::TESTDELETE()
 
 void World::Remove(ObjectID id)
 {
+	std::vector<ObjectID> children = GameObject::Get(id).GetChildren();
+
+	for (int i = 0; i < children.size(); i++) {
+		Remove(children[i]);
+	}
+
 	drawList.remove(id);
 	lightList.remove(id);
 	updateList.remove(id);

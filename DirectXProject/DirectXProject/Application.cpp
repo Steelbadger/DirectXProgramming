@@ -18,6 +18,7 @@ Application::Application(): window(this)
 	vSyncEnabled = false;
 	deferred = false;
 	wireframe = false;
+	ComponentBase herp;
 }
 
 Application::~Application()
@@ -66,7 +67,6 @@ bool Application::Initialize()
 	{
 		return false;
 	}
-
 	world.CreateScene();
 
 	ObjectID camera = GameObject::New();
@@ -83,6 +83,7 @@ bool Application::Initialize()
 //	GameObject::GetComponent<PointLight>(camera).SetSpecularPower(100);
 
 	world.SetCameraObject(camera);
+	ComponentBase herp;
 
 	return true;
 }

@@ -17,7 +17,7 @@ public:
 	ComponentBase(){;}
 	~ComponentBase(){;}
 	static ComponentType GetNumberOfComponents(){return componentCount;}
-	static LookupTableInterface* GetComponentStorage(ComponentType componentTypeID) {return (storageInterfaces.size() > componentTypeID ? storageInterfaces[componentTypeID] : NULL);}
+	static LookupTableInterface* GetComponentStorage(ComponentType componentTypeID) {return (storageInterfaces.size() >= componentTypeID ? storageInterfaces[componentTypeID] : NULL);}
 protected:
 	static void SetComponentStorage(ComponentType componentTypeID, LookupTableInterface* dataInterface){storageInterfaces[componentTypeID] = dataInterface;}
 	static ComponentType NewComponentType(LookupTableInterface* data) {
@@ -81,7 +81,8 @@ public:
 protected:
 	Component(): lookup(-1), parent(-1){
 		if (componentClassCreated == false) {
-//			componentTypeID = componentCount++;	
+//			componentTypeID = componentCount++;
+			ComponentBase herp;
 			componentClassCreated = true;
 			componentTypeID = NewComponentType((LookupTableInterface*)(&componentStorage));
 //			SetComponentStorage(componentTypeID, (LookupTableInterface*)&componentStorage);
