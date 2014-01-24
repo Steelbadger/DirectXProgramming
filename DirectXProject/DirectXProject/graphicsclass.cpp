@@ -268,7 +268,11 @@ bool GraphicsClass::Render(World& world)
 	while (drawList.size() > 0) {
 		ObjectID current = drawList.back();
 		drawList.pop_back();
-
+		GameObject herp = GameObject::Get(current);
+		if (current == 2) {
+			Material derp = GameObject::GetComponent<Material>(current);
+		}
+		
 		currentShader = shaderLibrary.GetShader(GameObject::GetComponent<Material>(current).GetShader());
 		result = currentShader->Render(m_D3D->GetDeviceContext(), current, world.GetCameraObject(), world.GetLight());
 		if(!result)

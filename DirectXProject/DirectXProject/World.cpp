@@ -235,6 +235,7 @@ void World::Remove(ObjectID id)
 
 	for (int i = 0; i < children.size(); i++) {
 		Remove(children[i]);
+		GameObject::DeleteObjectAndComponents(children[i]);
 	}
 
 	drawList.remove(id);

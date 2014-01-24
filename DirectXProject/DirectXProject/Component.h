@@ -14,19 +14,15 @@ typedef unsigned char ComponentType;
 class ComponentBase
 {
 public:
-	ComponentBase(){;}
-	~ComponentBase(){;}
-	static ComponentType GetNumberOfComponents(){return componentCount;}
-	static LookupTableInterface* GetComponentStorage(ComponentType componentTypeID) {return (storageInterfaces.size() >= componentTypeID ? storageInterfaces[componentTypeID] : NULL);}
+	ComponentBase();
+	~ComponentBase();
+	static ComponentType GetNumberOfComponents();
+	static LookupTableInterface* GetComponentStorage(ComponentType componentTypeID);
 protected:
-	static void SetComponentStorage(ComponentType componentTypeID, LookupTableInterface* dataInterface){storageInterfaces[componentTypeID] = dataInterface;}
-	static ComponentType NewComponentType(LookupTableInterface* data) {
-		ComponentType output = componentCount++;
-		storageInterfaces.push_back(data);
-		return output;
-	}
+	static void SetComponentStorage(ComponentType componentTypeID, LookupTableInterface* dataInterface);
+	static ComponentType NewComponentType(LookupTableInterface* data);
 	static ComponentType componentCount;
-	static std::vector<LookupTableInterface*> storageInterfaces;
+	static std::vector<LookupTableInterface*>* storageInterfaces;
 };
 
 
